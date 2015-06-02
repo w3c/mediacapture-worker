@@ -9,7 +9,7 @@
       var respecConfig = {
           // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
           specStatus:           "ED",
-          
+
           // the specification's short name, as in http://www.w3.org/TR/short-name/
           shortName:            "mediacapture-worker",
 
@@ -52,16 +52,16 @@
               ,   companyURL: "https://www.mozilla.org/en-US/foundation/moco/"
               },
           ],
-          
+
           // name of the WG
           wg:           "Web Real-Time Communication Working Group",
-          
+
           // URI of the public WG page
           wgURI:        "http://www.w3.org/2011/04/webrtc/",
-          
+
           // name (without the @w3c.org) of the public mailing to which comments are due
           wgPublicList: "public-media-capture",
-          
+
           // URI of the patent status for this WG, for Rec-track documents
           // !!!! IMPORTANT !!!!
           // This is important for Rec-track documents, do not copy a patent URI from a random
@@ -80,7 +80,7 @@
         processing video frame data in workers in web applications.
       </p>
     </section>
-    
+
     <section id='sotd'>
       <p>
         This document is not complete and is subject to change. Early
@@ -131,9 +131,107 @@
     </section>
     <section>
       <h2>Extensions</h2>
-      <p>
-        
-      </p>
+        <section>
+          <h2>
+            <code>VideoWorkerGlobalScope</code> interface
+          </h2>
+          <dl class="idl" title="interface VideoWorkerGlobalScope : WorkerGlobalScope ">
+            <dt>
+              [Throws]
+              void postMessage(any message, optional sequence&lt;any&gt; transfer)
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              [TreatNonCallableAsNull] attribute Function? onvideoprocess
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              [TreatNonCallableAsNull] attribute Function? onmessage
+            </dt>
+            <dd>
+              -
+            </dd>
+          </dl>
+        </section>
+        <section>
+          <h2>
+            <code>VideoProcessEvent</code> interface
+          </h2>
+          <dl class="idl" title="interface VideoProcessEvent : Event">
+            <dt>
+              readonly attribute DOMString trackId
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              readonly attribute double playbackTime
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              readonly attribute ImageBitmap inputImageBitmap
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              readonly attribute ImageBitmap? outputImageBitmap
+            </dt>
+            <dd>
+              -
+            </dd>
+          </dl>
+        </section>
+        <section>
+          <h2>
+            <code>VideoWorker</code> interface
+          </h2>
+          <dl class="idl" title="[Constructor(DOMString scriptURL)] interface VideoWorker : Worker">
+            <dt>
+              [TreatNonCallableAsNull] attribute Function? onmessage
+            </dt>
+            <dd>
+              -
+            </dd>
+          </dl>
+        </section>
+        <section>
+          <h2>
+            <code>MediaStreamTrack</code> interface
+          </h2>
+          <dl class="idl" title="partial interface MediaStreamTrack">
+            <dt>
+              void addWorkerMonitor(VideoWorker worker)
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              void removeWorkerMonitor(VideoWorker worker)
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              MediaStreamTrack addWorkerProcessor(VideoWorker worker)
+            </dt>
+            <dd>
+              -
+            </dd>
+            <dt>
+              void removeWorkerProcessor()
+            </dt>
+            <dd>
+              -
+            </dd>
+          </dl>
+        </section>
     </section>
     <section>
       <h2>Examples</h2>
@@ -141,7 +239,7 @@
         Under Construction...
       </p>
     </section>
-    
+
     <section class='appendix'>
       <h2>Acknowledgements</h2>
       <p>
