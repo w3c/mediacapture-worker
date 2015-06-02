@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>This Is The Name Of Your Specification</title>
+    <title>Media Capture Stream with Video Worker</title>
     <meta charset='utf-8'>
     <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
             async class='remove'></script>
@@ -11,7 +11,7 @@
           specStatus:           "ED",
           
           // the specification's short name, as in http://www.w3.org/TR/short-name/
-          shortName:            "xxx-xxx",
+          shortName:            "mediacapture-worker",
 
           // if your specification has a subtitle that goes below the main
           // formal title, define it here
@@ -30,7 +30,7 @@
           // previousMaturity:  "WD",
 
           // if there a publicly available Editor's Draft, this is the link
-          // edDraftURI:           "http://berjon.com/",
+           edDraftURI:           "http://chiahungtai.github.io/mediacapture-worker/",
 
           // if this is a LCWD, uncomment and set the end of its review period
           // lcEnd: "2009-08-05",
@@ -39,22 +39,28 @@
           // only "name" is required
           editors:  [
               {
-                  name:       "Your Name"
-              ,   url:        "http://example.org/"
-              ,   mailto:     "you@example.org"
-              ,   company:    "Your Company"
-              ,   companyURL: "http://example.com/"
+                  name:       "Chia-hung Tai"
+//              ,   url:        "http://example.org/"
+              ,   mailto:     "ctai@mozilla.com"
+              ,   company:    "Mozilla"
+              ,   companyURL: "https://www.mozilla.org/en-US/foundation/moco/"
+              },
+              {
+                  name:       "Robert O'Callahan"
+//              ,   url:        "http://example.org/"
+              ,   company:    "Mozilla"
+              ,   companyURL: "https://www.mozilla.org/en-US/foundation/moco/"
               },
           ],
           
           // name of the WG
-          wg:           "In Charge Of This Document Working Group",
+          wg:           "Web Real-Time Communication Working Group",
           
           // URI of the public WG page
-          wgURI:        "http://example.org/really-cool-wg",
+          wgURI:        "http://www.w3.org/2011/04/webrtc/",
           
           // name (without the @w3c.org) of the public mailing to which comments are due
-          wgPublicList: "spec-writers-anonymous",
+          wgPublicList: "public-media-capture",
           
           // URI of the patent status for this WG, for Rec-track documents
           // !!!! IMPORTANT !!!!
@@ -69,28 +75,77 @@
   <body>
     <section id='abstract'>
       <p>
-        This is the abstract for your specification.
+        This specification extends the <em>Media Capture and Streams</em>
+        specification [[!GETUSERMEDIA]] to allow JavaScript developers for
+        processing video frame data in workers in web applications.
       </p>
     </section>
     
     <section id='sotd'>
       <p>
-        You need to have a custom SotD paragraph. Maybe give a succinct description of your spec's
-        status.
+        This document is not complete and is subject to change. Early
+        experimentations are encouraged to allow the Media Capture Task Force
+        to evolve the specification based on technical discussions within the
+        Task Force, implementation experience gained from early
+        implementations, and feedback from other groups and
+        individuals.
       </p>
     </section>
-    
     <section>
-      <h2>Section Title</h2>
+      <h2>Introduction</h2>
       <p>
-        Blah blah blah...
+        <em>Media Capture and Streams</em> provides a way to access to the video
+        camera. But how to process the video frame data in JavaScript is not
+        covered. By associating a worker with
+        <a><code>MediaStreamTrack</code></a>s, we can dispatch
+        <a><code>VideoProcessEvent</code></a> with each video frame to the
+        worker which is connected to the particularly
+        <a><code>MediaStreamTrack</code></a>. Then JavaScript developer can
+        write a video processing script which enable processing, and analysis of
+        video data directly using JavaScript in a Worker thread.
+      </p>
+    </section>
+    <section>
+      <h2>Use cases and requirements</h2>
+      <p>
+        Under Construction...
+      </p>
+    </section>
+    <section>
+      <h2>Conformance</h2>
+      <p>
+        Under Construction...
+      </p>
+    </section>
+    <section>
+      <h2>Dependencies</h2>
+      <p>
+        Under Construction...
+      </p>
+    </section>
+    <section>
+      <h2>Terminology</h2>
+      <p>
+        Under Construction...
+      </p>
+    </section>
+    <section>
+      <h2>Extensions</h2>
+      <p>
+        
+      </p>
+    </section>
+    <section>
+      <h2>Examples</h2>
+      <p>
+        Under Construction...
       </p>
     </section>
     
     <section class='appendix'>
       <h2>Acknowledgements</h2>
       <p>
-        Many thanks to Robin Berjon for making our lives so much easier with his cool tool.
+        Thanks to Robert O'Callahan for his idea for the design.
       </p>
     </section>
   </body>
