@@ -132,6 +132,10 @@
     <section>
       <h2>Extensions</h2>
         <section>
+          <p>The <code>VideoWorkerGlobalScope</code> is the "inside" of a <code>
+          VideoWorker</code>. It must not exist if the interface's relevant
+          namespace object is not a <code>VideoWorkerGlobalScope</code> object.
+          </p>
           <h2>
             <code>VideoWorkerGlobalScope</code> interface
           </h2>
@@ -141,50 +145,74 @@
               void postMessage(any message, optional sequence&lt;any&gt; transfer)
             </dt>
             <dd>
-              -
+              The postMessage() method on <code>VideoWorkerGlobalScope</code>
+              objects must act like the method in
+              <code>DedicatedWorkerGlobalScope</code>.
             </dd>
             <dt>
-              [TreatNonCallableAsNull] attribute Function? onvideoprocess
+              attribute EventHandler onmessage
             </dt>
             <dd>
-              -
+              The event handler, of type <code>message</code>, is executed when
+              a message is post from parent. It must act like the attribute in
+              <code>DedicatedWorkerGlobalScope</code>.
             </dd>
             <dt>
-              [TreatNonCallableAsNull] attribute Function? onmessage
+              attribute EventHandler onvideoprocess
             </dt>
             <dd>
-              -
+              The event handler, of type <code>
+              <a href="#event-videoprocessevent">videoprocess</a></code>, is
+              executed when a new input video frame is sent to corresponding
+              <code>MediaStreamTrack</code>. 
             </dd>
           </dl>
         </section>
         <section>
           <h2>
-            <code>VideoProcessEvent</code> interface
+            <code id = event-videoprocessevent>VideoProcessEvent</code> interface
           </h2>
+          <p>
+            This is an <code>Event</code> object which is dispatched to
+            <a><code>VideoWorkerGlobalScope</code></a> objects to perform
+            processing.
+          </p>
+          <p>
+            The event handler processes audio from the input (if any) by
+            accessing the video data from the <code>inputImageBitmap</code>
+            attribute. The video data which is the result of the processing is
+            then placed into the <code>outputImageBitmap</code>.
+          </p>
           <dl class="idl" title="interface VideoProcessEvent : Event">
             <dt>
               readonly attribute DOMString trackId
             </dt>
             <dd>
-              -
+              The <code>MediaStreamTrack.id</code> of corresponding
+              <code>MediaStreamTrack</code>.
             </dd>
             <dt>
               readonly attribute double playbackTime
             </dt>
             <dd>
-              -
+              The elapsed time of the <code>MediaStreamTrack</code>
             </dd>
             <dt>
               readonly attribute ImageBitmap inputImageBitmap
             </dt>
             <dd>
-              -
+              The input video frame comes from corresponding
+              <code>MediaStreamTrack</code>.
             </dd>
             <dt>
               readonly attribute ImageBitmap? outputImageBitmap
             </dt>
             <dd>
-              -
+              The output video frame comes to corresponding
+              <code>MediaStreamTrack</code>. Will be null when the
+              <a>VideoWorker</a> is added by function
+              <code>AddWorkerMonitor</code>.
+              
             </dd>
           </dl>
         </section>
@@ -192,7 +220,36 @@
           <h2>
             <code>VideoWorker</code> interface
           </h2>
-          <dl class="idl" title="[Constructor(DOMString scriptURL)] interface VideoWorker : Worker">
+          <dl class="idl" title="[Constructor(DOMString scriptURL)] interface
+          VideoWorker : Worker">
+            <dt>void terminate()</dt>
+            <dd>
+              The terminate() method, when invoked, must cause the 
+              <a href="http://dev.w3.org/html5/workers/#terminate-a-worker">
+              "terminate a worker"</a> algorithm to be run on the worker with
+              which the object is associated.  This will cease any
+              <a>VideoProcessEvent</a>s being dispatched inside the 
+              VideoWorker's associated <a>VideoWorkerGlobalScope</a>, will cause
+              all associated <code>MediaStreamTrack</code> to cease processing,
+              and will cause the destruction of the worker thread.
+            </dd>
+            <dt>
+              [Throws]
+              void postMessage(any message, optional sequence&lt;any&gt; transfer)
+            </dt>
+            <dd>
+              postMessage may be called to send a message to the
+              <code><a>VideoWorkerGlobalScope</a></code>, via the algorithm
+              defined by [[!Workers]].
+            </dd>
+            <dt>
+              attribute EventHandler onmessage
+            </dt>
+            <dd>
+              The onmessage handler is called whenever the
+              <code>VideoWorkerGlobalScope</code> posts a message back to the
+              main thread.
+            </dd>
           </dl>
         </section>
         <section>
@@ -204,40 +261,452 @@
               void addWorkerMonitor(VideoWorker worker)
             </dt>
             <dd>
-              -
+              Add the <a>VideoWorker</a> into the <code>MediaStreamTrack</code>.
+              You can add the same <a>VideoWorker</a> to any other
+              <code>MediaStreamTrack</code>.
             </dd>
             <dt>
               void removeWorkerMonitor(VideoWorker worker)
             </dt>
             <dd>
-              -
+              Remove particularly <a>VideoWorker</a> from the
+              <code>MediaStreamTrack</code>. User Agent should throw exception
+              when the <a>VideoWorker</a> is not exist in the
+              <code>MediaStreamTrack</code>.
             </dd>
             <dt>
               MediaStreamTrack addWorkerProcessor(VideoWorker worker)
             </dt>
             <dd>
-              -
+              Associate the <a>VideoWorker</a> from current
+              <code>MediaStreamTrack</code> to a new
+              <code>MediaStreamTrack</code>. So the original
+              <code>MediaStreamTrack</code> will be the input source of the new
+              <code>MediaStreamTrack</code>. Then you can build a processed
+              pipeline by this method.
             </dd>
             <dt>
               void removeWorkerProcessor()
             </dt>
             <dd>
-              -
+              Remove the added <a>VideoWorker</a> from current
+              <code>MediaStreamTrack</code>. User Agent should throw exception
+              when the <a>VideoWorker</a> is not exist in the
+              <code>MediaStreamTrack</code>. A <code>MediaStreamTrack</code>
+              owns at most one VideoWorker processor in any time.
             </dd>
           </dl>
         </section>
     </section>
     <section>
       <h2>Examples</h2>
-      <p>
-        Under Construction...
-      </p>
+      <h3>
+        WorkerMonitor example:
+      </h3>
+      <h4>
+        Main file javascript
+      </h4>
+      <pre class='example highlight'>
+        playButton.onclick = function() {
+          navigator.getUserMedia({video: true, audio: false} , onSuccess, onFail);
+        }
+        function onSuccess(stream) {
+            localMediaStream = stream;
+            initControlWorker();
+            if (showWebCamVideo) {
+                video.src = window.URL.createObjectURL(localMediaStream);
+                video.play();
+            }
+        }
+        function initControlWorker() {
+          controlWorker = new VideoWorker("control_worker.js");
+          if (!!controlWorker) {
+            var tracks = localMediaStream.getTracks();
+            controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
+            controlWorker.postMessage({"type":"init_process_worker"});
+            tracks[0].addWorkerMonitor(controlWorker, {});
+          }
+          controlWorker.onmessage = function(event) {
+            if(event.data.type == "display_arraybuffer") {
+              if (!isCanvasInitialized) {
+                canvasResult.width = event.data.bitmap.width;
+                canvasResult.height = event.data.bitmap.height;
+                isCanvasInitialized = true;
+              }
+              // show result
+              ctxResult.drawImage(event.data.bitmap, 0, 0);
+            }
+          };
+        }
+      </pre>
+      <h4>
+        control_worker.js
+      </h4>
+      <pre class='example highlight'>
+        var trackid;
+        var worker;
+        var isProcessing = false;
+        var processWorker;
+        onmessage = function(event) {
+          if (event.data.type == "init_process_worker") {
+            processWorker = new Worker("process_worker.js");
+        
+            processWorker.onmessage = function(event) {
+              if (event.data.type == "display_arraybuffer") {
+                // send back to the main thread
+                postMessage({"type":event.data.type,
+                             "bitmap":event.data.bitmap});
+                isProcessing = false;
+              }
+            };
+          } else if (event.data.type == "set_trackid") {
+            trackid = event.data.id;
+          }
+        }
+        
+        var frameNum = 0;
+        var dropNum = 0;
+        
+        function showDropRate() {
+          console.log("Drop rate = " + 100 * dropNum / frameNum + "%");
+        }
+        
+        onvideoprocess = function(event) {
+          if (frameNum % 100 == 1) {
+            showDropRate();
+          }
+        
+          frameNum++;
+          if (isProcessing) {
+            // drop this frame
+            console.log("drop frame[" + frameNum + "]");
+            dropNum++;
+            return;
+          } else {
+            // console.log("process frame[" + frameNum + "]")
+            isProcessing = true;
+            // send to the process worker
+            processWorker.postMessage({"type":"convert_color",
+                                       "bitmap":event.inputImageBitmap});
+          }
+        };
+      </pre>
+      <h4>
+        process_worker.js
+      </h4>
+      <pre class='example highlight'>
+        function processOneFrame_RGBA(bitmap) {
+          // Do what you want to do!
+          ...
+        }
+        onmessage = function(event) {
+          // do the invernt effect
+          processOneFrame_RGBA(event.data.bitmap);
+
+          // send back to the control worker
+          postMessage({"type":"display_arraybuffer",
+                       "bitmap":event.data.bitmap});
+        };
+      </pre>
+      <h3>
+        WorkerMonitor example in multiple workers:
+      </h3>
+      <h4>
+        Main file javascript
+      </h4>
+      <pre class='example highlight'>
+        playButton.onclick = function() {
+            navigator.getUserMedia({video: true, audio: false} , onSuccess, onFail);
+        }
+        stopButton.onclick = function() {
+            isContinuous = false;
+            video.pause();
+            localMediaStream.stop();
+        }
+        function onSuccess(stream) {
+            localMediaStream = stream;
+            initControlWorker();
+            if (showWebCamVideo) {
+                video.src = window.URL.createObjectURL(localMediaStream);
+                video.play();
+            }
+        }
+        function onFail(e) {
+            console.log('Cannot access WebCAM!', e);
+        }
+        function initControlWorker() {
+          controlWorker = new VideoWorker("control_worker.js");
+          if (!!controlWorker) {
+            var tracks = localMediaStream.getTracks();
+            controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
+            controlWorker.postMessage({"type":"init_process_worker"});
+            tracks[0].addWorkerMonitor(controlWorker, {});
+            // tracks[0].addWorkerProcessor(controlWorker, {});
+          }
+          controlWorker.onmessage = function(event) {
+            if (event.data.taskType == "DisplayTask") {
+              if (!isCanvasInitialized) {
+                canvasResult.width = event.data.bitmap.width;
+                canvasResult.height = event.data.bitmap.height;
+                isCanvasInitialized = true;
+              }
+              ctxResult.drawImage(event.data.bitmap, 0, 0);
+            }
+          };
+        }
+      </pre>
+      <h4>
+        control_worker.js
+      </h4>
+      <pre class='example highlight'>
+        /*
+         * WorkerPool
+         */
+        function WorkerPool() {
+          this.avaialableQueue = [];
+          this.workingQueue = [];
+        }
+        
+        WorkerPool.prototype.Init = function(script, numOfWorkers) {
+          for (var i = 0; i < numOfWorkers; ++i) {
+            this.avaialableQueue.push(new ProcessWorker(i, script, this));
+          }
+        }
+        
+        WorkerPool.prototype.Process = function(frameNum, bitmap) {
+          var task = new ProcessTask(frameNum, bitmap);
+          return this.Dispatch(task);
+        }
+        
+        WorkerPool.prototype.Dispatch = function(task) {
+          if (task.taskType == ProcessTask.TASK_TYPE) {
+            if (this.avaialableQueue.length > 0) {
+              var processWorker = this.avaialableQueue.shift();
+              processWorker.worker.postMessage(task);
+              this.workingQueue.push(processWorker);
+              return true;
+            }
+            else {
+              console.log("No availabe ProcessWorker now, drop this frame[" + task.frameNum + "]......");
+              return false;
+            }
+          } else {
+            console.log("Cannot handle " + task.taskType);
+            return false;
+          }
+        }
+        
+        WorkerPool.prototype.Display = function() {
+          while(this.workingQueue.length > 0) {
+            if (!!(this.workingQueue[0].displayTask)) {
+              var processWorker = this.workingQueue.shift();
+              postMessage(processWorker.displayTask);
+              processWorker.displayTask = null;
+              this.avaialableQueue.push(processWorker);
+            } else {
+              break;
+            }
+          }
+        }
+        
+        WorkerPool.prototype.FindProcessWorker = function(worker) {
+          for (var i = 0; i < this.workingQueue.length; ++i) {
+            if (this.workingQueue[i].worker == worker) {
+              return this.workingQueue[i];
+            }
+          }
+        }
+        
+        /*
+         * ProcessWorker
+         */
+        function ProcessWorker(id, script, pool) {
+          this.workerID = id;
+          this.workerPool = pool
+          this.displayTask = null;
+          this.worker = new Worker(script);
+          this.worker.wraper = this;
+          this.worker.onmessage = function(event) {
+            var processWorker = workerPool.FindProcessWorker(this);
+            processWorker.displayTask = new DisplayTask(event.data.frameNum, event.data.bitmap);
+            workerPool.Display();
+            // workerPool.PrintInfo("in worker.onmessage()");
+          }
+        }
+        
+        /*
+         * Task, ProcessTask, DisplayTask
+         */
+        function Task(type, frameNum) {
+          this.taskType = type;
+          this.frameNum = frameNum;
+        }
+        
+        function ProcessTask(frameNum, bitmap) {
+          Task.call(this, ProcessTask.TASK_TYPE, frameNum);
+          this.bitmap = bitmap;
+        }
+        ProcessTask.prototype = Object.create(Task.prototype);
+        ProcessTask.prototype.constructor = ProcessTask;
+        ProcessTask.TASK_TYPE = "ProcessTask";
+        
+        function DisplayTask(frameNum, bitmap) {
+          Task.call(this, DisplayTask.TASK_TYPE, frameNum);
+          this.bitmap = bitmap;
+        }
+        DisplayTask.prototype = Object.create(Task.prototype);
+        DisplayTask.prototype.constructor = DisplayTask;
+        DisplayTask.TASK_TYPE = "DisplayTask";
+        var numOfWorkers = 2; // initialize the WorkerPool whit this number of workers.
+        var workerPool;
+        var trackid;
+        var frameNum = 0;
+        var dropNum = 0;
+        
+        function showDropRate() {
+          console.log("Drop rate = " + 100 * dropNum / frameNum + "%");
+        }
+        
+        
+        onmessage = function(event) {
+          if (event.data.type == "init_process_worker") {
+            workerPool = new WorkerPool();
+            workerPool.Init("process_worker.js", numOfWorkers);
+          } else if (event.data.type == "set_trackid") {
+            trackid = event.data.id;
+          }
+        }
+        
+        onvideoprocess = function(event) {
+          if (frameNum % 100 == 1) {
+            showDropRate();
+          }
+        
+          if (!workerPool.Process(frameNum++, event.inputImageBitmap)) {
+            dropNum++;
+          }
+        };
+      </pre>
+      <h4>
+        process_worker.js
+      </h4>
+      <pre class='example highlight'>
+        function processOneFrame_RGBA(bitmap) {
+          // Do what you want to do!
+          ...
+        }
+        onmessage = function(event) {
+          // do the invernt effect
+          processOneFrame_RGBA(event.data.bitmap);
+
+          // send back to the control worker
+          postMessage({"type":"display_arraybuffer",
+               "frameNum":event.data.frameNum,
+               "bitmap":event.data.bitmap});
+        };
+      </pre>
+      <h3>
+        WorkerProcessor example:
+      </h3>
+      <h4>
+        Main file javascript
+      </h4>
+      <pre class='example highlight'>
+        playButton.onclick = function() {
+            navigator.getUserMedia({video: true, audio: false} , onSuccess, onFail);
+        }
+        stopButton.onclick = function() {
+            isContinuous = false;
+            video.pause();
+            localMediaStream.stop();
+        }
+        function onSuccess(stream) {
+            localMediaStream = stream;
+            initControlWorker();
+            if (showWebCamVideo) {
+                video.src = window.URL.createObjectURL(localMediaStream);
+                video.play();
+            }
+        }
+        function onFail(e) {
+            console.log('Cannot access WebCAM!', e);
+        }
+        function initControlWorker() {
+          controlWorker = new VideoWorker("processor.js");
+          if (!!controlWorker) {
+            var tracks = localMediaStream.getTracks();
+            controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
+            var newtrack = tracks[0].addWorkerProcessor(controlWorker, {});
+            // link to the result video
+            resultVideo.mozSrcObject = new MediaStream([newtrack]);
+            resultVideo.play();
+          }
+          controlWorker.onmessage = function(event) {
+            if(event.data.type == "display_arraybuffer") {
+              if (!isCanvasInitialized) {
+                resultVideo.width = event.data.imageWidth;
+                resultVideo.height = event.data.imageHeight;
+                isCanvasInitialized = true;
+              }
+            }
+          };
+        }
+      </pre>
+      <h4>
+        processor.js
+      </h4>
+      <pre class='example highlight'>
+        function processOneFrame_Invert(inputBitmap, outputBitmap) {
+          var bitmap = inputBitmap;
+          var format = bitmap.findOptimalFormat();
+          format = "RGBA32"; // force it to be RGBA32, do conversion in Gecko
+          var length = bitmap.mappedDataLength(format);
+        
+          if (format != bitmapFormat || length != bitmapBufferLength) {
+            bitmapFormat = format;
+            bitmapBufferLength = length;
+            bitmapBuffer = new ArrayBuffer(bitmapBufferLength);
+            bitmapBufferView = new Uint8ClampedArray(bitmapBuffer, 0, bitmapBufferLength);
+          }
+          var bitmapPixelLayout = bitmap.mapDataInto(bitmapFormat, bitmapBuffer, 0, bitmapBufferLength);
+        
+          if (!isInitialized) {
+            rgbaBufferLength = bitmapBufferLength;
+            rgbaBuffer = new ArrayBuffer(rgbaBufferLength);
+            rgbaBufferView = new Uint8ClampedArray(rgbaBuffer, 0, rgbaBufferLength);
+        
+            isInitialized = true;
+          }
+        
+          // convert YUV to Gray or RGBA
+          for (var i = 0; i < bitmap.height; ++i) {
+            for (var j = 0; j < bitmap.width; ++j) {
+        
+              /*
+               *  do invert effect
+               */
+              var index = bitmap.width * i + j;
+              rgbaBufferView[index * 4 + 0] = 255 - bitmapBufferView[index * 4 + 0];
+              rgbaBufferView[index * 4 + 1] = 255 - bitmapBufferView[index * 4 + 1];
+              rgbaBufferView[index * 4 + 2] = 255 - bitmapBufferView[index * 4 + 2];
+              rgbaBufferView[index * 4 + 3] = bitmapBufferView[index * 4 + 3]; // no change in the appha channel
+            }
+          }
+        
+          // write back to event outputImageBitmap
+          outputBitmap.setDataFrom("RGBA32", rgbaBuffer, 0, rgbaBufferLength,
+                                   bitmap.width, bitmap.height, bitmapPixelLayout.channels[0].stride);
+        }
+        onvideoprocess = function(event) {
+          processOneFrame_Invert(event.inputImageBitmap, event.outputImageBitmap);
+        }
+      </pre>
     </section>
 
     <section class='appendix'>
       <h2>Acknowledgements</h2>
       <p>
-        Thanks to Robert O'Callahan for his idea for the design.
+        Thanks to Robert O'Callahan for his idea for this design.
       </p>
     </section>
   </body>
