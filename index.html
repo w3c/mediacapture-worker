@@ -108,7 +108,10 @@
     <section>
       <h2>Use cases and requirements</h2>
       <p>
-        Under Construction...
+        This specification attempts to address the
+        <a href="https://wiki.mozilla.org/Project_FoxEye#Use_Cases">Use Cases
+        and Requirements </a>for expanding the Web potentials to image
+        processing and computer vision area. 
       </p>
     </section>
     <section>
@@ -132,13 +135,64 @@
     <section>
       <h2>Extensions</h2>
         <section>
-          <p>The <code>VideoWorkerGlobalScope</code> is the "inside" of a <code>
-          VideoWorker</code>. It must not exist if the interface's relevant
-          namespace object is not a <code>VideoWorkerGlobalScope</code> object.
+          <h2>
+            <code>VideoWorker</code> interface
+          </h2>
+          <p>
+            An <code>VideoWorker</code> object is the main-thread representation
+            of a worker "thread" that support processing of video in JavaScript.
+            These main thread objects cause the instantiation of a Web
+            Worker-like thread context (Described in [[!Workers]]), which
+            executes in the video thread.
           </p>
+          <dl class="idl" title="[Constructor(DOMString scriptURL)] interface
+          VideoWorker : Worker">
+            <dt>void terminate()</dt>
+            <dd>
+              The terminate() method, when invoked, must cause the 
+              <a href="http://dev.w3.org/html5/workers/#terminate-a-worker">
+              "terminate a worker"</a> algorithm to be run on the worker with
+              which the object is associated.  This will cease any
+              <a>VideoProcessEvent</a>s being dispatched inside the 
+              VideoWorker's associated <a>VideoWorkerGlobalScope</a>, will cause
+              all associated <code>MediaStreamTrack</code> to cease processing,
+              and will cause the destruction of the worker thread.
+            </dd>
+            <dt>
+              [Throws]
+              void postMessage(any message, optional sequence&lt;any&gt; transfer)
+            </dt>
+            <dd>
+              postMessage may be called to send a message to the
+              <code><a>VideoWorkerGlobalScope</a></code>, via the algorithm
+              defined by [[!Workers]].
+            </dd>
+            <dt>
+              attribute EventHandler onmessage
+            </dt>
+            <dd>
+              The onmessage handler is called whenever the
+              <code>VideoWorkerGlobalScope</code> posts a message back to the
+              main thread.
+            </dd>
+          </dl>
+        </section>
+        <section>
           <h2>
             <code>VideoWorkerGlobalScope</code> interface
           </h2>
+          <p>
+           This interface is a <code>DedicatedWorkerGlobalScope</code>-derived
+           object representing the context in which an video processing script
+           is run; it is designed to enable the generation, processing, and
+           analysis of video data directly using JavaScript in a Worker thread.
+          </p>
+          <p>
+            The <code>VideoWorkerGlobalScope</code> is the "inside" of a <code>
+            <a>VideoWorker</a></code>. It must not exist if the interface's
+            relevant namespace object is not a
+            <code>VideoWorkerGlobalScope</code> object.
+          </p>
           <dl class="idl" title="interface VideoWorkerGlobalScope : WorkerGlobalScope ">
             <dt>
               [Throws]
@@ -161,10 +215,16 @@
               attribute EventHandler onvideoprocess
             </dt>
             <dd>
-              The event handler, of type <code>
-              <a href="#event-videoprocessevent">videoprocess</a></code>, is
-              executed when a new input video frame is sent to corresponding
-              <code>MediaStreamTrack</code>. 
+              <p>
+                A property used to set the EventHandler (described in [[!HTML]])
+                for the videoprocess event that is dispatched to
+                <a>VideoWorkerGlobalScope</a> to process video while the
+                associated <a>MediaStreamTrack</a> are connected. The event
+                handler, of type <code>
+                <a href="#event-videoprocessevent">videoprocess</a></code>, is
+                executed when a new input video frame is sent to corresponding
+                <code>MediaStreamTrack</code>.
+               </p>
             </dd>
           </dl>
         </section>
@@ -178,7 +238,7 @@
             processing.
           </p>
           <p>
-            The event handler processes audio from the input (if any) by
+            The event handler processes video from the input (if any) by
             accessing the video data from the <code>inputImageBitmap</code>
             attribute. The video data which is the result of the processing is
             then placed into the <code>outputImageBitmap</code>.
@@ -213,42 +273,6 @@
               <a>VideoWorker</a> is added by function
               <code>AddWorkerMonitor</code>.
               
-            </dd>
-          </dl>
-        </section>
-        <section>
-          <h2>
-            <code>VideoWorker</code> interface
-          </h2>
-          <dl class="idl" title="[Constructor(DOMString scriptURL)] interface
-          VideoWorker : Worker">
-            <dt>void terminate()</dt>
-            <dd>
-              The terminate() method, when invoked, must cause the 
-              <a href="http://dev.w3.org/html5/workers/#terminate-a-worker">
-              "terminate a worker"</a> algorithm to be run on the worker with
-              which the object is associated.  This will cease any
-              <a>VideoProcessEvent</a>s being dispatched inside the 
-              VideoWorker's associated <a>VideoWorkerGlobalScope</a>, will cause
-              all associated <code>MediaStreamTrack</code> to cease processing,
-              and will cause the destruction of the worker thread.
-            </dd>
-            <dt>
-              [Throws]
-              void postMessage(any message, optional sequence&lt;any&gt; transfer)
-            </dt>
-            <dd>
-              postMessage may be called to send a message to the
-              <code><a>VideoWorkerGlobalScope</a></code>, via the algorithm
-              defined by [[!Workers]].
-            </dd>
-            <dt>
-              attribute EventHandler onmessage
-            </dt>
-            <dd>
-              The onmessage handler is called whenever the
-              <code>VideoWorkerGlobalScope</code> posts a message back to the
-              main thread.
             </dd>
           </dl>
         </section>
@@ -324,7 +348,7 @@
             var tracks = localMediaStream.getTracks();
             controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
             controlWorker.postMessage({"type":"init_process_worker"});
-            tracks[0].addWorkerMonitor(controlWorker, {});
+            tracks[0].addWorkerMonitor(controlWorker);
           }
           controlWorker.onmessage = function(event) {
             if(event.data.type == "display_arraybuffer") {
@@ -440,8 +464,7 @@
             var tracks = localMediaStream.getTracks();
             controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
             controlWorker.postMessage({"type":"init_process_worker"});
-            tracks[0].addWorkerMonitor(controlWorker, {});
-            // tracks[0].addWorkerProcessor(controlWorker, {});
+            tracks[0].addWorkerMonitor(controlWorker);
           }
           controlWorker.onmessage = function(event) {
             if (event.data.taskType == "DisplayTask") {
@@ -636,7 +659,7 @@
           if (!!controlWorker) {
             var tracks = localMediaStream.getTracks();
             controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
-            var newtrack = tracks[0].addWorkerProcessor(controlWorker, {});
+            var newtrack = tracks[0].addWorkerProcessor(controlWorker);
             // link to the result video
             resultVideo.mozSrcObject = new MediaStream([newtrack]);
             resultVideo.play();
