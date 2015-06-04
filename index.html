@@ -117,7 +117,22 @@
     <section>
       <h2>Conformance</h2>
       <p>
-        Under Construction...
+        This specification defines conformance criteria that apply to a single
+        product: the <dfn>user agent</dfn> that implements the interfaces that
+        it contains.
+      </p>
+      <p>
+        Implementations that use ECMAScript to implement the APIs defined in
+        this specification must implement them in a manner consistent with the
+        ECMAScript Bindings defined in the Web IDL specification [[!WEBIDL]],
+        as this specification uses that specification and terminology.
+      </p>
+      <p>
+        The key words "MUST", "MUST NOT", "REQUIRED", "SHOULD", "SHOULD NOT",
+        "RECOMMENDED", "MAY", and "OPTIONAL" in the normative parts of this
+        document are to be interpreted as described in RFC2119. For readability,
+        these words do not appear in all uppercase letters in this
+        specification. [[!RFC2119]]
       </p>
     </section>
     <section>
@@ -243,6 +258,14 @@
             attribute. The video data which is the result of the processing is
             then placed into the <code>outputImageBitmap</code>.
           </p>
+          <p>
+            Ideally the <code>MediaStreamTrack</code> should dispatch each
+            video frame through <a>VideoProcessEvent</a>. But sometimes the
+            worker thread could not process the frame in time. So the
+            implementation could skip the frame to avoid high memory footprint.
+            In such case, we might not be able to process every frame in real
+            time <code>MediaStream</code>.
+          </p>
           <dl class="idl" title="interface VideoProcessEvent : Event">
             <dt>
               readonly attribute DOMString trackId
@@ -272,7 +295,6 @@
               <code>MediaStreamTrack</code>. Will be null when the
               <a>VideoWorker</a> is added by function
               <code>AddWorkerMonitor</code>.
-              
             </dd>
           </dl>
         </section>
@@ -327,6 +349,14 @@
       <h3>
         WorkerMonitor example:
       </h3>
+      <p>
+        This example demos how to hook the <a>VideoWorker</a> with
+        <code>MediaStreamTrack</code>. And also shows how to use postMessage to
+        communicate between main thread and worker thread. In this example, the
+        role of control_worker.js is flow control. This script decide whether
+        drop frame or not. If the system is not busy, the script will dispatch
+        current frame to process_worker.js. Or it just drop the frame.
+      </p>
       <h4>
         Main file javascript
       </h4>
@@ -435,6 +465,13 @@
       <h3>
         WorkerMonitor example in multiple workers:
       </h3>
+      <p>
+        This example is extended from previous "WorkerMonitor example". The main
+        difference is this example create a WorkerPool object in
+        control_worker.js. The script will reuse the workers in the pool. This
+        mechanism full utilized the power of multi-core machine to reduce the
+        frame drop rate.
+      </p>
       <h4>
         Main file javascript
       </h4>
@@ -631,6 +668,11 @@
       <h3>
         WorkerProcessor example:
       </h3>
+      <p>
+        This example shows how to process and display the processed
+        <a>MediaStreamTrack</a>. Be careful, the <a>VideoWorker</a> is appended
+        into the new <a>MediaStreamTrack</a>, not original one.
+      </p>
       <h4>
         Main file javascript
       </h4>
@@ -729,7 +771,7 @@
     <section class='appendix'>
       <h2>Acknowledgements</h2>
       <p>
-        Thanks to Robert O'Callahan for his idea for this design.
+        Thanks to Robert O'Callahan for his idea of this design.
       </p>
     </section>
   </body>
