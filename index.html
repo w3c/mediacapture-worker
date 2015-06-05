@@ -83,8 +83,8 @@
     <section id='abstract'>
       <p>
         This specification extends the <em>Media Capture and Streams</em>
-        specification [[!GETUSERMEDIA]] to allow JavaScript developers for
-        processing video frame data in workers in web applications.
+        specification [[!GETUSERMEDIA]] to allow JavaScript developers to
+        process video frame data in workers on the web applications.
       </p>
     </section>
 
@@ -101,15 +101,15 @@
     <section>
       <h2>Introduction</h2>
       <p>
-        <em>Media Capture and Streams</em> provides a way to access to the video
-        camera. But how to process the video frame data in JavaScript is not
-        covered. By associating a worker with
-        <a><code>MediaStreamTrack</code></a>s, we can dispatch
-        <a><code>VideoProcessEvent</code></a> with each video frame to the
-        worker which is connected to the particularly
-        <a><code>MediaStreamTrack</code></a>. Then JavaScript developer can
-        write a video processing script which enable processing, and analysis of
-        video data directly using JavaScript in a Worker thread.
+        The <em>Media Capture and Streams</em> specification provides a way to
+        access to the video camera. But how to process the video frame data in
+        JavaScript is not covered. By associating a worker with
+        <a><code>MediaStreamTrack</code></a>s
+        (<code>MediaStreamTrack.kind</code> must be "video"), the framework can
+        dispatch a <a><code>VideoProcessEvent</code></a> to the worker frame by
+        frame. Then JavaScript developer can write a video processing script
+        which enables processing, analyzing of video data directly using
+        JavaScript in a Worker thread.
       </p>
     </section>
     <section>
@@ -161,7 +161,7 @@
             <code>VideoWorker</code> interface
           </h2>
           <p>
-            An <code>VideoWorker</code> object is the main-thread representation
+            A <code><a>VideoWorker</a></code> object is the main-thread representation
             of a worker "thread" that support processing of video in JavaScript.
             These main thread objects cause the instantiation of a Web
             Worker-like thread context (Described in [[!Workers]]), which
@@ -171,30 +171,30 @@
           VideoWorker : Worker">
             <dt>void terminate()</dt>
             <dd>
-              The terminate() method, when invoked, must cause the 
+              The <code>terminate()</code> method, when invoked, must cause the 
               <a href="http://dev.w3.org/html5/workers/#terminate-a-worker">
               "terminate a worker"</a> algorithm to be run on the worker with
               which the object is associated.  This will cease any
-              <a>VideoProcessEvent</a>s being dispatched inside the 
-              VideoWorker's associated <a>VideoWorkerGlobalScope</a>, will cause
-              all associated <code>MediaStreamTrack</code> to cease processing,
-              and will cause the destruction of the worker thread.
+              <code><a>VideoProcessEvent</a></code>s being dispatched inside the 
+              VideoWorker's associated <code><a>VideoWorkerGlobalScope</a></code>,
+              will cause all associated <code>MediaStreamTrack</code> to cease
+              processing, and will cause the destruction of the worker thread.
             </dd>
             <dt>
               [Throws]
               void postMessage(any message, optional sequence&lt;any&gt; transfer)
             </dt>
             <dd>
-              postMessage may be called to send a message to the
-              <code><a>VideoWorkerGlobalScope</a></code>, via the algorithm
+              <code>postMessage()</code> is used to send a message to the
+              <code><a>VideoWorkerGlobalScope</a></code> via the algorithm
               defined by [[!Workers]].
             </dd>
             <dt>
               attribute EventHandler onmessage
             </dt>
             <dd>
-              The onmessage handler is called whenever the
-              <code>VideoWorkerGlobalScope</code> posts a message back to the
+              The <code>onmessage()</code> handler is called whenever the
+              <code><a>VideoWorkerGlobalScope</a></code> posts a message back to the
               main thread.
             </dd>
           </dl>
@@ -206,14 +206,14 @@
           <p>
            This interface is a <code>DedicatedWorkerGlobalScope</code>-derived
            object representing the context in which an video processing script
-           is run; it is designed to enable the generation, processing, and
-           analysis of video data directly using JavaScript in a Worker thread.
+           runs; it is designed to enable the generating, processing, and
+           analyzing of video data directly using JavaScript in a Worker thread.
           </p>
           <p>
-            The <code>VideoWorkerGlobalScope</code> is the "inside" of a <code>
-            <a>VideoWorker</a></code>. It must not exist if the interface's
+            The <code><a>VideoWorkerGlobalScope</a></code> is the "inside" of a
+            <code><a>VideoWorker</a></code>. It must not exist if the interface's
             relevant namespace object is not a
-            <code>VideoWorkerGlobalScope</code> object.
+            <code><a>VideoWorkerGlobalScope</a></code> object.
           </p>
           <dl class="idl" title="interface VideoWorkerGlobalScope : WorkerGlobalScope ">
             <dt>
@@ -221,9 +221,9 @@
               void postMessage(any message, optional sequence&lt;any&gt; transfer)
             </dt>
             <dd>
-              The postMessage() method on <code>VideoWorkerGlobalScope</code>
-              objects must act like the method in
-              <code>DedicatedWorkerGlobalScope</code>.
+              The <code>postMessage()</code> method of
+              <code><a>VideoWorkerGlobalScope</a></code> objects must act like
+              the method in <code>DedicatedWorkerGlobalScope</code>.
             </dd>
             <dt>
               attribute EventHandler onmessage
@@ -239,13 +239,15 @@
             <dd>
               <p>
                 A property used to set the EventHandler (described in [[!HTML]])
-                for the videoprocess event that is dispatched to
-                <a>VideoWorkerGlobalScope</a> to process video while the
-                associated <a>MediaStreamTrack</a> are connected. The event
-                handler, of type <code>
-                <a href="#event-videoprocessevent">videoprocess</a></code>, is
-                executed when a new input video frame is sent to corresponding
-                <code>MediaStreamTrack</code>.
+                for the <code><a>VideoProcessEvent</a></code> that is dispatched
+                to <code><a>VideoWorkerGlobalScope</a></code> to process video
+                while the associated <code><a>MediaStreamTrack</a></code> are
+                connected. When a new input video frame is sent to corresponding
+                <code>MediaStreamTrack</code>, User Agent will create a
+                <code><a>VideoProcessEventThe</a></code> and dispatch it. Then the event
+                handler, of type 
+                <code><a href="#event-videoprocessevent">videoprocess</a></code>,
+                is executed .
                </p>
             </dd>
           </dl>
@@ -260,17 +262,22 @@
             processing.
           </p>
           <p>
-            The event handler processes video from the input (if any) by
-            accessing the video data from the <code>inputImageBitmap</code>
-            attribute. The video data which is the result of the processing is
-            then placed into the <code>outputImageBitmap</code>.
+            When the <code>MediaStreamTrack</code> comes a new video frame data,
+            the User Agent will dispatch a <code>VideoProcessEvent</code>.
+            The event handler processes video from the input by accessing the
+            video data from the <code>inputImageBitmap</code> attribute in the
+            <code>VideoProcessEvent</code>. The processed video data which is
+            the result of the processing is then placed into the
+            <code>outputImageBitmap</code>. The User Agent will append the
+            <code>outputImageBitmap</code> into the new created
+            <code>MediaStreamTrack</code>.
           </p>
           <p>
             Ideally the <code>MediaStreamTrack</code> should dispatch each
             video frame through <a>VideoProcessEvent</a>. But sometimes the
             worker thread could not process the frame in time. So the
-            implementation could skip the frame to avoid high memory footprint.
-            In such case, we might not be able to process every frame in real
+            implementation could skip the frame to avoid high memory footprint.(??TODO. need to discuss it.)
+            In such case, we might not be able to process every frame in a real
             time <code>MediaStream</code>.
           </p>
           <dl class="idl" title="interface VideoProcessEvent : Event">
@@ -285,21 +292,22 @@
               readonly attribute double playbackTime
             </dt>
             <dd>
-              The elapsed time of the <code>MediaStreamTrack</code>
+              The elapsed time of the <code>MediaStreamTrack</code> from the
+              <code>MediaStream</code> starting.
             </dd>
             <dt>
               readonly attribute ImageBitmap inputImageBitmap
             </dt>
             <dd>
-              The input video frame comes from corresponding
+              The input video frame comes from the corresponding
               <code>MediaStreamTrack</code>.
             </dd>
             <dt>
               readonly attribute ImageBitmap? outputImageBitmap
             </dt>
             <dd>
-              The output video frame comes to corresponding
-              <code>MediaStreamTrack</code>. Will be null when the
+              The output video frame comes to the corresponding
+              <code>MediaStreamTrack</code>. It is null when the
               <a>VideoWorker</a> is added by function
               <code>AddWorkerMonitor</code>.
             </dd>
@@ -314,15 +322,15 @@
               void addWorkerMonitor(VideoWorker worker)
             </dt>
             <dd>
-              Add the <a>VideoWorker</a> into the <code>MediaStreamTrack</code>.
-              You can add the same <a>VideoWorker</a> to any other
+              Associate the <code>worker</code> with the <code>MediaStreamTrack</code>.
+              You can add the same <code>worker</code> to any other
               <code>MediaStreamTrack</code>.
             </dd>
             <dt>
               void removeWorkerMonitor(VideoWorker worker)
             </dt>
             <dd>
-              Remove particularly <a>VideoWorker</a> from the
+              Remove a particular <a>VideoWorker</a> from the
               <code>MediaStreamTrack</code>. User Agent should throw exception
               when the <a>VideoWorker</a> is not exist in the
               <code>MediaStreamTrack</code>.
@@ -331,12 +339,11 @@
               MediaStreamTrack addWorkerProcessor(VideoWorker worker)
             </dt>
             <dd>
-              Associate the <a>VideoWorker</a> from current
-              <code>MediaStreamTrack</code> to a new
-              <code>MediaStreamTrack</code>. So the original
-              <code>MediaStreamTrack</code> will be the input source of the new
-              <code>MediaStreamTrack</code>. Then you can build a processed
-              pipeline by this method.
+              This method will create a new <code>MediaStreamTrack</code> and
+              take the original <code>MediaStreamTrack</code> as the input
+              source. Then associate the <a>VideoWorker</a> with new created
+              <code>MediaStreamTrack</code>. The developers can build a
+              processed pipeline by this method.
             </dd>
             <dt>
               void removeWorkerProcessor()
@@ -357,12 +364,13 @@
         WorkerMonitor example:
       </h3>
       <p>
-        This example demos how to hook the <a>VideoWorker</a> with
-        <code>MediaStreamTrack</code>. And also shows how to use postMessage to
-        communicate between main thread and worker thread. In this example, the
-        role of control_worker.js is flow control. This script decide whether
-        drop frame or not. If the system is not busy, the script will dispatch
-        current frame to process_worker.js. Or it just drop the frame.
+        This example demonstrates how to hook a <code><a>VideoWorker</a></code> with a
+        <code>MediaStreamTrack</code> and also shows how to use
+        <code>postMessage</code> to communicate between main thread and worker
+        thread. In this example, the role of control_worker.js is doing flow control.
+        This script decide whether drop frame or not. If the system is not busy,
+        the script will dispatch current frame to process_worker.js or it just
+        drop the frame.
       </p>
       <h4>
         Main file javascript
@@ -774,7 +782,6 @@
         }
       </pre>
     </section>
-
     <section class='appendix'>
       <h2>Acknowledgements</h2>
       <p>
