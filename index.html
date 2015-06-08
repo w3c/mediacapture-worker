@@ -111,6 +111,18 @@
         which enables processing, analyzing of video data directly using
         JavaScript in a Worker thread.
       </p>
+      <p>
+        <img alt= "The relationship between VideoWorker and MediaStreamTrack"
+        src= "images/VideoWorker-FLOW.png">
+      </p>
+      <p>
+        The design principle of this specification is to provide a push-like
+        mechanism for video processing. This design gives the Web developers no
+        worry about any platform capability to full utilize the CPU usage. The
+        Web developer no longer need to decide the FPS rate to grab the input
+        video frame. The User Agent only dispatch the VideoProcessEvent when a
+        new video frame arriving.
+      </p>
     </section>
     <section>
       <h2>Use cases and requirements</h2>
