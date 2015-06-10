@@ -275,9 +275,10 @@
           </p>
           <p>
             When the <code>MediaStreamTrack</code> comes a new video frame data,
-            the User Agent will dispatch a <code>VideoProcessEvent</code>.
-            The event handler processes video from the input by accessing the
-            video data from the <code>inputImageBitmap</code> attribute in the
+            the User Agent will dispatch a <code>VideoProcessEvent</code> to the
+            associated VideoWorkers. The event handlers of those VideoWorkers
+            process video from the input by accessing the video data from the
+            <code>inputImageBitmap</code> attribute in the
             <code>VideoProcessEvent</code>. The processed video data which is
             the result of the processing is then placed into the
             <code>outputImageBitmap</code>. The User Agent will append the
