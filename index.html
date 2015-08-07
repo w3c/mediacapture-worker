@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
   <head>
     <title>Media Capture Stream with Worker</title>
@@ -223,7 +223,7 @@
             When the <code>MediaStreamTrack</code> comes a new video frame data,
             the User Agent will dispatch a <code><a>VideoMonitorEvent</a></code> to the
             associated Workers when the association is connected by
-            <code>AddWorkerMonitor</code>. The event handlers of those Workers
+            <code>addVideoMonitor</code>. The event handlers of those Workers
             process video from the input by accessing the video data from the
             <code>inputImageBitmap</code> attribute in the
             <code>VideoMonitorEvent</code>.
@@ -269,7 +269,7 @@
             When the <code>MediaStreamTrack</code> comes a new video frame data,
             the User Agent will dispatch a <code>VideoProcessorEvent</code> to the
             associated Workers when the association is connected by
-            <code>AddWorkerProcessor</code>. The event handlers of those Workers
+            <code>addVideoProcessor</code>. The event handlers of those Workers
             process video from the input by accessing the video data from the
             <code>inputImageBitmap</code> attribute in the
             <code>VideoProcessorEvent</code>. The processed video data which is
@@ -325,7 +325,7 @@
           </h2>
           <dl class="idl" title="partial interface MediaStreamTrack">
             <dt>
-              void addWorkerMonitor(Worker worker)
+              void addVideoMonitor(Worker worker)
             </dt>
             <dd>
               Associate the <code>worker</code> with the <code>MediaStreamTrack</code>.
@@ -333,7 +333,7 @@
               <code>MediaStreamTrack</code>.
             </dd>
             <dt>
-              void removeWorkerMonitor(Worker worker)
+              void removeVideoMonitor(Worker worker)
             </dt>
             <dd>
               Remove a particular <code>Worker</code> from the
@@ -342,7 +342,7 @@
               <code>MediaStreamTrack</code>.
             </dd>
             <dt>
-              MediaStreamTrack addWorkerProcessor(Worker worker)
+              MediaStreamTrack addVideoProcessor(Worker worker)
             </dt>
             <dd>
               This method will create a new <code>MediaStreamTrack</code> and
@@ -352,7 +352,7 @@
               processed pipeline by this method.
             </dd>
             <dt>
-              void removeWorkerProcessor()
+              void removeVideoProcessor()
             </dt>
             <dd>
               Remove the added <code>Worker</code> from current
@@ -399,7 +399,7 @@
             var tracks = localMediaStream.getTracks();
             controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
             controlWorker.postMessage({"type":"init_process_worker"});
-            tracks[0].addWorkerMonitor(controlWorker);
+            tracks[0].addVideoMonitor(controlWorker);
           }
           controlWorker.onmessage = function(event) {
             if(event.data.type == "display_arraybuffer") {
@@ -522,7 +522,7 @@
             var tracks = localMediaStream.getTracks();
             controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
             controlWorker.postMessage({"type":"init_process_worker"});
-            tracks[0].addWorkerMonitor(controlWorker);
+            tracks[0].addVideoMonitor(controlWorker);
           }
           controlWorker.onmessage = function(event) {
             if (event.data.taskType == "DisplayTask") {
@@ -722,7 +722,7 @@
           if (!!controlWorker) {
             var tracks = localMediaStream.getTracks();
             controlWorker.postMessage({"type":"set_trackid", "id":tracks[0].id});
-            var newtrack = tracks[0].addWorkerProcessor(controlWorker);
+            var newtrack = tracks[0].addVideoProcessor(controlWorker);
             // link to the result video
             resultVideo.mozSrcObject = new MediaStream([newtrack]);
             resultVideo.play();
