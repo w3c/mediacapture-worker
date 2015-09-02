@@ -1,7 +1,7 @@
-## Media Capture Stream with Video Worker Extensions
+## Media Capture Stream with Worker Extensions
 
 This repository contains the
-[Media Capture Stream with Video Worker Extensions](https://w3c.github.io/mediacapture-worker/)
+[Media Capture Stream with Worker Extensions](https://w3c.github.io/mediacapture-worker/)
 specification that is being worked on in the
 [W3C Media Capture Task Force](https://www.w3.org/wiki/Media_Capture).
 
