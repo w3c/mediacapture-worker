@@ -795,7 +795,6 @@
           <h2><code>ImageFormatPixelLayout</code> interface</h2>
           <dl class="idl" title="[Exposed=(Window,Worker)] interface ChannelPixelLayout">
             <dt>
-              [Constant]
               readonly attribute unsigned long offset
             </dt>
             <dd>
@@ -807,7 +806,6 @@
             </dd>
 
             <dt>
-              [Constant]
               readonly attribute unsigned long width
             </dt>
             <dd>
@@ -818,7 +816,6 @@
             </dd>
 
             <dt>
-              [Constant]
               readonly attribute unsigned long height
             </dt>
             <dd>
@@ -829,7 +826,6 @@
             </dd>
 
             <dt>
-              [Constant]
               readonly attribute DataType dataType
             </dt>
             <dd>
@@ -839,7 +835,6 @@
             </dd>
 
             <dt>
-              [Constant]
               readonly attribute unsigned long stride
             </dt>
             <dd>
@@ -856,7 +851,6 @@
             </dd>
 
             <dt>
-              [Constant]
               readonly attribute unsigned long skip
             </dt>
             <dd>
@@ -882,7 +876,6 @@
           <h2><code>ChannelPixelLayout</code> interface</h2>
           <dl class="idl" title="[Exposed=(Window,Worker)] interface ImageFormatPixelLayout">
             <dt>
-              [Constant, Cached]
               readonly attribute sequence&lt;ChannelPixelLayout&gt; channels
             </dt>
             <dd>
@@ -920,7 +913,6 @@
           </dd>
 
           <dt>
-            [Throws]
             long mappedDataLength()
           </dt>
           <dd>
@@ -944,7 +936,6 @@
           </dd>
 
           <dt>
-            [Throws]
             Promise&lt;ImageFormatPixelLayout&gt; mapDataInto()
           </dt>
           <dd>
