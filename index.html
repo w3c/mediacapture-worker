@@ -123,10 +123,10 @@
         JavaScript is not covered. By associating a worker with
         <a><code>MediaStreamTrack</code></a>s
         (<code>MediaStreamTrack.kind</code> must be "video"), the framework can
-        dispatch a 
+        dispatch a
         <a><code>VideoMonitorEvent</code></a>/<a><code>VideoProcessorEvent</code></a>
-        to the worker frame by frame. Then JavaScript developer can write a 
-        video processing script which enables processing, analyzing of video 
+        to the worker frame by frame. Then JavaScript developer can write a
+        video processing script which enables processing, analyzing of video
         data directly using JavaScript in a Worker thread.
       </p>
       <p>
@@ -138,7 +138,7 @@
         mechanism for video processing. This design gives the Web developers no
         worry about any platform capability to full utilize the CPU usage. The
         Web developer no longer need to decide the FPS rate to grab the input
-        video frame. The User Agent only dispatch the 
+        video frame. The User Agent only dispatch the
         <a><code>VideoMonitorEvent</code></a>/<a><code>VideoProcessorEvent</code></a>
         when a new video frame arriving.
       </p>
@@ -149,7 +149,7 @@
         This specification attempts to address the
         <a href="https://wiki.mozilla.org/Project_FoxEye#Use_Cases">Use Cases
         and Requirements </a>for expanding the Web potentials to image
-        processing and computer vision area. 
+        processing and computer vision area.
       </p>
     </section>
     <section>
@@ -442,7 +442,7 @@
         onmessage = function(event) {
           if (event.data.type == "init_process_worker") {
             processWorker = new Worker("process_worker.js");
-        
+
             processWorker.onmessage = function(event) {
               if (event.data.type == "display_arraybuffer") {
                 // send back to the main thread
@@ -455,19 +455,19 @@
             trackid = event.data.id;
           }
         }
-        
+
         var frameNum = 0;
         var dropNum = 0;
-        
+
         function showDropRate() {
           console.log("Drop rate = " + 100 * dropNum / frameNum + "%");
         }
-        
+
         onvideoprocess = function(event) {
           if (frameNum % 100 == 1) {
             showDropRate();
           }
-        
+
           frameNum++;
           if (isProcessing) {
             // drop this frame
@@ -564,18 +564,18 @@
           this.avaialableQueue = [];
           this.workingQueue = [];
         }
-        
+
         WorkerPool.prototype.Init = function(script, numOfWorkers) {
           for (var i = 0; i < numOfWorkers; ++i) {
             this.avaialableQueue.push(new ProcessWorker(i, script, this));
           }
         }
-        
+
         WorkerPool.prototype.Process = function(frameNum, bitmap) {
           var task = new ProcessTask(frameNum, bitmap);
           return this.Dispatch(task);
         }
-        
+
         WorkerPool.prototype.Dispatch = function(task) {
           if (task.taskType == ProcessTask.TASK_TYPE) {
             if (this.avaialableQueue.length > 0) {
@@ -593,7 +593,7 @@
             return false;
           }
         }
-        
+
         WorkerPool.prototype.Display = function() {
           while(this.workingQueue.length > 0) {
             if (!!(this.workingQueue[0].displayTask)) {
@@ -606,7 +606,7 @@
             }
           }
         }
-        
+
         WorkerPool.prototype.FindProcessWorker = function(worker) {
           for (var i = 0; i < this.workingQueue.length; ++i) {
             if (this.workingQueue[i].worker == worker) {
@@ -614,7 +614,7 @@
             }
           }
         }
-        
+
         /*
          * ProcessWorker
          */
@@ -631,7 +631,7 @@
             // workerPool.PrintInfo("in worker.onmessage()");
           }
         }
-        
+
         /*
          * Task, ProcessTask, DisplayTask
          */
@@ -639,7 +639,7 @@
           this.taskType = type;
           this.frameNum = frameNum;
         }
-        
+
         function ProcessTask(frameNum, bitmap) {
           Task.call(this, ProcessTask.TASK_TYPE, frameNum);
           this.bitmap = bitmap;
@@ -647,7 +647,7 @@
         ProcessTask.prototype = Object.create(Task.prototype);
         ProcessTask.prototype.constructor = ProcessTask;
         ProcessTask.TASK_TYPE = "ProcessTask";
-        
+
         function DisplayTask(frameNum, bitmap) {
           Task.call(this, DisplayTask.TASK_TYPE, frameNum);
           this.bitmap = bitmap;
@@ -660,12 +660,12 @@
         var trackid;
         var frameNum = 0;
         var dropNum = 0;
-        
+
         function showDropRate() {
           console.log("Drop rate = " + 100 * dropNum / frameNum + "%");
         }
-        
-        
+
+
         onmessage = function(event) {
           if (event.data.type == "init_process_worker") {
             workerPool = new WorkerPool();
@@ -674,12 +674,12 @@
             trackid = event.data.id;
           }
         }
-        
+
         onvideoprocess = function(event) {
           if (frameNum % 100 == 1) {
             showDropRate();
           }
-        
+
           if (!workerPool.Process(frameNum++, event.inputImageBitmap)) {
             dropNum++;
           }
@@ -764,7 +764,7 @@
           var format = bitmap.findOptimalFormat();
           format = "RGBA32"; // force it to be RGBA32, do conversion in Gecko
           var length = bitmap.mappedDataLength(format);
-        
+
           if (format != bitmapFormat || length != bitmapBufferLength) {
             bitmapFormat = format;
             bitmapBufferLength = length;
@@ -772,19 +772,19 @@
             bitmapBufferView = new Uint8ClampedArray(bitmapBuffer, 0, bitmapBufferLength);
           }
           var bitmapPixelLayout = bitmap.mapDataInto(bitmapFormat, bitmapBuffer, 0, bitmapBufferLength);
-        
+
           if (!isInitialized) {
             rgbaBufferLength = bitmapBufferLength;
             rgbaBuffer = new ArrayBuffer(rgbaBufferLength);
             rgbaBufferView = new Uint8ClampedArray(rgbaBuffer, 0, rgbaBufferLength);
-        
+
             isInitialized = true;
           }
-        
+
           // convert YUV to Gray or RGBA
           for (var i = 0; i < bitmap.height; ++i) {
             for (var j = 0; j < bitmap.width; ++j) {
-        
+
               /*
                *  do invert effect
                */
@@ -795,7 +795,7 @@
               rgbaBufferView[index * 4 + 3] = bitmapBufferView[index * 4 + 3]; // no change in the appha channel
             }
           }
-        
+
           // write back to event outputImageBitmap
           outputBitmap.setDataFrom("RGBA32", rgbaBuffer, 0, rgbaBufferLength,
                                    bitmap.width, bitmap.height, bitmapPixelLayout.channels[0].stride);
