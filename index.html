@@ -185,8 +185,17 @@
       </p>
       <p>
         The <code><a href=
-        "http://kakukogou.github.io/spec-imagebitmap-extension/#imagebitmap-extensions">
-        <dfn>ImageBitmap</dfn></a></code> interfaces is defined in [[!IMAGEBITMAPEXT]].
+        "http://www.w3.org/TR/html51/webappapis.html#imagebitmap">
+        <dfn>ImageBitmap</dfn></a></code> interface
+        and <code><a href=
+        "http://www.w3.org/TR/html51/webappapis.html#imagebitmapfactories">
+        <dfn>ImageBitmapFactories</dfn></a></code> interface this specification
+        extends are defined in [[!HTML51]].
+      </p>
+      <p>
+        The <code><a href=
+        "http://www.w3.org/TR/WebIDL-1/#common-BufferSource">
+        <dfn>BufferSource</dfn></a></code> is defined in [[!WebIDL]]
       </p>
     </section>
     <section>
@@ -380,6 +389,729 @@
             </dd>
           </dl>
         </section>
+    </section>
+    <section id='imagebitmap-extensions'>
+      <h2>ImageBitmap extensions</h2>
+      <div class="note">
+        <p>
+          The <a>ImageBitmap</a> interface is originally designed as
+          a pure opaque handler to an image data buffer inside a browser so that
+          how the browser stores the buffer is uknown to users and optimized to
+          platforms. In this specification, we chooses <a>ImageBitmap</a>
+          (instead of <code>ImageData</code>) as the container of video frames
+          because the decoded video frame data might exist in either CPU or GPU
+          memory which perfectly matches the nature of
+          <a><code>ImageBitmap</code></a> as an opaque handler.
+        </p>
+      </div>
+      <p>
+        Considering how would developers process video frames, there are two
+        possible approaches, via pure JavaScript(/asm.js) code or via WebGL.
+        <ol>
+          <li>
+            If developers use JavaScript(/asm.js) to process the frames, then
+            the <a>ImageBitmap</a> interface needs to be extended with APIs for
+            developers to access its underlying data and there should also be a
+            way for developers to create an <a>ImageBitmap</a> from the
+            processed data.
+          </li>
+          <li>
+            If developers use WebGL, then WebGL needs to be extended so that
+            developers can pass an <a>ImageBitmap</a> into the WebGL context and
+            the browser will handle how to upload the raw image data into the
+            GPU memory. Possiblely, the data is already in the GPU memory so
+            that the operation could be very efficient.
+          </li>
+        </ol>
+      </p>
+      <p>
+        In this specification, the original <a>ImageBitmap</a> interface is
+        extended with three methods to let developers read data from an
+        <a>ImageBitmap</a> object into a given <a>BufferSource</a> in a set of
+        supported <a>ImageFormat</a>s and two interfaces,
+        <a>ImageFormatPixelLayout</a> and <a>ChannelPixelLayout</a>, are
+        proposed to work with the extend <a>ImageBitmap</a> methods to describe
+        how the accessed image data is arranged in memory. Also,
+        the <a>ImageBitmapFactories</a> interface is extended to let developers
+        create an <a>ImageBitmap</a> object from a given <a>BufferSource</a>.
+      </p>
+      <section id='imageformat'>
+        <h2>ImageFormat</h2>
+        <p>
+          An image or a video frame is conceptually a two-dimentional array of
+          data and each element in the array is called a <dfn>pixel</dfn>.
+          However, the pixels are usually stored in a one-dimentional array and
+          could be arranged in a variety of <a>ImageFormat</a>s.
+          Developers need to know how the pixels are formatted so that they are
+          able to process it.
+
+          An <a>ImageFormat</a> describes how pixels in an image are arranged
+          and all pixels in one single image are arranged in the same way.
+          A single pixel has at least one, but usually multiple
+          <dfn>pixel value</dfn>s.
+          The range of a pixel value varies, which means different
+          <a>ImageFormat</a>s use different <dfn>data type</dfn>s to store a
+          single pixel value.
+          The most frequently used data type is 8-bit unsigned interger whose
+          range is from 0 to 255, others could be 16-bit interger or 32-bit
+          folating points and so forth.
+          The number of pixle values of a single pixel is called the number of
+          <dfn>channel</dfn>s of the <a>ImageFormat</a>.
+          Multiple pixel valuse of a pixel are used together to describe the
+          captured property which could be color or depth information.
+          For example, if the data is a color image in RGB color space, then it
+          is a three-channel <a>ImageFormat</a> and a pixel is described by R, G
+          and B three pixel values with range from 0 to 255.
+          Another example, if the data is a gray image, then it is a
+          single-channel <a>ImageFormat</a> with 8-bit unsigned interger data
+          type and the pixel value describes the gray scale.
+          For depth data, it is a single channel <a>ImageFormat</a> too, but the
+          data type is 16-bit unsigned interger and the pixel value is the depth
+          level.
+
+          For those <a>ImageFormat</a>s whose pixels contain multiple pixel
+          values, the pixel values might be arranged in a planar way or
+          interleaving way:
+          <ol>
+            <li>
+              <dfn>Planar pixel layout</dfn>: each channel has its pixel values
+              stored consecutively in separated buffers (a.k.a. planes) and then
+              all channel buffers are stored consecutively in memory.
+              (Ex: RRRRRR......GGGGGG......BBBBBB......)
+            </li>
+            <li>
+              <dfn>Interleaving pixel layout</dfn>: each pixel has its pixel
+              values from all channels stored together and interleaves all
+              channels.
+              (Ex: RGBRGBRGBRGBRGB......)
+            </li>
+          </ol>
+          <div class="note">
+            <p>
+              <a>ImageFormat</a>s belong to the same color space might have
+              different pixel layouts.
+            </p>
+          </div>
+        </p>
+        <section id='imageformat-enumaration'>
+          <h2><code>ImageFormat</code> enumeration</h2>
+          <p>
+            An enumeration <a>ImageFormat</a> defines a list of image formats
+            which are supported by the browser and  exposed to users. The extend
+            APIs in this specification use this enumeration to negotiate the
+            format while accessing the underlying data of <a>ImageBitmap</a> and
+            creating a new <a>ImageBitmap</a>.
+          </p>
+          <div class="note">
+            <p>
+              We need to elaborate this list for standardization.
+            </p>
+          </div>
+          <dl id="enum-basic" class="idl" title="enum ImageFormat">
+            <dt>RGBA32</dt>
+            <dd>
+              <p>Channel order: R, G, B, A</p>
+              <p>Channel size: full rgba-chennels</p>
+              <p>Pixel layout: interleaving rgba-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>BGRA32</dt>
+            <dd>
+              <p>Channel order: B, G, R, A</p>
+              <p>Channel size: full bgra-channels</p>
+              <p>Pixel layout: interleaving bgra-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>RGB24</dt>
+            <dd>
+              <p>Channel order: R, G, B</p>
+              <p>Channel size: full rgb-channels</p>
+              <p>Pixel layout: interleaving rgb-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>BGR24</dt>
+            <dd>
+              <p>Channel order: B, G, R</p>
+              <p>Channel size: full bgr-channels</p>
+              <p>Pixel layout: interleaving bgr-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>GRAY8</dt>
+            <dd>
+              <p>Channel order: GRAY</p>
+              <p>Channel size: full gray-channel</p>
+              <p>Pixel layout: planar gray-channel</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>YUV444P</dt>
+            <dd>
+              <p>Channel order: Y, U, V</p>
+              <p>Channel size: full yuv-channels</p>
+              <p>Pixel layout: planar yuv-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>YUV422P</dt>
+            <dd>
+              <p>Channel order: Y, U, V</p>
+              <p>Channel size: full y-channel, half uv-channels</p>
+              <p>Pixel layout: planar yuv-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>YUV420P</dt>
+            <dd>
+              <p>Channel order: Y, U, V</p>
+              <p>Channel size: full y-channel, quarter uv-channels</p>
+              <p>Pixel layout: planar yuv-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>YUV420SP_NV12</dt>
+            <dd>
+              <p>Channel order: Y, U, V</p>
+              <p>Channel size: full y-channel, quarter uv-channels</p>
+              <p>Pixel layout: planar y-channel, interleaving uv-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>YUV420SP_NV21</dt>
+            <dd>
+              <p>Channel order: Y, V, U</p>
+              <p>Channel size: full y-channel, quarter uv-channels</p>
+              <p>Pixel layout: planar y-channel, interleaving vu-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>HSV</dt>
+            <dd>
+              <p>Channel order: H, S, V</p>
+              <p>Channel size: full hsv-channels</p>
+              <p>Pixel layout: interleaving hsv-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>Lab</dt>
+            <dd>
+              <p>Channel order: l, a, b</p>
+              <p>Channel size: full lab-channels</p>
+              <p>Pixel layout: interleaving lab-channels</p>
+              <p>Data type: 8-bit unsigned integer</p>
+            </dd>
+            <dt>DEPTH</dt>
+            <dd>
+              <p>Channel order: DEPTH</p>
+              <p>Channel size: full depth-channel</p>
+              <p>Pixel layout: planar depth-channel</p>
+              <p>Data type: 16-bit unsigned integer</p>
+            </dd>
+          </dl>
+        </section>
+        <section id='datatype-enumeration'>
+          <h2><code>DataType</code> enumeration</h2>
+          <p>
+            An enumeration <a>DataType</a> defines a list of data types that is
+            used to store a single <a>pixel value</a>.
+          </p>
+          <dl id="enum-basic" class="idl" title="enum DataType">
+            <dt>uint8</dt>
+            <dd>
+              8-bit unsigned integer.
+            </dd>
+
+            <dt>int8</dt>
+            <dd>
+              8-bit integer.
+            </dd>
+
+            <dt>uint16</dt>
+            <dd>
+              16-bit unsigned integer.
+            </dd>
+
+            <dt>int16</dt>
+            <dd>
+              16-bit integer.
+            </dd>
+
+            <dt>uint32</dt>
+            <dd>
+              32-bit unsigned integer.
+            </dd>
+
+            <dt>int32</dt>
+            <dd>
+              32-bit integer.
+            </dd>
+
+            <dt>float32</dt>
+            <dd>
+              32-bit IEEE floating point number.
+            </dd>
+
+            <dt>float64</dt>
+            <dd>
+              64-bit IEEE floating point number.
+            </dd>
+
+          </dl>
+        </section>
+      </section>
+      <section id='pixellayout'>
+        <h2>PixelLayout</h2>
+        <p>
+          Two interfaces, <a>ImageFormatPixelLayout</a> and
+          <a>ChannelPixelLayout</a>, help together to generalize the variety of
+          pixel layouts among image formats.
+        </p>
+        <p>
+          The <a>ImageFormatPixelLayout</a> represents the pixel layout of a
+          certain image format and since a image format is composed by at least
+          one <a>channel</a> so an <a>ImageFormatPixelLayout</a> object contains
+          at least one <a>ChannelPixelLayout</a> object.
+        </p>
+        <p>
+          Although an image or a video frame is a two-dimensional structure, its
+          data is usually stored in an one-dimensional array in the raw-major
+          way and the <a>ChannelPixelLayout</a> uses the following properties to
+          describe how pixel values are arranged in the one dimentional array
+          buffer.
+          <ol>
+            <li>
+              <strong>offset</strong>: where is each <a>channel</a>'s data
+              starts from.
+              (Relative to the beginning of the video data one-dimension array.)
+            </li>
+            <li>
+              <strong>width</strong> and <strong>height</strong>:
+              how much samples are in each channel.
+            </li>
+            <li>
+              <strong>data type</strong>: the data type used to store one single
+              <a>pixel value</a>.
+            </li>
+            <li>
+              <strong>stride</strong>: the total bytes of each raw plus the
+              padding bytes of each row.
+            </li>
+            <li>
+              <strong>skip</strong>: this is used to describe <a>interleaving
+              pixel layout</a>. (For <a>planar pixel layout</a>, this property
+              will be zero.)
+            </li>
+          </ol>
+        </p>
+
+        <pre class='example highlight'>
+          Example1: RGBA image, width = 620, height = 480, stride = 2560
+
+          chanel_r: offset = 0, width = 620, height = 480, data type = uint8, stride = 2560, skip = 3
+          chanel_g: offset = 1, width = 620, height = 480, data type = uint8, stride = 2560, skip = 3
+          chanel_b: offset = 2, width = 620, height = 480, data type = uint8, stride = 2560, skip = 3
+          chanel_a: offset = 3, width = 620, height = 480, data type = uint8, stride = 2560, skip = 3
+
+                  <---------------------------- stride ---------------------------->
+                  <---------------------- width x 4 ---------------------->
+          [index] 01234   8   12  16  20  24  28                           2479    2559
+                  |||||---|---|---|---|---|---|----------------------------|-------|
+          [data]  RGBARGBARGBARGBARGBAR___R___R...                         A%%%%%%%%
+          [data]  RGBARGBARGBARGBARGBAR___R___R...                         A%%%%%%%%
+          [data]  RGBARGBARGBARGBARGBAR___R___R...                         A%%%%%%%%
+                       ^^^
+                       r-skip
+        </pre>
+
+        <pre class='example highlight'>
+          Example2: YUV420P image, width = 620, height = 480, stride = 640
+
+          chanel_y: offset = 0, width = 620, height = 480, stride = 640, skip = 0
+          chanel_u: offset = 307200, width = 310, height = 240, data type = uint8, stride = 320, skip = 0
+          chanel_v: offset = 384000, width = 310, height = 240, data type = uint8, stride = 320, skip = 0
+
+                  <--------------------------- y-stride --------------------------->
+                  <----------------------- y-width ----------------------->
+          [index] 012345                                                  619      639
+                  ||||||--------------------------------------------------|--------|
+          [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                        Y%%%%%%%%%
+          [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                        Y%%%%%%%%%
+          [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                        Y%%%%%%%%%
+          [data]  ......
+                  <-------- u-stride ---------->
+                  <----- u-width ----->
+          [index] 307200              307509   307519
+                  |-------------------|--------|
+          [data]  UUUUUUUUUU...       U%%%%%%%%%
+          [data]  UUUUUUUUUU...       U%%%%%%%%%
+          [data]  UUUUUUUUUU...       U%%%%%%%%%
+          [data]  ......
+                  <-------- v-stride ---------->
+                  <- --- v-width ----->
+          [index] 384000              384309   384319
+                  |-------------------|--------|
+          [data]  VVVVVVVVVV...       V%%%%%%%%%
+          [data]  VVVVVVVVVV...       V%%%%%%%%%
+          [data]  VVVVVVVVVV...       V%%%%%%%%%
+          [data]  ......
+        </pre>
+
+        <pre class='example highlight'>
+          Example3: YUV420SP_NV12 image, width = 620, height = 480, stride = 640
+
+          chanel_y: offset = 0, width = 620, height = 480, stride = 640, skip = 0
+          chanel_u: offset = 307200, width = 310, height = 240, data type = uint8, stride = 640, skip = 1
+          chanel_v: offset = 307201, width = 310, height = 240, data type = uint8, stride = 640, skip = 1
+
+                  <--------------------------- y-stride -------------------------->
+                  <----------------------- y-width ---------------------->
+          [index] 012345                                                 619      639
+                  ||||||-------------------------------------------------|--------|
+          [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                       Y%%%%%%%%%
+          [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                       Y%%%%%%%%%
+          [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                       Y%%%%%%%%%
+          [data]  ......
+                  <--------------------- u-stride / v-stride -------------------->
+                  <------------------ u-width + v-width ----------------->
+          [index] 307200(u-offset)                                       307819  307839
+                  |------------------------------------------------------|-------|
+          [index] |307201(v-offset)                                      |307820 |
+                  ||-----------------------------------------------------||------|
+          [data]  UVUVUVUVUVUVUVUVUVUVUVUVUVUVUV...                      UV%%%%%%%
+          [data]  UVUVUVUVUVUVUVUVUVUVUVUVUVUVUV...                      UV%%%%%%%
+          [data]  UVUVUVUVUVUVUVUVUVUVUVUVUVUVUV...                      UV%%%%%%%
+                   ^            ^
+                  u-skip        v-skip
+        </pre>
+
+        <pre class='example highlight'>
+          Example4: DEPTH image, width = 640, height = 480, stride = 1280
+
+          chanel_d: offset = 0, width = 640, height = 480, data type = uint16, stride = 1280, skip = 0
+
+                  <----------------------- d-stride ---------------------->
+                  <----------------------- d-width ----------------------->
+          [index] 012345                                                  1280
+                  ||||||--------------------------------------------------|
+          [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
+          [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
+          [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
+          [data]  ......
+        </pre>
+
+        <section id='imageformatpixellayout-interface'>
+          <h2><code>ImageFormatPixelLayout</code> interface</h2>
+          <dl class="idl" title="[Exposed=(Window,Worker)] interface ChannelPixelLayout">
+            <dt>
+              readonly attribute unsigned long offset
+            </dt>
+            <dd>
+              <p>
+                The beginning position of this <a>channel</a>'s data (relative
+                to the given <a>BufferSource</a> parameter of the mapDataInto()
+                method.)
+              </p>
+            </dd>
+
+            <dt>
+              readonly attribute unsigned long width
+            </dt>
+            <dd>
+              <p>
+                The width of this channel.
+                <a>Channel</a>s in an image format may have different width.
+              </p>
+            </dd>
+
+            <dt>
+              readonly attribute unsigned long height
+            </dt>
+            <dd>
+              <p>
+                The height of this channel.
+                <a>Channel</a>s in an image format may have different height.
+              </p>
+            </dd>
+
+            <dt>
+              readonly attribute DataType dataType
+            </dt>
+            <dd>
+              <p>
+                The data type used to store one single <a>pixel value</a>.
+              </p>
+            </dd>
+
+            <dt>
+              readonly attribute unsigned long stride
+            </dt>
+            <dd>
+              <p>
+                The stride of this channel.
+              </p>
+              </p>
+                The stride is the number of bytes between the beging two
+                consecutive raws in memory.
+              </p>
+              <p>
+                The total bytes of each raw plus the padding bytes of each raw.
+              </p>
+            </dd>
+
+            <dt>
+              readonly attribute unsigned long skip
+            </dt>
+            <dd>
+              <p>
+                This is used to describe how much bytes between two adjacent
+                <a>pixel value</a>s in this channel.
+              </p>
+              <p>
+                Possible values:
+                <ul>
+                  <li>
+                    zero: for <a>planar pixel layout</a>.
+                  </li>
+                  <li>
+                    a positive integer: for <a>interleaving pixel layout</a>.
+                  </li>
+                </ul>
+              </p>
+            </dd>
+          </dl>
+        </section>
+        <section id='channelpixellayout-interface'>
+          <h2><code>ChannelPixelLayout</code> interface</h2>
+          <dl class="idl" title="[Exposed=(Window,Worker)] interface ImageFormatPixelLayout">
+            <dt>
+              readonly attribute sequence&lt;ChannelPixelLayout&gt; channels
+            </dt>
+            <dd>
+              <p>
+                Channel information of this image format.
+                Each image format has at least one <a>channel</a>.
+              <p>
+            </dd>
+          </dl>
+        </section>
+      </section>
+      <section id='imagebitmap-interface-extensions'>
+        <h2><code>ImageBitmap</code> interface</h2>
+        <dl class="idl" title="[Exposed=(Window,Worker)] partial interface ImageBitmap">
+          <dt>
+            ImageFormat findOptimalFormat()
+          </dt>
+          <dd>
+            <p>
+              Find the best image format for receiving data.
+            </p>
+            <p>
+              Return one of the <code>possibleFormats</code> or the empty
+              string if no any format in the list is supported. If the
+              <code>possibleFormats</code> is not given, then returns the most
+              suitable image format for this ImageBitmap from all supported
+              image formats.
+            </p>
+            <dl class="parameters">
+              <dt>optional sequence&lt;ImageFormat&gt; possibleFormats</dt>
+              <dd>
+                A list of image formats that users can handler.
+              </dd>
+            </dl>
+          </dd>
+
+          <dt>
+            long mappedDataLength()
+          </dt>
+          <dd>
+            <p>
+              Calculate the length of mapped data wile the image is represented
+              in the given <code>format</code>.
+            </p>
+            <p>
+              Throws if <code>format</code> is not supported.
+            </p>
+            <p>
+              Return the length (in bytes) of image data that is represented in
+              the given <code>format</code>.
+            </p>
+            <dl class="parameters">
+              <dt>ImageFormat format</dt>
+              <dd>
+                The format that users want.
+              </dd>
+            </dl>
+          </dd>
+
+          <dt>
+            Promise&lt;ImageFormatPixelLayout&gt; mapDataInto()
+          </dt>
+          <dd>
+            <p>
+              Makes a copy of the underlying image data in the given format
+              <code>format</code> into the given <code>buffer</code> at offset
+              <code>offset</code>, filling at most <code>length</code> bytes and
+              returns an <a>ImageFormatPixelLayout</a> object which describes
+              the pixel layout.
+            </p>
+            <p>
+              Throws if <code>format</code> is not supported.
+            </p>
+            <p>
+              Each time this method is invoked returns a new
+              <a>ImageFormatPixelLayout</a> object.
+            </p>
+            <p>
+              Return an <a>ImageFormatPixelLayout</a> object which describes the
+              pixel layout.
+            </p>
+            <dl class="parameters">
+              <dt>ImageFormat format</dt>
+              <dd>
+                The format that users want.
+              </dd>
+              <dt>BufferSource buffer</dt>
+              <dd>
+                A container for receiving the mapped image data.
+              </dd>
+              <dt>long offset</dt>
+              <dd>
+                The beginning position of the <code>buffer</code> to place
+                the mapped data.
+              </dd>
+              <dt>long length</dt>
+              <dd>
+                The length of space in the <code>buffer</code> that could be
+                filled.
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+      </section>
+      <section id='imagebitmapfactories-interface-extensions'>
+        <h2><code>ImageBitmapFactories</code> interface</h2>
+        <dl class="idl" title="[NoInterfaceObject, Exposed=(Window,Worker)] partial interface ImageBitmapFactories">
+          <dt>
+            Promise&lt;ImageBitmap&gt;  createImageBitmap()
+          </dt>
+          <dd>
+            <p>
+              Create an <code>ImageBitmap</code> from a
+              <code>BufferSource</code> containg raw image data.
+            </p>
+            <dl class="parameters">
+              <dt>BufferSource buffer</dt>
+              <dd>
+                A container of the raw image data.
+              </dd>
+              <dt>long offset</dt>
+              <dd>
+                The beginning position of the <code>buffer</code> where the raw
+                image data is placed.
+              </dd>
+              <dt>long length</dt>
+              <dd>
+                The length of spaces in the <code>buffer</code> that the raw
+                image data is palced.
+              </dd>
+              <dt>ImageFormat format</dt>
+              <dd>
+                The format of the raw image data.
+              </dd>
+              <dt>ImageFormatPixelLayout layout</dt>
+              <dd>
+                The pixel layout of the raw image data,
+                which describes how the data is arranged in the given
+                <code>buffer</code> as the given <code>format</code>.
+              </dd>
+            </dl>
+          </dd>
+
+          <dt>
+            Promise&lt;ImageBitmap&gt;  createImageBitmap()
+          </dt>
+          <dd>
+            <p>
+              Create an <code>ImageBitmap</code> from a
+              <code>BufferSource</code> containg raw image data with a given
+              cropping area.
+            </p>
+            <dl class="parameters">
+              <dt>BufferSource buffer</dt>
+              <dd>
+                A container of the raw image data.
+              </dd>
+              <dt>long offset</dt>
+              <dd>
+                The beginning position of the <code>buffer</code> where the raw
+                image data is placed.
+              </dd>
+              <dt>long length</dt>
+              <dd>
+                The length of spaces in the <code>buffer</code> that the raw
+                image data is palced.
+              </dd>
+              <dt>ImageFormat format</dt>
+              <dd>
+                The format of the raw image data.
+              </dd>
+              <dt>ImageFormatPixelLayout layout</dt>
+              <dd>
+                The pixel layout of the raw image data,
+                which describes how the data is arranged in the given
+                <code>buffer</code> as the given <code>format</code>.
+              </dd>
+              <dt>long sx</dt>
+              <dd>
+                The x-coordinate of the starting point of the cropping
+                rectangle.
+              </dd>
+              <dt>long sy</dt>
+              <dd>
+                The y-coordinate of the starting point of the cropping
+                rectangle.
+              </dd>
+              <dt>long sw</dt>
+              <dd>
+                The width of the cropping rectangle.
+              </dd>
+              <dt>long sh</dt>
+              <dd>
+                The height of the cropping rectangle.
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+
+        <p>
+          When the <code>createImageBitmap()</code> is invocked, the User Agent
+          MUST run the following steps:
+          <ol>
+            <li>
+              If either the <em>sw</em> or <em>sh</em> arguments are specified
+              but zero,
+              Return a promise rejected with an IndexSizeError exception and
+              abort these steps.
+            </li>
+            <li>
+              If the <em>buffer</em> has been
+              <code><a href="http://www.w3.org/TR/html51/infrastructure.html#concept-transferable-neutered">neutered</a></code>,
+              Return a promise rejected with an InvalidStateError exception and
+              abort these steps.
+            </li>
+            <li>
+              Create a new <code>ImageBitmap</code> object.
+            </li>
+            <li>
+              Let the <code>ImageBitmap</code> object's bitmap data be the image
+              data given by the <code>BufferSource</code> object,
+              <code><a href="http://www.w3.org/TR/html51/webappapis.html#cropped-to-the-source-rectangle">cropped to the source rectangle</a></code>.
+            </li>
+            <li>
+              Return a new <code>Promise</code>, but continue running these steps
+              <code><a href="http://www.w3.org/TR/html51/infrastructure.html#in-parallel">in parallel</a></code>.
+            </li>
+            <li>
+              <code><a href="http://www.w3.org/TR/html51/infrastructure.html#concept-resolver-fulfill">Resolve</a></code>
+              the <code>Promise</code> with the new <code>ImageBitmap</code>
+              object as the value.
+            </li>
+          <ol>
+
+        </p>
+      </section>
     </section>
     <section>
       <h2>Examples</h2>
