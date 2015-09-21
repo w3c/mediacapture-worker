@@ -262,7 +262,7 @@
             In such case, we might not be able to process every frame in a real
             time <code>MediaStream</code>.
           </p>
-          <dl class="idl" title="interface VideoMonitorEvent : Event">
+          <dl class="idl" title="[Exposed=Worker] interface VideoMonitorEvent : Event">
             <dt>
               readonly attribute DOMString trackId
             </dt>
@@ -312,7 +312,7 @@
             In such case, we might not be able to process every frame in a real
             time <code>MediaStream</code>.
           </p>
-          <dl class="idl" title="interface VideoProcessorEvent : VideoMonitorEvent">
+          <dl class="idl" title="[Exposed=Worker] interface VideoProcessorEvent : VideoMonitorEvent">
             <dt>
               attribute ImageBitmap? outputImageBitmap
             </dt>
