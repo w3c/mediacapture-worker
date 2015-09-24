@@ -206,6 +206,16 @@
         "http://www.w3.org/TR/WebIDL-1/#common-BufferSource"><dfn>BufferSource</dfn></a></code>
         is defined in [[!WEBIDL]]
       </p>
+      <p>
+        The following concepts and interfaces are defined in [[!HTML]]:
+      </p>
+      <ul>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes">
+          event handler IDL attribute</a></dfn>
+        </li>
+      </ul>
     </section>
     <section>
       <h2>
@@ -215,88 +225,104 @@
         <h2>
           <code>DedicatedWorkerGlobalScope</code> interface
         </h2>
-        <p>
-          By extending <code>DedicatedWorkerGlobalScope</code> object with a
-          event handler, <code>onvideoprocess</code>, it is enabled the
-          generating, processing, and analyzing of video data directly using
-          JavaScript in a Worker thread.
+        <p link-for="DedicatedWorkerGlobalScope">
+          To enable generating, processing, and analyzing of video data
+          directly using JavaScript in a worker, the
+          <a>DedicatedWorkerGlobalScope</a> interface is extended with a
+          <a>onvideoprocess</a> <a>event handler IDL attribute</a>. <a>Video
+          monitor events</a> and <a>video processing events</a> are dispatched
+          at the <a>DedicatedWorkerGlobalScope</a> object.
         </p>
-        <p>
-          The <code><a>DedicatedWorkerGlobalScope</a></code> is the "inside" of
-          a <code>Worker</code>. It must not exist if the interface's relevant
-          namespace object is not a
-          <code><a>DedicatedWorkerGlobalScope</a></code> object.
+        <pre class="idl">
+          partial interface DedicatedWorkerGlobalScope {
+                          attribute EventHandler onvideoprocess;
+          };
+        </pre>
+        <p dfn-for="DedicatedWorkerGlobalScope">
+          The <dfn><code>onvideoprocess</code></dfn> is an <a>event handler IDL
+          attribute</a> for the <dfn><code>videoprocess</code></dfn> event
+          type.
         </p>
-        <dl class="idl" title="partial interface DedicatedWorkerGlobalScope">
-          <dt>
-            attribute EventHandler onvideoprocess
-          </dt>
-          <dd>
-            <p>
-              A property used to set the EventHandler (described in [[!HTML]])
-              for the <a><code>VideoMonitorEvent</code></a>/
-              <a><code>VideoProcessorEvent</code></a> that is dispatched to
-              <code><a>DedicatedWorkerGlobalScope</a></code> to process video
-              while the associated <code><a>MediaStreamTrack</a></code> are
-              connected. When a new input video frame is sent to corresponding
-              <code>MediaStreamTrack</code>, User Agent will create a
-              <code><a>VideoProcessEventThe</a></code> and dispatch it. Then
-              the event handler, of type <code><a>videoprocess</a></code>, is
-              executed .
-            </p>
-          </dd>
-        </dl>
       </section>
       <section>
         <h2>
           <code id="event-videomonitorevent">VideoMonitorEvent</code> interface
         </h2>
         <p>
-          This is an <code>Event</code> object which is dispatched to
-          <a><code>DedicatedWorkerGlobalScope</code></a> objects to perform
-          processing.
+          <dfn>Video monitor events</dfn> use the <a>VideoMonitorEvent</a>
+          interface for their <a>videoprocess</a> events:
         </p>
-        <p>
-          When the <code>MediaStreamTrack</code> comes a new video frame data,
-          the User Agent will dispatch a <code><a>VideoMonitorEvent</a></code>
-          to the associated Workers when the association is connected by
-          <code>addVideoMonitor</code>. The event handlers of those Workers
-          process video from the input by accessing the video data from the
-          <code>inputImageBitmap</code> attribute in the
-          <code>VideoMonitorEvent</code>.
-        </p>
-        <p>
-          Ideally the <code>MediaStreamTrack</code> should dispatch each video
-          frame through <code><a>VideoMonitorEvent</a></code>. But sometimes
-          the worker thread could not process the frame in time. So the
-          implementation could skip the frame to avoid high memory footprint.
-          In such case, we might not be able to process every frame in a real
-          time <code>MediaStream</code>.
-        </p>
-        <dl class="idl" title=
-        "[Exposed=Worker] interface VideoMonitorEvent : Event">
-          <dt>
-            readonly attribute DOMString trackId
-          </dt>
-          <dd>
-            The <code>MediaStreamTrack.id</code> of corresponding
-            <code>MediaStreamTrack</code>.
-          </dd>
-          <dt>
-            readonly attribute double playbackTime
-          </dt>
-          <dd>
-            The elapsed time of the <code>MediaStreamTrack</code> from the
-            <code>MediaStream</code> starting.
-          </dd>
-          <dt>
-            readonly attribute ImageBitmap inputImageBitmap
-          </dt>
-          <dd>
-            The input video frame comes from the corresponding
-            <code>MediaStreamTrack</code>.
-          </dd>
-        </dl>
+        <pre class="idl">
+          [Constructor(DOMString type, optional VideoMonitorEventInit videoMonitorEventInitDict), Exposed=Worker]
+          interface VideoMonitorEvent : Event {
+              readonly    attribute DOMString   trackId;
+              readonly    attribute double      playbackTime;
+              readonly    attribute ImageBitmap inputImageBitmap;
+          };
+
+          dictionary VideoMonitorEventInit : EventInit {
+            DOMString   trackId;
+            double      playbackTime;
+            ImageBitmap inputImageBitmap;
+          };
+        </pre>
+        <div dfn-for="VideoMonitorEvent">
+          <p>
+            The <dfn>trackId</dfn> attribute must return the value it was
+            initialized to. When the object is created, this attribute must be
+            initialized to the empty string. It represents the identifier that
+            is shared with the <a>video worker</a> and its <a>video worker
+            source</a>.
+          </p>
+          <p>
+            <!-- TODO: is this current stream position? -->
+             The <dfn>playbackTime</dfn> attribute must return the value it was
+            initialized to. When the object is created, this attribute must be
+            initialized to zero. It represents the current stream position, in
+            seconds.
+          </p>
+          <p>
+            The <dfn>inputImageBitmap</dfn> attribute must return the value it
+            was initialized to. When the object is created, this attribute must
+            be initialized to null. It represents the <a>ImageBitmap</a> object
+            whose bitmap data is provided by the <a>video worker source</a>.
+          </p>
+          <p>
+            A worker is said to be a <dfn>video worker</dfn> if it has a
+            <a>video worker source</a>.
+          </p>
+          <p>
+            A <a>MediaStreamTrack</a> object is said to be a <dfn>video worker
+            source</dfn> for a worker <var>w</var>, if its
+            <code>addVideoMonitor()</code> method has been invoked with
+            <var>w</var> as an argument.
+          </p>
+          <p>
+            When a user agent is required to <dfn>fire a video monitor
+            event</dfn>, it must run the following steps:
+          </p>
+        </div>
+        <ol link-for="VideoMonitorEvent">
+          <li>Create a <a>VideoMonitorEvent</a>, initialize it to have a name
+          <a>videoprocess</a>, to not bubble, to not be cancelable.
+          </li>
+          <li>Initialize the <a>trackId</a> attribute to the value of the
+          <code>id</code> attribute of the <a>video worker source</a>.
+          </li><!-- TODO -->
+          <li>Initialize the <a>playbackTime</a> attribute to the value of the
+          <code>currentTime</code> attribute of the <a>MediaStream</a> that
+          contains the <a>video worker source</a>.
+          </li>
+          <li>Initialize the <a>inputImageBitmap</a> attribute to the bitmap
+          data of the <a>video worker source</a>'s video frame at the current
+          stream position at <a>playbackTime</a>.
+          </li>
+          <li>Dispatch the newly created <a>VideoMonitorEvent</a> object at the
+          <a>DedicatedWorkerGlobalScope</a> of the <a title=
+          "video worker">video workers</a> that share the same <a>video worker
+          source</a>.
+          </li>
+        </ol>
       </section>
       <section>
         <h2>
