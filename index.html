@@ -231,7 +231,7 @@
         worker source</a>.
       </p>
       <p>
-        There are two kinds of <dfn title="video worker source">video worker
+        There are two kinds of <dfn data-lt="video worker source">video worker
         sources</dfn>:
       </p>
       <dl>
@@ -329,7 +329,7 @@
             event</dfn> named <var>e</var>, it must run the following steps:
           </p>
         </div>
-        <ol>
+        <ol link-for="VideoMonitorEvent">
           <li>Create a <a>VideoMonitorEvent</a>, initialize it to have a name
           <a>videoprocess</a>, to not bubble, to not be cancelable.
           </li>
@@ -345,7 +345,7 @@
           stream position at <a>playbackTime</a>.
           </li>
           <li>Dispatch the newly created <a>VideoMonitorEvent</a> object at the
-          <a>DedicatedWorkerGlobalScope</a> of the <a title=
+          <a>DedicatedWorkerGlobalScope</a> of the <a data-lt=
           "video worker">video workers</a> that share the same <a>video worker
           source</a>.
           </li>
