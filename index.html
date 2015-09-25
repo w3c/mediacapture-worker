@@ -196,7 +196,9 @@
         <dfn>MediaStreamTrack</dfn></a></code> and <code><a href=
         "http://w3c.github.io/mediacapture-main/getusermedia.html#idl-def-MediaStream">
         <dfn>MediaStream</dfn></a></code> interfaces this specification extends
-        are defined in [[!GETUSERMEDIA]].
+        and the <a href=
+        "http://w3c.github.io/mediacapture-main/#dfn-source"><dfn>source</dfn></a>
+        concept are defined in [[!GETUSERMEDIA]].
       </p>
       <p>
         The <code><a href=
@@ -242,7 +244,9 @@
           A <a>MediaStreamTrack</a> object is said to be a <a>video monitor
           source</a> for a worker <var>w</var>, if its
           <code>addVideoMonitor()</code> method has been invoked with
-          <var>w</var> as an argument.
+          <var>w</var> as an argument. This association is cleared if
+          <code>removeVideoMonitor()</code> method is invoked with <var>w</var>
+          as an argument.
         </dd>
         <dt>
           <dfn>Video processor source</dfn>
@@ -251,6 +255,8 @@
           A <a>MediaStreamTrack</a> object is said to be a <a>video processor
           source</a> for a worker <var>w</var>, if its
           <code>addVideoProcessor()</code> method has been invoked with
+          <var>w</var> as an argument. This association is cleared if
+          <code>removeVideoProcessor()</code> method is invoked with
           <var>w</var> as an argument.
         </dd>
       </dl>
@@ -425,40 +431,59 @@
           <code id="event-videoprocessorevent">VideoProcessorEvent</code>
           interface
         </h2>
+        <div class="note">
+          <p>
+            Ideally the <code>MediaStreamTrack</code> should dispatch each
+            video frame through <a>VideoProcessorEvent</a>. But sometimes the
+            worker thread could not process the frame in time. So the
+            implementation could skip the frame to avoid high memory footprint.
+            In such case, we might not be able to process every frame in a real
+            time <code>MediaStream</code>.
+          </p>
+        </div>
         <p>
-          This event is inherited from <code><a>VideoMonitorEvent</a></code>.
-          When the <code>MediaStreamTrack</code> comes a new video frame data,
-          the User Agent will dispatch a <code>VideoProcessorEvent</code> to
-          the associated Workers when the association is connected by
-          <code>addVideoProcessor</code>. The event handlers of those Workers
-          process video from the input by accessing the video data from the
-          <code>inputImageBitmap</code> attribute in the
-          <code>VideoProcessorEvent</code>. The processed video data which is
-          the result of the processing is then placed into the
-          <code>outputImageBitmap</code>. The User Agent will append the
-          <code>outputImageBitmap</code> into the new created
-          <code>MediaStreamTrack</code>.
+          <dfn>Video processor events</dfn> use the <a>VideoProcessorEvent</a>
+          interface for their <a>videoprocess</a> events:
         </p>
+        <pre class="idl">
+          [Constructor(DOMString type, optional VideoProcessorEventInit videoProcessorEventInitDict),
+           Exposed=Worker]
+          interface VideoProcessorEvent : VideoMonitorEvent {
+                          attribute ImageBitmap? outputImageBitmap;
+          };
+
+          dictionary VideoProcessorEventInit : EventInit {
+              required ImageBitmap? outputImageBitmap;
+          };
+        </pre>
+        <div dfn-for="VideoProcessorEvent">
+          <p>
+            The <dfn>outputImageBitmap</dfn> attribute must return the value it
+            was initialized to. When the object is created, this attribute must
+            be initialized to null. It represents the <a>ImageBitmap</a> object
+            which on setting, must cause the user agent to run the following
+            steps:
+          </p>
+        </div>
+        <ol link-for="VideoProcessorEvent">
+          <li>Let <var>output bitmap</var> be the <a>ImageBitmap</a> object
+          assigned to the <a>outputImageBitmap</a> attribute.
+          </li>
+          <li>Let <var>output media stream track</var> be the
+          <a>MediaStreamTrack</a> returned by the
+          <code>addVideoProcessor()</code> method.
+          </li>
+          <li>
+            <!-- TODO: this should be defined better. -->
+            Set <var>output bitmap</var> as the <a>source</a> of the
+            <var>output media stream track</var>.
+          </li>
+        </ol>
         <p>
-          Ideally the <code>MediaStreamTrack</code> should dispatch each video
-          frame through <a>VideoProcessorEvent</a>. But sometimes the worker
-          thread could not process the frame in time. So the implementation
-          could skip the frame to avoid high memory footprint. In such case, we
-          might not be able to process every frame in a real time
-          <code>MediaStream</code>.
+          When a user agent is required to <dfn>fire a video processor
+          event</dfn>, it must <a>fire a video worker event</a> named
+          <a>videoprocess</a>.
         </p>
-        <dl class="idl" title=
-        "[Exposed=Worker] interface VideoProcessorEvent : VideoMonitorEvent">
-          <dt>
-            attribute ImageBitmap? outputImageBitmap
-          </dt>
-          <dd>
-            The output video frame comes to the corresponding
-            <code>MediaStreamTrack</code>. It is default to be null. The Web
-            developer need to create a new <code>ImageBitmap</code> for output
-            frame and assign it to <code>outputImageBitmap</code>.
-          </dd>
-        </dl>
       </section>
       <section>
         <h2>
