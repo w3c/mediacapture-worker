@@ -262,7 +262,14 @@
             In such case, we might not be able to process every frame in a real
             time <code>MediaStream</code>.
           </p>
-          <dl class="idl" title="[Exposed=Worker] interface VideoMonitorEvent : Event">
+          <dl class="idl" data-merge="VideoMonitorEventInit"
+              title="[Exposed=Worker] interface VideoMonitorEvent : Event">
+            <dt>
+              Constructor(DOMString type, VideoMonitorEventInit eventInitDict)
+            </dt>
+            <dd>
+              Constructs a new VideoMonitorEvent.
+            </dd>
             <dt>
               readonly attribute DOMString trackId
             </dt>
@@ -284,6 +291,12 @@
               The input video frame comes from the corresponding
               <code>MediaStreamTrack</code>.
             </dd>
+          </dl>
+
+          <dl class="idl" title="dictionary VideoMonitorEventInit : EventInit">
+            <dt>required DOMString trackId</dt>
+            <dt>required double playbackTime</dt>
+            <dt>required ImageBitmap inputImageBitmap</dt>
           </dl>
         </section>
                 <section>
@@ -312,7 +325,14 @@
             In such case, we might not be able to process every frame in a real
             time <code>MediaStream</code>.
           </p>
-          <dl class="idl" title="[Exposed=Worker] interface VideoProcessorEvent : VideoMonitorEvent">
+          <dl class="idl" data-merge="VideoProcessorEventInit"
+              title="[Exposed=Worker] interface VideoProcessorEvent : VideoMonitorEvent">
+            <dt>
+              Constructor(DOMString type, VideoProcessorEventInit eventInitDict)
+            </dt>
+            <dd>
+              Constructs a new VideoProcessorEvent.
+            </dd>
             <dt>
               attribute ImageBitmap? outputImageBitmap
             </dt>
@@ -322,6 +342,10 @@
               developer need to create a new <code>ImageBitmap</code> for output
               frame and assign it to <code>outputImageBitmap</code>.
             </dd>
+          </dl>
+
+          <dl class="idl" title="dictionary VideoProcessorEventInit : VideoMonitorEventInit">
+            <dt>ImageBitmap? outputImageBitmap</dt>
           </dl>
         </section>
         <section>
