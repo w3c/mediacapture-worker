@@ -224,6 +224,39 @@
     </section>
     <section>
       <h2>
+        Terminology
+      </h2>
+      <p>
+        A worker is said to be a <dfn>video worker</dfn> if it has a <a>video
+        worker source</a>.
+      </p>
+      <p>
+        There are two kinds of <dfn title="video worker source">video worker
+        sources</dfn>:
+      </p>
+      <dl>
+        <dt>
+          <dfn>Video monitor source</dfn>
+        </dt>
+        <dd>
+          A <a>MediaStreamTrack</a> object is said to be a <a>video monitor
+          source</a> for a worker <var>w</var>, if its
+          <code>addVideoMonitor()</code> method has been invoked with
+          <var>w</var> as an argument.
+        </dd>
+        <dt>
+          <dfn>Video processor source</dfn>
+        </dt>
+        <dd>
+          A <a>MediaStreamTrack</a> object is said to be a <a>video processor
+          source</a> for a worker <var>w</var>, if its
+          <code>addVideoProcessor()</code> method has been invoked with
+          <var>w</var> as an argument.
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
         Extensions
       </h2>
       <section>
@@ -235,7 +268,7 @@
           directly using JavaScript in a worker, the
           <a>DedicatedWorkerGlobalScope</a> interface is extended with a
           <a>onvideoprocess</a> <a>event handler IDL attribute</a>. <a>Video
-          monitor events</a> and <a>video processing events</a> are dispatched
+          monitor events</a> and <a>video processor events</a> are dispatched
           at the <a>DedicatedWorkerGlobalScope</a> object.
         </p>
         <pre class="idl">
@@ -289,17 +322,7 @@
             The <dfn>inputImageBitmap</dfn> attribute must return the value it
             was initialized to. When the object is created, this attribute must
             be initialized to null. It represents the <a>ImageBitmap</a> object
-            whose bitmap data is provided by the <a>video worker source</a>.
-          </p>
-          <p>
-            A worker is said to be a <dfn>video worker</dfn> if it has a
-            <a>video worker source</a>.
-          </p>
-          <p>
-            A <a>MediaStreamTrack</a> object is said to be a <dfn>video worker
-            source</dfn> for a worker <var>w</var>, if its
-            <code>addVideoMonitor()</code> method has been invoked with
-            <var>w</var> as an argument.
+            whose bitmap data is provided by the <a>video monitor source</a>.
           </p>
           <p>
             When a user agent is required to <dfn>fire a video worker
@@ -307,19 +330,18 @@
           </p>
         </div>
         <ol>
-          <li>
           <li>Create a <a>VideoMonitorEvent</a>, initialize it to have a name
           <a>videoprocess</a>, to not bubble, to not be cancelable.
           </li>
           <li>Initialize the <a>trackId</a> attribute to the value of the
-          <code>id</code> attribute of the <a>video worker source</a>.
+          <code>id</code> attribute of the <a>video monitor source</a>.
           </li><!-- TODO -->
           <li>Initialize the <a>playbackTime</a> attribute to the value of the
           <code>currentTime</code> attribute of the <a>MediaStream</a> that
-          contains the <a>video worker source</a>.
+          contains the <a>video monitor source</a>.
           </li>
           <li>Initialize the <a>inputImageBitmap</a> attribute to the bitmap
-          data of the <a>video worker source</a>'s video frame at the current
+          data of the <a>video monitor source</a>'s video frame at the current
           stream position at <a>playbackTime</a>.
           </li>
           <li>Dispatch the newly created <a>VideoMonitorEvent</a> object at the
