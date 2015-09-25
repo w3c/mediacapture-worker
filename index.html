@@ -266,21 +266,57 @@
         <p link-for="DedicatedWorkerGlobalScope">
           To enable generating, processing, and analyzing of video data
           directly using JavaScript in a worker, the
-          <a>DedicatedWorkerGlobalScope</a> interface is extended with a
-          <a>onvideoprocess</a> <a>event handler IDL attribute</a>. <a>Video
-          monitor events</a> and <a>video processor events</a> are dispatched
-          at the <a>DedicatedWorkerGlobalScope</a> object.
+          <a>DedicatedWorkerGlobalScope</a> interface is extended with an
+          <a>onvideomonitor</a> and <a>onvideoprocess</a> <a>event handler IDL
+          attribute</a>. <a>Video monitor events</a> and <a>video processor
+          events</a> are dispatched at the <a>DedicatedWorkerGlobalScope</a>
+          object.
         </p>
         <pre class="idl">
           partial interface DedicatedWorkerGlobalScope {
+                          attribute EventHandler onvideomonitor;
                           attribute EventHandler onvideoprocess;
           };
         </pre>
-        <p dfn-for="DedicatedWorkerGlobalScope">
-          The <dfn><code>onvideoprocess</code></dfn> is an <a>event handler IDL
-          attribute</a> for the <dfn><code>videoprocess</code></dfn> event
-          type.
-        </p>
+        <div dfn-for="DedicatedWorkerGlobalScope">
+          <p>
+            The following are the <a data-lt="event handler">event handlers</a>
+            (and their corresponding <a data-lt=
+            "event handler event type">event handler event types</a>) that must
+            be supported, as event handler IDL attributes, by objects
+            implementing the <a>DedicatedWorkerGlobalScope</a> interface:
+          </p>
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>
+                  Event handlers
+                </th>
+                <th>
+                  <a>Event handler event type</a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <dfn><code>onvideomonitor</code></dfn>
+                </td>
+                <td>
+                  <dfn><code>videomonitor</code></dfn>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <dfn><code>onvideoprocess</code></dfn>
+                </td>
+                <td>
+                  <dfn><code>videoprocess</code></dfn>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
       <section>
         <h2>
@@ -288,7 +324,7 @@
         </h2>
         <p>
           <dfn>Video monitor events</dfn> use the <a>VideoMonitorEvent</a>
-          interface for their <a>videoprocess</a> events:
+          interface for their <a>videomonitor</a> events:
         </p>
         <pre class="idl">
           [Constructor(DOMString type, optional VideoMonitorEventInit videoMonitorEventInitDict), Exposed=Worker]
