@@ -219,6 +219,16 @@
       <ul>
         <li>
           <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers">
+          Event handler</a></dfn>
+        </li>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-event-type">
+          event handler event type</a></dfn>
+        </li>
+        <li>
+          <dfn><a href=
           "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes">
           event handler IDL attribute</a></dfn>
         </li>
@@ -370,9 +380,10 @@
             <li>If <var>e</var> is <a>videomonitor</a>, dispatch the newly
             created <a>VideoMonitorEvent</a> object at each <var>target</var>.
             </li>
-            <li>If <var>e</var> is <a>videoprocess</a>, initialize the
-            <a>outputImageBitmap</a> attribute to null, and dispatch the newly
-            created <a>VideoProceeEvent</a> object at each <var>target</var>.
+            <li link-for="VideoProcessorEvent">If <var>e</var> is
+            <a>videoprocess</a>, initialize the <a>outputImageBitmap</a>
+            attribute to null, and dispatch the newly created
+            <a>VideoProcessorEvent</a> object at each <var>target</var>.
             </li>
           </ol>
         </section>
@@ -441,7 +452,7 @@
             time <code>MediaStream</code>.
           </p>
         </div>
-        <p>
+        <p link-for="VideoProcessorEvent">
           <dfn>Video processor events</dfn> use the <a>VideoProcessorEvent</a>
           interface for their <a>videoprocess</a> events:
         </p>
