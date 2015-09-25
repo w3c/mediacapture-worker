@@ -442,16 +442,6 @@
           <code id="event-videoprocessorevent">VideoProcessorEvent</code>
           interface
         </h2>
-        <div class="note">
-          <p>
-            Ideally the <code>MediaStreamTrack</code> should dispatch each
-            video frame through <a>VideoProcessorEvent</a>. But sometimes the
-            worker thread could not process the frame in time. So the
-            implementation could skip the frame to avoid high memory footprint.
-            In such case, we might not be able to process every frame in a real
-            time <code>MediaStream</code>.
-          </p>
-        </div>
         <p link-for="VideoProcessorEvent">
           <dfn>Video processor events</dfn> use the <a>VideoProcessorEvent</a>
           interface for their <a>videoprocess</a> events:
@@ -495,6 +485,16 @@
           event</dfn>, it must <a>fire a video worker event</a> named
           <a>videoprocess</a>.
         </p>
+        <div class="note">
+          <p>
+            Ideally the <code>MediaStreamTrack</code> should dispatch each
+            video frame through <a>VideoProcessorEvent</a>. But sometimes the
+            worker thread could not process the frame in time. So the
+            implementation could skip the frame to avoid high memory footprint.
+            In such case, we might not be able to process every frame in a real
+            time <code>MediaStream</code>.
+          </p>
+        </div>
       </section>
       <section>
         <h2>
