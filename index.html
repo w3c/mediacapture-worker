@@ -239,42 +239,45 @@
         Terminology
       </h2>
       <p>
-        A worker is said to be a <dfn>video worker</dfn> if it has a <a>video
-        worker source</a>.
+        A <dfn>video worker</dfn> takes an <a>input frame</a> from an
+        <dfn>input media stream track</dfn> and processes an <a>output
+        frame</a> that acts as the <a>source</a> for the <a>output media stream
+        track</a>.
       </p>
       <p>
-        There are two kinds of <dfn data-lt="video worker source">video worker
-        sources</dfn>:
+        An <dfn>input frame</dfn> for a worker <var>w</var> is an
+        <a>ImageBitmap</a> object representing a frame sourced from the
+        <a>MediaStreamTrack</a> object whose <code>addVideoMonitor()</code> or
+        <code>addVideoProcessor()</code> method has been invoked with
+        <var>w</var> as an argument. This association is cleared if
+        <code>removeVideoMonitor()</code> or
+        <code>removeVideoProcessor()</code> method is invoked with <var>w</var>
+        as an argument.
       </p>
-      <dl>
-        <dt>
-          <dfn>Video monitor source</dfn>
-        </dt>
-        <dd>
-          A <a>MediaStreamTrack</a> object is said to be a <a>video monitor
-          source</a> for a worker <var>w</var>, if its
-          <code>addVideoMonitor()</code> method has been invoked with
-          <var>w</var> as an argument. This association is cleared if
-          <code>removeVideoMonitor()</code> method is invoked with <var>w</var>
-          as an argument.
-        </dd>
-        <dt>
-          <dfn>Video processor source</dfn>
-        </dt>
-        <dd>
-          A <a>MediaStreamTrack</a> object is said to be a <a>video processor
-          source</a> for a worker <var>w</var>, if its
-          <code>addVideoProcessor()</code> method has been invoked with
-          <var>w</var> as an argument. This association is cleared if
-          <code>removeVideoProcessor()</code> method is invoked with
-          <var>w</var> as an argument.
-        </dd>
-      </dl>
+      <p link-for="VideoProcessorEvent">
+        The <dfn>output frame</dfn> is represented by the <a>ImageBitmap</a>
+        object assigned to the <a>outputImageBitmap</a> attribute of the
+        <a>VideoProcessorEvent</a>.
+      </p>
+      <p link-for="VideoProcessorEvent">
+        The <dfn>output media stream track</dfn> for a worker <var>w</var> is a
+        <a>MediaStreamTrack</a> object returned by the invocation of the
+        <code>addVideoProcessor()</code> method on <var>w</var>.
+      </p>
       <p>
         There are two kinds of <dfn data-lt="video worker event">video worker
-        events</dfn>: <a data-lt="video monitor event">video monitor events</a>
-        and <a data-lt="video processor event">video processor events</a>.
+        events</dfn>:
       </p>
+      <ul>
+        <li>
+          <a data-lt="video monitor event">Video monitor events</a> represent
+          the <a>input frame</a> only.
+        </li>
+        <li>
+          <a data-lt="video processor event">Video processor events</a>
+          represent the <a>input frame</a> and <a>output frame</a>.
+        </li>
+      </ul>
     </section>
     <section>
       <h2>
@@ -289,7 +292,8 @@
           directly using JavaScript in a worker, the
           <a>DedicatedWorkerGlobalScope</a> interface is extended with an
           <a>onvideomonitor</a> and <a>onvideoprocess</a> <a>event handler IDL
-          attribute</a>. <a>Video monitor events</a> and <a>video processor
+          attribute</a>. <a data-lt="video monitor event">Video monitor
+          events</a> and <a data-lt="video processor event">video processor
           events</a> are dispatched at the <a>DedicatedWorkerGlobalScope</a>
           object.
         </p>
@@ -359,23 +363,23 @@
             </li>
             <li link-for="VideoMonitorEvent">Initialize the <a>trackId</a>
             attribute to the value of the <code>id</code> attribute of the <a>
-              video worker source</a>.
+              input media stream track</a>.
             </li><!-- TODO -->
             <li link-for="VideoMonitorEvent">Initialize the <a>playbackTime</a>
             attribute to the value of the <code>currentTime</code> attribute of
-            the <a>MediaStream</a> that contains the <a>video worker
-            source</a>.
+            the <a>MediaStream</a> that contains the <a>input media stream
+            track</a>.
             </li>
             <li link-for="VideoMonitorEvent">Initialize the
             <a>inputImageBitmap</a> attribute to the bitmap data of the
-            <a>video worker source</a>'s video frame at the current stream
+            <a>input media stream track</a>'s video frame at the current stream
             position at <a>playbackTime</a>.
             </li>
             <li>
               <!-- TODO: clarify the definition of targets -->
               Let <var>associated video workers</var> be the list of
               <a data-lt="video worker">video workers</a> that share the same
-              <a>video worker source</a>.
+              <a>input media stream track</a>.
             </li>
             <li>If <var>e</var> is <a>videomonitor</a>, dispatch the newly
             created <a>VideoMonitorEvent</a> object at each <var>target</var>.
@@ -392,9 +396,11 @@
         <h2>
           <code id="event-videomonitorevent">VideoMonitorEvent</code> interface
         </h2>
-        <p>
-          <dfn>Video monitor events</dfn> use the <a>VideoMonitorEvent</a>
-          interface for their <a>videomonitor</a> events:
+        <p link-for="VideoMonitorEvent">
+          The <dfn>video monitor event</dfn> contains an <a>input frame</a> and
+          its metadata originating from the <a>input media stream track</a>. It
+          uses the <a>VideoMonitorEvent</a> interface for its
+          <a>videomonitor</a> events:
         </p>
         <pre class="idl">
           [Constructor(DOMString type, optional VideoMonitorEventInit videoMonitorEventInitDict), Exposed=Worker]
@@ -414,8 +420,8 @@
             The <dfn>trackId</dfn> attribute must return the value it was
             initialized to. When the object is created, this attribute must be
             initialized to the empty string. It represents the identifier that
-            is shared with the <a>video worker</a> and its <a>video worker
-            source</a>.
+            is shared with the <a>video worker</a> and its <a>input media
+            stream track</a>.
           </p>
           <p>
             <!-- TODO: is this current stream position? -->
@@ -428,7 +434,8 @@
             The <dfn>inputImageBitmap</dfn> attribute must return the value it
             was initialized to. When the object is created, this attribute must
             be initialized to null. It represents the <a>ImageBitmap</a> object
-            whose bitmap data is provided by the <a>video monitor source</a>.
+            whose bitmap data is provided by the <a>input media stream
+            track</a>.
           </p>
         </div>
         <p>
@@ -443,8 +450,11 @@
           interface
         </h2>
         <p link-for="VideoProcessorEvent">
-          <dfn>Video processor events</dfn> use the <a>VideoProcessorEvent</a>
-          interface for their <a>videoprocess</a> events:
+          The <dfn>video processor event</dfn> inherits from the <a>video
+          monitor event</a>, and in addition provides means to programmatically
+          construct an <a>output frame</a> for the <a>output media stream
+          track</a>. It uses the <a>VideoProcessorEvent</a> interface for its
+          <a>videoprocess</a> events:
         </p>
         <pre class="idl">
           [Constructor(DOMString type, optional VideoProcessorEventInit videoProcessorEventInitDict),
