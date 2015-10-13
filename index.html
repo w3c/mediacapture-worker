@@ -214,6 +214,11 @@
         is defined in [[!WEBIDL]]
       </p>
       <p>
+        The <code><a href=
+        "http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects">Promise</a></code>
+        object is defined in [[!ECMASCRIPT]].
+      </p>
+      <p>
         The following concepts and interfaces are defined in [[!HTML]]:
       </p>
       <ul>
@@ -231,6 +236,11 @@
           <dfn><a href=
           "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes">
           event handler IDL attribute</a></dfn>
+        </li>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">
+          in parallel</a></dfn>
         </li>
       </ul>
     </section>
@@ -273,8 +283,9 @@
           <dfn data-lt="video monitor event">Video monitor events</dfn>
         </dt>
         <dd>
-          These events are represented by <a>VideoMonitorEvent</a> objects and
-          provide read access to <a>input frame</a> data represented by an
+          These events are represented by <a>VideoMonitorEvent</a> objects that
+          are dispatched at <dfn>video worker monitor</dfn> and provide read
+          access to <a>input frame</a> data represented by an
           <a>ImageBitmap</a> object.
         </dd>
       </dl>
@@ -284,8 +295,9 @@
         </dt>
         <dd>
           These events are represented by <a>VideoProcessorEvent</a> objects
-          and provide read access to <a>input frame</a> data and write access
-          to <a>output frame</a> data represented by <a>ImageBitmap</a> objects
+          that are dispatched at <dfn>video worker processor</dfn> and provide
+          read access to <a>input frame</a> data and write access to <a>output
+          frame</a> data represented by <a>ImageBitmap</a> objects
           respectively.
         </dd>
       </dl>
@@ -521,45 +533,130 @@
         <h2>
           <code>MediaStreamTrack</code> interface
         </h2>
-        <dl class="idl" title="partial interface MediaStreamTrack">
-          <dt>
-            void addVideoMonitor(Worker worker)
-          </dt>
-          <dd>
-            Associate the <code>worker</code> with the
-            <code>MediaStreamTrack</code>. You can add the same
-            <code>worker</code> to any other <code>MediaStreamTrack</code>.
-          </dd>
-          <dt>
-            void removeVideoMonitor(Worker worker)
-          </dt>
-          <dd>
-            Remove a particular <code>Worker</code> from the
-            <code>MediaStreamTrack</code>. User Agent should throw exception
-            when the <code>Worker</code> is not exist in the
-            <code>MediaStreamTrack</code>.
-          </dd>
-          <dt>
-            MediaStreamTrack addVideoProcessor(Worker worker)
-          </dt>
-          <dd>
-            This method will create a new <code>MediaStreamTrack</code> and
-            take the original <code>MediaStreamTrack</code> as the input
-            source. Then associate the <code>Worker</code> with new created
-            <code>MediaStreamTrack</code>. The developers can build a processed
-            pipeline by this method.
-          </dd>
-          <dt>
-            void removeVideoProcessor()
-          </dt>
-          <dd>
-            Remove the added <code>Worker</code> from current
-            <code>MediaStreamTrack</code>. User Agent should throw exception
-            when the <code>Worker</code> is not exist in the
-            <code>MediaStreamTrack</code>. A <code>MediaStreamTrack</code> owns
-            at most one Worker processor in any time.
-          </dd>
-        </dl>
+        <pre class="idl">
+          partial interface MediaStreamTrack {
+              Promise&lt;void&gt;             addVideoMonitor(Worker worker);
+              Promise&lt;void&gt;             removeVideoMonitor(Worker worker);
+              Promise&lt;MediaStreamTrack&gt; addVideoProcessor(Worker worker);
+              Promise&lt;void&gt;             removeVideoProcessor();
+          };
+        </pre>
+        <div dfn-for="MediaStreamTrack">
+          <p>
+            The <code><dfn>addVideoMonitor</dfn>()</code> method, when invoked,
+            must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked. (This is the <a>input media
+                stream track</a>.)
+                </li>
+                <li>Associate <var>worker</var> with <var>track</var>.
+                </li>
+                <li>Resolve <var>promise</var> with undefined.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li><!-- TODO: when do we want to reject the promise? -->
+          </ol>
+          <p>
+            The <code><dfn>removeVideoMonitor</dfn>()</code> method, when
+            invoked, must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked.
+                </li>
+                <li>If there exists an association between <var>worker</var>
+                and <var>track</var>, break that association and resolve <var>
+                  promise</var> with undefined.
+                </li>
+                <li>Otherwise, reject <var>promise</var> with
+                <code>NotFoundError</code>.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li>
+          </ol>
+          <p>
+            The <code><dfn>addVideoProcessor</dfn>()</code> method, when
+            invoked, must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked.
+                </li>
+                <li>If there exists an association between <var>worker</var>
+                and <var>track</var>, reject promise with
+                <code>QuotaExceededError</code>.
+                  <div class="note">
+                    A <a>MediaStreamTrack</a> owns at most one <a>video worker
+                    processor</a> at a time.
+                  </div>
+                </li>
+                <li>Associate <var>worker</var> with <var>track</var>.
+                </li>
+                <li>Let <var>new track</var> be a newly created
+                <a>MediaStreamTrack</a> object. (This is the <a>input media
+                stream track</a>.)
+                </li>
+                <li>Associate <var>new track</var> as the <a>output media
+                stream track</a> for <var>worker</var>.
+                </li>
+                <li>Resolve <var>promise</var> with <var>new track</var>.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li>
+          </ol>
+          <p>
+            The <code><dfn>removeVideoProcessor</dfn>()</code> method, when
+            invoked, must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked.
+                </li>
+                <li>If there exists an association between <var>worker</var>
+                and <var>track</var>, break that association and resolve <var>
+                  promise</var> with undefined.
+                </li>
+                <li>Otherwise, reject <var>promise</var> with
+                <code>NotFoundError</code>.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li>
+          </ol>
+        </div>
       </section>
     </section>
     <section id='imagebitmap-extensions'>
