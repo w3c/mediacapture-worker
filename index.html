@@ -239,10 +239,10 @@
         Terminology
       </h2>
       <p>
-        A <dfn>video worker</dfn> takes an <a>input frame</a> from an
-        <dfn>input media stream track</dfn> and processes an <a>output
-        frame</a> that acts as the <a>source</a> for the <a>output media stream
-        track</a>.
+        A <dfn>video worker</dfn> captures an <a>input frame</a> from an
+        <dfn>input media stream track</dfn> and processes the provided
+        <a>output frame</a> for use as the <a>source</a> for the <a>output
+        media stream track</a>.
       </p>
       <p>
         An <dfn>input frame</dfn> for a worker <var>w</var> is an
@@ -268,16 +268,27 @@
         There are two kinds of <dfn data-lt="video worker event">video worker
         events</dfn>:
       </p>
-      <ul>
-        <li>
-          <a data-lt="video monitor event">Video monitor events</a> represent
-          the <a>input frame</a> only.
-        </li>
-        <li>
-          <a data-lt="video processor event">Video processor events</a>
-          represent the <a>input frame</a> and <a>output frame</a>.
-        </li>
-      </ul>
+      <dl>
+        <dt>
+          <dfn data-lt="video monitor event">Video monitor events</dfn>
+        </dt>
+        <dd>
+          These events are represented by <a>VideoMonitorEvent</a> objects and
+          provide read access to <a>input frame</a> data represented by an
+          <a>ImageBitmap</a> object.
+        </dd>
+      </dl>
+      <dl>
+        <dt>
+          <dfn data-lt="video processor event">Video processor events</dfn>
+        </dt>
+        <dd>
+          These events are represented by <a>VideoProcessorEvent</a> objects
+          and provide read access to <a>input frame</a> data and write access
+          to <a>output frame</a> data represented by <a>ImageBitmap</a> objects
+          respectively.
+        </dd>
+      </dl>
     </section>
     <section>
       <h2>
@@ -397,8 +408,8 @@
           <code id="event-videomonitorevent">VideoMonitorEvent</code> interface
         </h2>
         <p link-for="VideoMonitorEvent">
-          The <dfn>video monitor event</dfn> contains an <a>input frame</a> and
-          its metadata originating from the <a>input media stream track</a>. It
+          The <a>video monitor event</a> contains an <a>input frame</a> and its
+          metadata originating from the <a>input media stream track</a>. It
           uses the <a>VideoMonitorEvent</a> interface for its
           <a>videomonitor</a> events:
         </p>
@@ -450,8 +461,8 @@
           interface
         </h2>
         <p link-for="VideoProcessorEvent">
-          The <dfn>video processor event</dfn> inherits from the <a>video
-          monitor event</a>, and in addition provides means to programmatically
+          The <a>video processor event</a> inherits from the <a>video monitor
+          event</a>, and in addition provides means to programmatically
           construct an <a>output frame</a> for the <a>output media stream
           track</a>. It uses the <a>VideoProcessorEvent</a> interface for its
           <a>videoprocess</a> events:
