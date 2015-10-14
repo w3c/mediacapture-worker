@@ -249,30 +249,57 @@
         Terminology
       </h2>
       <p>
-        A <dfn>video worker</dfn> captures an <a>input frame</a> from an
-        <dfn>input media stream track</dfn> and processes the provided
-        <a>output frame</a> for use as the <a>source</a> for the <a>output
-        media stream track</a>.
+        There are two kinds of <dfn data-lt="video worker">video workers</dfn>;
+        <a data-lt="monitoring video worker">monitoring video workers</a>, and
+        <a data-lt="processing video worker">processing video workers</a>:
       </p>
-      <p>
-        An <dfn>input frame</dfn> for a worker <var>w</var> is an
+      <dl>
+        <dt>
+          <a>Monitoring video worker</a>
+        </dt>
+        <dd>
+          Captures an <a>input frame</a> from an <a>input media stream
+          track</a>. A <a>video worker</a> is said to be a <dfn>monitoring
+          video worker</dfn>, if the <a>video worker</a> is associated with an
+          <a>input media stream track</a>. <a data-lt=
+          "video monitor event">Video monitor events</a> are dispatched at a
+          <a>monitoring video worker</a>.
+        </dd>
+        <dt>
+          <a>Processing video worker</a>
+        </dt>
+        <dd>
+          Similarly captures an <a>input frame</a> from an <a>input media
+          stream track</a>, and in addition, processes the provided <a>output
+          frame</a> for use as the <a>source</a> for the <a>output media stream
+          track</a>. A <a>video worker</a> is said to be a <dfn>processing
+          video worker</dfn>, if the <a>video worker</a> is associated with
+          both an <a>input media stream track</a> and an <a>output media stream
+          track</a>. <a data-lt="video processor event">Video processor
+          events</a> are dispatched at a <a>processing video worker</a>.
+        </dd>
+      </dl>
+      <p link-for="MediaStreamTrack">
+        An <dfn>input frame</dfn> for a <a>video worker</a> <var>w</var> is an
         <a>ImageBitmap</a> object representing a frame sourced from the
-        <a>MediaStreamTrack</a> object whose <code>addVideoMonitor()</code> or
-        <code>addVideoProcessor()</code> method has been invoked with
-        <var>w</var> as an argument. This association is cleared if
-        <code>removeVideoMonitor()</code> or
-        <code>removeVideoProcessor()</code> method is invoked with <var>w</var>
-        as an argument.
+        <a>input media stream track</a> associated with <var>w</var>.
       </p>
       <p link-for="VideoProcessorEvent">
-        The <dfn>output frame</dfn> is represented by the <a>ImageBitmap</a>
-        object assigned to the <a>outputImageBitmap</a> attribute of the
-        <a>VideoProcessorEvent</a>.
+        An <dfn>output frame</dfn> for a <a>video worker</a> <var>w</var> is an
+        <a>ImageBitmap</a> object assigned to the <a>outputImageBitmap</a>
+        attribute of the <a>VideoProcessorEvent</a> dispatched at <var>w</var>.
       </p>
-      <p link-for="VideoProcessorEvent">
-        The <dfn>output media stream track</dfn> for a worker <var>w</var> is a
-        <a>MediaStreamTrack</a> object returned by the invocation of the
-        <code>addVideoProcessor()</code> method on <var>w</var>.
+      <p link-for="MediaStreamTrack">
+        The <dfn>input media stream track</dfn> for a <a>video worker</a>
+        <var>w</var> is a <a>MediaStreamTrack</a> object passed as the first
+        argument to the <code><a>addVideoMonitor</a>()</code> or
+        <code><a>addVideoProcessor</a>()</code> method on <var>w</var>.
+      </p>
+      <p link-for="MediaStreamTrack">
+        The <dfn>output media stream track</dfn> for a <a>video worker</a>
+        <var>w</var> is a <a>MediaStreamTrack</a> object returned by the
+        invocation of the <code><a>addVideoProcessor</a>()</code> method on
+        <var>w</var>.
       </p>
       <p>
         There are two kinds of <dfn data-lt="video worker event">video worker
@@ -284,9 +311,8 @@
         </dt>
         <dd>
           These events are represented by <a>VideoMonitorEvent</a> objects that
-          are dispatched at <dfn>video worker monitor</dfn> and provide read
-          access to <a>input frame</a> data represented by an
-          <a>ImageBitmap</a> object.
+          are dispatched at a <a>monitoring video worker</a> and provide read
+          access to <a>input frame</a> data.
         </dd>
       </dl>
       <dl>
@@ -295,10 +321,9 @@
         </dt>
         <dd>
           These events are represented by <a>VideoProcessorEvent</a> objects
-          that are dispatched at <dfn>video worker processor</dfn> and provide
+          that are dispatched at a <a>processing video worker</a> and provide
           read access to <a>input frame</a> data and write access to <a>output
-          frame</a> data represented by <a>ImageBitmap</a> objects
-          respectively.
+          frame</a> data.
         </dd>
       </dl>
     </section>
@@ -503,9 +528,9 @@
           <li>Let <var>output bitmap</var> be the <a>ImageBitmap</a> object
           assigned to the <a>outputImageBitmap</a> attribute.
           </li>
-          <li>Let <var>output media stream track</var> be the
-          <a>MediaStreamTrack</a> returned by the
-          <code>addVideoProcessor()</code> method.
+          <li link-for="MediaStreamTrack">Let <var>output media stream
+          track</var> be the <a>MediaStreamTrack</a> returned by the <code><a>
+            addVideoProcessor</a>()</code> method.
           </li>
           <li>
             <!-- TODO: this should be defined better. -->
@@ -557,7 +582,8 @@
                 on which the method was invoked. (This is the <a>input media
                 stream track</a>.)
                 </li>
-                <li>Associate <var>worker</var> with <var>track</var>.
+                <li>Associate <var>worker</var> with <a>input media stream
+                track</a> <var>track</var>.
                 </li>
                 <li>Resolve <var>promise</var> with undefined.
                 </li>
@@ -604,20 +630,22 @@
                 <li>Let <var>worker</var> be the first method argument.
                 </li>
                 <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
-                on which the method was invoked.
+                on which the method was invoked. (This is the <a>input media
+                stream track</a>.)
                 </li>
                 <li>If there exists an association between <var>worker</var>
                 and <var>track</var>, reject promise with
                 <code>QuotaExceededError</code>.
                   <div class="note">
-                    A <a>MediaStreamTrack</a> owns at most one <a>video worker
-                    processor</a> at a time.
+                    A single <a>input media stream track</a> is associated with
+                    at most one <a>processing video worker</a> at a time.
                   </div>
                 </li>
-                <li>Associate <var>worker</var> with <var>track</var>.
+                <li>Associate <var>worker</var> with <a>input media stream
+                track</a> <var>track</var>.
                 </li>
                 <li>Let <var>new track</var> be a newly created
-                <a>MediaStreamTrack</a> object. (This is the <a>input media
+                <a>MediaStreamTrack</a> object. (This is the <a>output media
                 stream track</a>.)
                 </li>
                 <li>Associate <var>new track</var> as the <a>output media
