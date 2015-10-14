@@ -1,10 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Media Capture Stream with Worker</title>
+    <title>
+      Media Capture Stream with Worker
+    </title>
     <meta charset='utf-8'>
-    <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
-            async class='remove'></script>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async
+    class='remove'>
+    </script>
     <script class='remove'>
       var respecConfig = {
           // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
@@ -40,20 +43,20 @@
           editors:  [
               {
                   name:       "Chia-hung Tai"
-//              ,   url:        "http://example.org/"
+    //              ,   url:        "http://example.org/"
               ,   mailto:     "ctai@mozilla.com"
               ,   company:    "Mozilla"
               ,   companyURL: "https://www.mozilla.org/en-US/foundation/moco/"
               },
               {
                   name:       "Robert O'Callahan"
-//              ,   url:        "http://example.org/"
+    //              ,   url:        "http://example.org/"
               ,   company:    "Mozilla"
               ,   companyURL: "https://www.mozilla.org/en-US/foundation/moco/"
               },
               {
                   name:       "Tzuhao Kuo"
-//              ,   url:        "http://example.org/"
+    //              ,   url:        "http://example.org/"
               ,   mailto:     "tkuo@mozilla.com"
               ,   company:    "Mozilla"
               ,   companyURL: "https://www.mozilla.org/en-US/foundation/moco/"
@@ -82,7 +85,7 @@
           // This is important for Rec-track documents, do not copy a patent URI from a random
           // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
           // Team Contact.
-          wgPatentURI:  "",
+          wgPatentURI:  ["", ""],
           // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
       };
     </script>
@@ -95,33 +98,34 @@
         process video frame data in workers on the web applications.
       </p>
     </section>
-
     <section id='sotd'>
-      <p><strong>
-        This document is not complete and is subject to change. Early
+      <p>
+        <strong>This document is not complete and is subject to change. Early
         experimentations are encouraged to allow the Media Capture Task Force
         to evolve the specification based on technical discussions within the
         Task Force, implementation experience gained from early
         implementations, and feedback from other groups and
-        individuals.
-      </strong></p>
-      <p><strong>
-        This specification is started in the Media Capture Task Force to get it
-        under way in anticipation of the <a href=
+        individuals.</strong>
+      </p>
+      <p>
+        <strong>This specification is started in the Media Capture Task Force
+        to get it under way in anticipation of the <a href=
         "http://www.w3.org/2015/07/timed-media-wg.html">Timed Media Working
         Group</a> creation. The intention is to transfer this specification to
-        the Timed Media Working Group when the group is formed.
-      </strong></p>
-      <p><strong>
-        This specification will use the <a href=
+        the Timed Media Working Group when the group is formed.</strong>
+      </p>
+      <p>
+        <strong>This specification will use the <a href=
         "http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document.html">
         W3C Software and Document license</a> to be consistent with the
-        <a href="http://www.w3.org/2015/07/timed-media-wg.html#licensing">
-        licensing terms</a> of the proposed Timed Media Working Group.
-    </strong></p>
+        <a href="http://www.w3.org/2015/07/timed-media-wg.html#licensing">licensing
+        terms</a> of the proposed Timed Media Working Group.</strong>
+      </p>
     </section>
     <section>
-      <h2>Introduction</h2>
+      <h2>
+        Introduction
+      </h2>
       <p>
         The <em>Media Capture and Streams</em> specification provides a way to
         access to the video camera. But how to process the video frame data in
@@ -135,8 +139,8 @@
         data directly using JavaScript in a Worker thread.
       </p>
       <p>
-        <img alt= "The relationship between Worker and MediaStreamTrack"
-        src= "images/Worker - FLOW.png" style="width:60%">
+        <img alt="The relationship between Worker and MediaStreamTrack" src=
+        "images/Worker%20-%20FLOW.png" style="width:60%">
       </p>
       <p>
         The design principle of this specification is to provide a push-like
@@ -149,16 +153,20 @@
       </p>
     </section>
     <section>
-      <h2>Use cases and requirements</h2>
+      <h2>
+        Use cases and requirements
+      </h2>
       <p>
-        This specification attempts to address the
-        <a href="https://wiki.mozilla.org/Project_FoxEye#Use_Cases">Use Cases
-        and Requirements </a>for expanding the Web potentials to image
-        processing and computer vision area.
+        This specification attempts to address the <a href=
+        "https://wiki.mozilla.org/Project_FoxEye#Use_Cases">Use Cases and
+        Requirements</a> for expanding the Web potentials to image processing
+        and computer vision area.
       </p>
     </section>
     <section>
-      <h2>Conformance</h2>
+      <h2>
+        Conformance
+      </h2>
       <p>
         This specification defines conformance criteria that apply to a single
         product: the <dfn>user agent</dfn> that implements the interfaces that
@@ -173,155 +181,369 @@
       <p>
         The key words "MUST", "MUST NOT", "REQUIRED", "SHOULD", "SHOULD NOT",
         "RECOMMENDED", "MAY", and "OPTIONAL" in the normative parts of this
-        document are to be interpreted as described in RFC2119. For readability,
-        these words do not appear in all uppercase letters in this
+        document are to be interpreted as described in RFC2119. For
+        readability, these words do not appear in all uppercase letters in this
         specification. [[!RFC2119]]
       </p>
     </section>
     <section>
-      <h2>Dependencies</h2>
+      <h2>
+        Dependencies
+      </h2>
       <p>
         The <code><a href=
         "http://w3c.github.io/mediacapture-main/getusermedia.html#idl-def-MediaStreamTrack">
         <dfn>MediaStreamTrack</dfn></a></code> and <code><a href=
         "http://w3c.github.io/mediacapture-main/getusermedia.html#idl-def-MediaStream">
         <dfn>MediaStream</dfn></a></code> interfaces this specification extends
-        are defined in [[!GETUSERMEDIA]].
+        and the <a href=
+        "http://w3c.github.io/mediacapture-main/#dfn-source"><dfn>source</dfn></a>
+        concept are defined in [[!GETUSERMEDIA]].
       </p>
       <p>
         The <code><a href=
-        "http://www.w3.org/TR/html51/webappapis.html#imagebitmap">
-        <dfn>ImageBitmap</dfn></a></code> interface
-        and <code><a href=
-        "http://www.w3.org/TR/html51/webappapis.html#imagebitmapfactories">
-        <dfn>ImageBitmapFactories</dfn></a></code> interface this specification
+        "http://www.w3.org/TR/html51/webappapis.html#imagebitmap"><dfn>ImageBitmap</dfn></a></code>
+        interface and <code><a href=
+        "http://www.w3.org/TR/html51/webappapis.html#imagebitmapfactories"><dfn>
+        ImageBitmapFactories</dfn></a></code> interface this specification
         extends are defined in [[!HTML51]].
       </p>
       <p>
         The <code><a href=
-        "http://www.w3.org/TR/WebIDL-1/#common-BufferSource">
-        <dfn>BufferSource</dfn></a></code> is defined in [[!WebIDL]]
+        "http://www.w3.org/TR/WebIDL-1/#common-BufferSource"><dfn>BufferSource</dfn></a></code>
+        is defined in [[!WEBIDL]]
       </p>
+      <p>
+        The <code><a href=
+        "http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects">Promise</a></code>
+        object is defined in [[!ECMASCRIPT]].
+      </p>
+      <p>
+        The following concepts and interfaces are defined in [[!HTML]]:
+      </p>
+      <ul>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers">
+          Event handler</a></dfn>
+        </li>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-event-type">
+          event handler event type</a></dfn>
+        </li>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes">
+          event handler IDL attribute</a></dfn>
+        </li>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">
+          in parallel</a></dfn>
+        </li>
+      </ul>
     </section>
     <section>
-      <h2>Extensions</h2>
+      <h2>
+        Terminology
+      </h2>
+      <p>
+        There are two kinds of <dfn data-lt="video worker">video workers</dfn>;
+        <a data-lt="monitoring video worker">monitoring video workers</a>, and
+        <a data-lt="processing video worker">processing video workers</a>:
+      </p>
+      <dl>
+        <dt>
+          <a>Monitoring video worker</a>
+        </dt>
+        <dd>
+          Captures an <a>input frame</a> from an <a>input media stream
+          track</a>. A <a>video worker</a> is said to be a <dfn>monitoring
+          video worker</dfn>, if the <a>video worker</a> is associated with an
+          <a>input media stream track</a>. <a data-lt=
+          "video monitor event">Video monitor events</a> are dispatched at a
+          <a>monitoring video worker</a>.
+        </dd>
+        <dt>
+          <a>Processing video worker</a>
+        </dt>
+        <dd>
+          Similarly captures an <a>input frame</a> from an <a>input media
+          stream track</a>, and in addition, processes the provided <a>output
+          frame</a> for use as the <a>source</a> for the <a>output media stream
+          track</a>. A <a>video worker</a> is said to be a <dfn>processing
+          video worker</dfn>, if the <a>video worker</a> is associated with
+          both an <a>input media stream track</a> and an <a>output media stream
+          track</a>. <a data-lt="video processor event">Video processor
+          events</a> are dispatched at a <a>processing video worker</a>.
+        </dd>
+      </dl>
+      <p link-for="MediaStreamTrack">
+        An <dfn>input frame</dfn> for a <a>video worker</a> <var>w</var> is an
+        <a>ImageBitmap</a> object representing a frame sourced from the
+        <a>input media stream track</a> associated with <var>w</var>.
+      </p>
+      <p link-for="VideoProcessorEvent">
+        An <dfn>output frame</dfn> for a <a>video worker</a> <var>w</var> is an
+        <a>ImageBitmap</a> object assigned to the <a>outputImageBitmap</a>
+        attribute of the <a>VideoProcessorEvent</a> dispatched at <var>w</var>.
+      </p>
+      <p link-for="MediaStreamTrack">
+        The <dfn>input media stream track</dfn> for a <a>video worker</a>
+        <var>w</var> is a <a>MediaStreamTrack</a> object passed as the first
+        argument to the <code><a>addVideoMonitor</a>()</code> or
+        <code><a>addVideoProcessor</a>()</code> method on <var>w</var>.
+      </p>
+      <p link-for="MediaStreamTrack">
+        The <dfn>output media stream track</dfn> for a <a>video worker</a>
+        <var>w</var> is a <a>MediaStreamTrack</a> object returned by the
+        invocation of the <code><a>addVideoProcessor</a>()</code> method on
+        <var>w</var>.
+      </p>
+      <p>
+        There are two kinds of <dfn data-lt="video worker event">video worker
+        events</dfn>:
+      </p>
+      <dl>
+        <dt>
+          <dfn data-lt="video monitor event">Video monitor events</dfn>
+        </dt>
+        <dd>
+          These events are represented by <a>VideoMonitorEvent</a> objects that
+          are dispatched at a <a>monitoring video worker</a> and provide read
+          access to <a>input frame</a> data.
+        </dd>
+      </dl>
+      <dl>
+        <dt>
+          <dfn data-lt="video processor event">Video processor events</dfn>
+        </dt>
+        <dd>
+          These events are represented by <a>VideoProcessorEvent</a> objects
+          that are dispatched at a <a>processing video worker</a> and provide
+          read access to <a>input frame</a> data and write access to <a>output
+          frame</a> data.
+        </dd>
+      </dl>
+    </section>
+    <section>
+      <h2>
+        Extensions
+      </h2>
+      <section>
+        <h2>
+          <code>DedicatedWorkerGlobalScope</code> interface
+        </h2>
+        <p link-for="DedicatedWorkerGlobalScope">
+          To enable generating, processing, and analyzing of video data
+          directly using JavaScript in a worker, the
+          <a>DedicatedWorkerGlobalScope</a> interface is extended with an
+          <a>onvideomonitor</a> and <a>onvideoprocess</a> <a>event handler IDL
+          attribute</a>. <a data-lt="video monitor event">Video monitor
+          events</a> and <a data-lt="video processor event">video processor
+          events</a> are dispatched at the <a>DedicatedWorkerGlobalScope</a>
+          object.
+        </p>
+        <pre class="idl">
+          partial interface DedicatedWorkerGlobalScope {
+                          attribute EventHandler onvideomonitor;
+                          attribute EventHandler onvideoprocess;
+          };
+        </pre>
+        <div dfn-for="DedicatedWorkerGlobalScope">
+          <p>
+            The following are the <a data-lt="event handler">event handlers</a>
+            (and their corresponding <a data-lt=
+            "event handler event type">event handler event types</a>) that must
+            be supported, as event handler IDL attributes, by objects
+            implementing the <a>DedicatedWorkerGlobalScope</a> interface:
+          </p>
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>
+                  Event handlers
+                </th>
+                <th>
+                  <a>Event handler event type</a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <dfn><code>onvideomonitor</code></dfn>
+                </td>
+                <td>
+                  <dfn><code>videomonitor</code></dfn>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <dfn><code>onvideoprocess</code></dfn>
+                </td>
+                <td>
+                  <dfn><code>videoprocess</code></dfn>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <section>
           <h2>
-            <code>DedicatedWorkerGlobalScope</code> interface
+            Video worker event firing
           </h2>
           <p>
-            By extending <code>DedicatedWorkerGlobalScope</code> object
-            with a event handler, <code>onvideoprocess</code>, it is
-            enabled the generating, processing, and analyzing of video data
-            directly using JavaScript in a Worker thread.
+            To <dfn>fire a video worker event</dfn> named <var>e</var>, the
+            user agent must run the following steps:
           </p>
-          <p>
-            The <code><a>DedicatedWorkerGlobalScope</a></code> is the "inside" of a
-            <code>Worker</code>. It must not exist if the interface's
-            relevant namespace object is not a
-            <code><a>DedicatedWorkerGlobalScope</a></code> object.
-          </p>
-          <dl class="idl" title="partial interface DedicatedWorkerGlobalScope">
-            <dt>
-              attribute EventHandler onvideoprocess
-            </dt>
-            <dd>
-              <p>
-                A property used to set the EventHandler (described in [[!HTML]])
-                for the <a><code>VideoMonitorEvent</code></a>/
-                <a><code>VideoProcessorEvent</code></a> that is dispatched
-                to <code><a>DedicatedWorkerGlobalScope</a></code> to process video
-                while the associated <code><a>MediaStreamTrack</a></code> are
-                connected. When a new input video frame is sent to corresponding
-                <code>MediaStreamTrack</code>, User Agent will create a
-                <code><a>VideoProcessEventThe</a></code> and dispatch it. Then the event
-                handler, of type <code><a>videoprocess</a></code>,
-                is executed .
-               </p>
-            </dd>
-          </dl>
+          <ol>
+            <li link-for="VideoMonitorEvent">If <var>e</var> is
+            <a>videomonitor</a>, create a <a>VideoMonitorEvent</a>, initialize
+            it to have a given name <var>e</var>, to not bubble, to not be
+            cancelable.
+            </li>
+            <li link-for="VideoProcessorEvent">If <var>e</var> is
+            <a>videoprocess</a>, create a <a>VideoProcessorEvent</a>,
+            initialize it to have a given name <var>e</var>, to not bubble, to
+            not be cancelable.
+            </li>
+            <li link-for="VideoMonitorEvent">Initialize the <a>trackId</a>
+            attribute to the value of the <code>id</code> attribute of the <a>
+              input media stream track</a>.
+            </li><!-- TODO -->
+            <li link-for="VideoMonitorEvent">Initialize the <a>playbackTime</a>
+            attribute to the value of the <code>currentTime</code> attribute of
+            the <a>MediaStream</a> that contains the <a>input media stream
+            track</a>.
+            </li>
+            <li link-for="VideoMonitorEvent">Initialize the
+            <a>inputImageBitmap</a> attribute to the bitmap data of the
+            <a>input media stream track</a>'s video frame at the current stream
+            position at <a>playbackTime</a>.
+            </li>
+            <li>
+              <!-- TODO: clarify the definition of targets -->
+              Let <var>associated video workers</var> be the list of
+              <a data-lt="video worker">video workers</a> that share the same
+              <a>input media stream track</a>.
+            </li>
+            <li>If <var>e</var> is <a>videomonitor</a>, dispatch the newly
+            created <a>VideoMonitorEvent</a> object at each <var>target</var>.
+            </li>
+            <li link-for="VideoProcessorEvent">If <var>e</var> is
+            <a>videoprocess</a>, initialize the <a>outputImageBitmap</a>
+            attribute to null, and dispatch the newly created
+            <a>VideoProcessorEvent</a> object at each <var>target</var>.
+            </li>
+          </ol>
         </section>
-        <section>
-          <h2>
-            <code id = event-videomonitorevent>VideoMonitorEvent</code> interface
-          </h2>
+      </section>
+      <section>
+        <h2>
+          <code id="event-videomonitorevent">VideoMonitorEvent</code> interface
+        </h2>
+        <p link-for="VideoMonitorEvent">
+          The <a>video monitor event</a> contains an <a>input frame</a> and its
+          metadata originating from the <a>input media stream track</a>. It
+          uses the <a>VideoMonitorEvent</a> interface for its
+          <a>videomonitor</a> events:
+        </p>
+        <pre class="idl">
+          [Constructor(DOMString type, optional VideoMonitorEventInit videoMonitorEventInitDict), Exposed=Worker]
+          interface VideoMonitorEvent : Event {
+              readonly    attribute DOMString   trackId;
+              readonly    attribute double      playbackTime;
+              readonly    attribute ImageBitmap? inputImageBitmap;
+          };
+          dictionary VideoMonitorEventInit : EventInit {
+              required DOMString    trackId;
+              required double       playbackTime;
+              required ImageBitmap? inputImageBitmap;
+          };
+        </pre>
+        <div dfn-for="VideoMonitorEvent">
           <p>
-            This is an <code>Event</code> object which is dispatched to
-            <a><code>DedicatedWorkerGlobalScope</code></a> objects to perform
-            processing.
+            The <dfn>trackId</dfn> attribute must return the value it was
+            initialized to. When the object is created, this attribute must be
+            initialized to the empty string. It represents the identifier that
+            is shared with the <a>video worker</a> and its <a>input media
+            stream track</a>.
           </p>
           <p>
-            When the <code>MediaStreamTrack</code> comes a new video frame data,
-            the User Agent will dispatch a <code><a>VideoMonitorEvent</a></code> to the
-            associated Workers when the association is connected by
-            <code>addVideoMonitor</code>. The event handlers of those Workers
-            process video from the input by accessing the video data from the
-            <code>inputImageBitmap</code> attribute in the
-            <code>VideoMonitorEvent</code>.
+            <!-- TODO: is this current stream position? -->
+             The <dfn>playbackTime</dfn> attribute must return the value it was
+            initialized to. When the object is created, this attribute must be
+            initialized to zero. It represents the current stream position, in
+            seconds.
           </p>
           <p>
-            Ideally the <code>MediaStreamTrack</code> should dispatch each
-            video frame through <code><a>VideoMonitorEvent</a></code>. But sometimes the
-            worker thread could not process the frame in time. So the
-            implementation could skip the frame to avoid high memory footprint.
-            In such case, we might not be able to process every frame in a real
-            time <code>MediaStream</code>.
+            The <dfn>inputImageBitmap</dfn> attribute must return the value it
+            was initialized to. When the object is created, this attribute must
+            be initialized to null. It represents the <a>ImageBitmap</a> object
+            whose bitmap data is provided by the <a>input media stream
+            track</a>.
           </p>
-          <dl class="idl" data-merge="VideoMonitorEventInit"
-              title="[Exposed=Worker] interface VideoMonitorEvent : Event">
-            <dt>
-              Constructor(DOMString type, VideoMonitorEventInit eventInitDict)
-            </dt>
-            <dd>
-              Constructs a new VideoMonitorEvent.
-            </dd>
-            <dt>
-              readonly attribute DOMString trackId
-            </dt>
-            <dd>
-              The <code>MediaStreamTrack.id</code> of corresponding
-              <code>MediaStreamTrack</code>.
-            </dd>
-            <dt>
-              readonly attribute double playbackTime
-            </dt>
-            <dd>
-              The elapsed time of the <code>MediaStreamTrack</code> from the
-              <code>MediaStream</code> starting.
-            </dd>
-            <dt>
-              readonly attribute ImageBitmap inputImageBitmap
-            </dt>
-            <dd>
-              The input video frame comes from the corresponding
-              <code>MediaStreamTrack</code>.
-            </dd>
-          </dl>
+        </div>
+        <p>
+          When a user agent is required to <dfn>fire a video monitor
+          event</dfn>, it must <a>fire a video worker event</a> named
+          <a>videomonitor</a>.
+        </p>
+      </section>
+      <section>
+        <h2>
+          <code id="event-videoprocessorevent">VideoProcessorEvent</code>
+          interface
+        </h2>
+        <p link-for="VideoProcessorEvent">
+          The <a>video processor event</a> inherits from the <a>video monitor
+          event</a>, and in addition provides means to programmatically
+          construct an <a>output frame</a> for the <a>output media stream
+          track</a>. It uses the <a>VideoProcessorEvent</a> interface for its
+          <a>videoprocess</a> events:
+        </p>
+        <pre class="idl">
+          [Constructor(DOMString type, optional VideoProcessorEventInit videoProcessorEventInitDict),
+           Exposed=Worker]
+          interface VideoProcessorEvent : VideoMonitorEvent {
+                          attribute ImageBitmap? outputImageBitmap;
+          };
 
-          <dl class="idl" title="dictionary VideoMonitorEventInit : EventInit">
-            <dt>required DOMString trackId</dt>
-            <dt>required double playbackTime</dt>
-            <dt>required ImageBitmap inputImageBitmap</dt>
-          </dl>
-        </section>
-                <section>
-          <h2>
-            <code id = event-videoprocessorevent>VideoProcessorEvent</code> interface
-          </h2>
+          dictionary VideoProcessorEventInit : VideoMonitorEventInit {
+              required ImageBitmap? outputImageBitmap;
+          };
+        </pre>
+        <div dfn-for="VideoProcessorEvent">
           <p>
-            This event is inherited from <code><a>VideoMonitorEvent</a></code>.
-            When the <code>MediaStreamTrack</code> comes a new video frame data,
-            the User Agent will dispatch a <code>VideoProcessorEvent</code> to the
-            associated Workers when the association is connected by
-            <code>addVideoProcessor</code>. The event handlers of those Workers
-            process video from the input by accessing the video data from the
-            <code>inputImageBitmap</code> attribute in the
-            <code>VideoProcessorEvent</code>. The processed video data which is
-            the result of the processing is then placed into the
-            <code>outputImageBitmap</code>. The User Agent will append the
-            <code>outputImageBitmap</code> into the new created
-            <code>MediaStreamTrack</code>.
+            The <dfn>outputImageBitmap</dfn> attribute must return the value it
+            was initialized to. When the object is created, this attribute must
+            be initialized to null. It represents the <a>ImageBitmap</a> object
+            which on setting, must cause the user agent to run the following
+            steps:
           </p>
+        </div>
+        <ol link-for="VideoProcessorEvent">
+          <li>Let <var>output bitmap</var> be the <a>ImageBitmap</a> object
+          assigned to the <a>outputImageBitmap</a> attribute.
+          </li>
+          <li link-for="MediaStreamTrack">Let <var>output media stream
+          track</var> be the <a>MediaStreamTrack</a> returned by the <code><a>
+            addVideoProcessor</a>()</code> method.
+          </li>
+          <li>
+            <!-- TODO: this should be defined better. -->
+            Set <var>output bitmap</var> as the <a>source</a> of the
+            <var>output media stream track</var>.
+          </li>
+        </ol>
+        <p>
+          When a user agent is required to <dfn>fire a video processor
+          event</dfn>, it must <a>fire a video worker event</a> named
+          <a>videoprocess</a>.
+        </p>
+        <div class="note">
           <p>
             Ideally the <code>MediaStreamTrack</code> should dispatch each
             video frame through <a>VideoProcessorEvent</a>. But sometimes the
@@ -330,81 +552,150 @@
             In such case, we might not be able to process every frame in a real
             time <code>MediaStream</code>.
           </p>
-          <dl class="idl" data-merge="VideoProcessorEventInit"
-              title="[Exposed=Worker] interface VideoProcessorEvent : VideoMonitorEvent">
-            <dt>
-              Constructor(DOMString type, VideoProcessorEventInit eventInitDict)
-            </dt>
-            <dd>
-              Constructs a new VideoProcessorEvent.
-            </dd>
-            <dt>
-              attribute ImageBitmap? outputImageBitmap
-            </dt>
-            <dd>
-              The output video frame comes to the corresponding
-              <code>MediaStreamTrack</code>. It is default to be null. The Web
-              developer need to create a new <code>ImageBitmap</code> for output
-              frame and assign it to <code>outputImageBitmap</code>.
-            </dd>
-          </dl>
-
-          <dl class="idl" title="dictionary VideoProcessorEventInit : VideoMonitorEventInit">
-            <dt>ImageBitmap? outputImageBitmap</dt>
-          </dl>
-        </section>
-        <section>
-          <h2>
-            <code>MediaStreamTrack</code> interface
-          </h2>
-          <dl class="idl" title="partial interface MediaStreamTrack">
-            <dt>
-              void addVideoMonitor(Worker worker)
-            </dt>
-            <dd>
-              Associate the <code>worker</code> with the <code>MediaStreamTrack</code>.
-              You can add the same <code>worker</code> to any other
-              <code>MediaStreamTrack</code>.
-            </dd>
-            <dt>
-              void removeVideoMonitor(Worker worker)
-            </dt>
-            <dd>
-              Remove a particular <code>Worker</code> from the
-              <code>MediaStreamTrack</code>. User Agent should throw exception
-              when the <code>Worker</code> is not exist in the
-              <code>MediaStreamTrack</code>.
-            </dd>
-            <dt>
-              MediaStreamTrack addVideoProcessor(Worker worker)
-            </dt>
-            <dd>
-              This method will create a new <code>MediaStreamTrack</code> and
-              take the original <code>MediaStreamTrack</code> as the input
-              source. Then associate the <code>Worker</code> with new created
-              <code>MediaStreamTrack</code>. The developers can build a
-              processed pipeline by this method.
-            </dd>
-            <dt>
-              void removeVideoProcessor()
-            </dt>
-            <dd>
-              Remove the added <code>Worker</code> from current
-              <code>MediaStreamTrack</code>. User Agent should throw exception
-              when the <code>Worker</code> is not exist in the
-              <code>MediaStreamTrack</code>. A <code>MediaStreamTrack</code>
-              owns at most one Worker processor in any time.
-            </dd>
-          </dl>
-        </section>
+        </div>
+      </section>
+      <section>
+        <h2>
+          <code>MediaStreamTrack</code> interface
+        </h2>
+        <pre class="idl">
+          partial interface MediaStreamTrack {
+              Promise&lt;void&gt;             addVideoMonitor(Worker worker);
+              Promise&lt;void&gt;             removeVideoMonitor(Worker worker);
+              Promise&lt;MediaStreamTrack&gt; addVideoProcessor(Worker worker);
+              Promise&lt;void&gt;             removeVideoProcessor();
+          };
+        </pre>
+        <div dfn-for="MediaStreamTrack">
+          <p>
+            The <code><dfn>addVideoMonitor</dfn>()</code> method, when invoked,
+            must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked. (This is the <a>input media
+                stream track</a>.)
+                </li>
+                <li>Associate <var>worker</var> with <a>input media stream
+                track</a> <var>track</var>.
+                </li>
+                <li>Resolve <var>promise</var> with undefined.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li><!-- TODO: when do we want to reject the promise? -->
+          </ol>
+          <p>
+            The <code><dfn>removeVideoMonitor</dfn>()</code> method, when
+            invoked, must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked.
+                </li>
+                <li>If there exists an association between <var>worker</var>
+                and <var>track</var>, break that association and resolve <var>
+                  promise</var> with undefined.
+                </li>
+                <li>Otherwise, reject <var>promise</var> with
+                <code>NotFoundError</code>.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li>
+          </ol>
+          <p>
+            The <code><dfn>addVideoProcessor</dfn>()</code> method, when
+            invoked, must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked. (This is the <a>input media
+                stream track</a>.)
+                </li>
+                <li>If there exists an association between <var>worker</var>
+                and <var>track</var>, reject promise with
+                <code>QuotaExceededError</code>.
+                  <div class="note">
+                    A single <a>input media stream track</a> is associated with
+                    at most one <a>processing video worker</a> at a time.
+                  </div>
+                </li>
+                <li>Associate <var>worker</var> with <a>input media stream
+                track</a> <var>track</var>.
+                </li>
+                <li>Let <var>new track</var> be a newly created
+                <a>MediaStreamTrack</a> object. (This is the <a>output media
+                stream track</a>.)
+                </li>
+                <li>Associate <var>new track</var> as the <a>output media
+                stream track</a> for <var>worker</var>.
+                </li>
+                <li>Resolve <var>promise</var> with <var>new track</var>.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li>
+          </ol>
+          <p>
+            The <code><dfn>removeVideoProcessor</dfn>()</code> method, when
+            invoked, must run these steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>worker</var> be the first method argument.
+                </li>
+                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
+                on which the method was invoked.
+                </li>
+                <li>If there exists an association between <var>worker</var>
+                and <var>track</var>, break that association and resolve <var>
+                  promise</var> with undefined.
+                </li>
+                <li>Otherwise, reject <var>promise</var> with
+                <code>NotFoundError</code>.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li>
+          </ol>
+        </div>
+      </section>
     </section>
     <section id='imagebitmap-extensions'>
-      <h2>ImageBitmap extensions</h2>
+      <h2>
+        ImageBitmap extensions
+      </h2>
       <div class="note">
         <p>
-          The <a>ImageBitmap</a> interface is originally designed as
-          a pure opaque handler to an image data buffer inside a browser so that
-          how the browser stores the buffer is uknown to users and optimized to
+          The <a>ImageBitmap</a> interface is originally designed as a pure
+          opaque handler to an image data buffer inside a browser so that how
+          the browser stores the buffer is uknown to users and optimized to
           platforms. In this specification, we chooses <a>ImageBitmap</a>
           (instead of <code>ImageData</code>) as the container of video frames
           because the decoded video frame data might exist in either CPU or GPU
@@ -415,23 +706,20 @@
       <p>
         Considering how would developers process video frames, there are two
         possible approaches, via pure JavaScript(/asm.js) code or via WebGL.
-        <ol>
-          <li>
-            If developers use JavaScript(/asm.js) to process the frames, then
-            the <a>ImageBitmap</a> interface needs to be extended with APIs for
-            developers to access its underlying data and there should also be a
-            way for developers to create an <a>ImageBitmap</a> from the
-            processed data.
-          </li>
-          <li>
-            If developers use WebGL, then WebGL needs to be extended so that
-            developers can pass an <a>ImageBitmap</a> into the WebGL context and
-            the browser will handle how to upload the raw image data into the
-            GPU memory. Possiblely, the data is already in the GPU memory so
-            that the operation could be very efficient.
-          </li>
-        </ol>
       </p>
+      <ol>
+        <li>If developers use JavaScript(/asm.js) to process the frames, then
+        the <a>ImageBitmap</a> interface needs to be extended with APIs for
+        developers to access its underlying data and there should also be a way
+        for developers to create an <a>ImageBitmap</a> from the processed data.
+        </li>
+        <li>If developers use WebGL, then WebGL needs to be extended so that
+        developers can pass an <a>ImageBitmap</a> into the WebGL context and
+        the browser will handle how to upload the raw image data into the GPU
+        memory. Possiblely, the data is already in the GPU memory so that the
+        operation could be very efficient.
+        </li>
+      </ol>
       <p>
         In this specification, the original <a>ImageBitmap</a> interface is
         extended with three methods to let developers read data from an
@@ -439,76 +727,72 @@
         supported <a>ImageFormat</a>s and two interfaces,
         <a>ImageFormatPixelLayout</a> and <a>ChannelPixelLayout</a>, are
         proposed to work with the extend <a>ImageBitmap</a> methods to describe
-        how the accessed image data is arranged in memory. Also,
-        the <a>ImageBitmapFactories</a> interface is extended to let developers
+        how the accessed image data is arranged in memory. Also, the
+        <a>ImageBitmapFactories</a> interface is extended to let developers
         create an <a>ImageBitmap</a> object from a given <a>BufferSource</a>.
       </p>
       <section id='imageformat'>
-        <h2>ImageFormat</h2>
+        <h2>
+          ImageFormat
+        </h2>
         <p>
           An image or a video frame is conceptually a two-dimentional array of
           data and each element in the array is called a <dfn>pixel</dfn>.
           However, the pixels are usually stored in a one-dimentional array and
-          could be arranged in a variety of <a>ImageFormat</a>s.
-          Developers need to know how the pixels are formatted so that they are
-          able to process it.
-
-          An <a>ImageFormat</a> describes how pixels in an image are arranged
-          and all pixels in one single image are arranged in the same way.
-          A single pixel has at least one, but usually multiple
-          <dfn>pixel value</dfn>s.
-          The range of a pixel value varies, which means different
-          <a>ImageFormat</a>s use different <dfn>data type</dfn>s to store a
-          single pixel value.
-          The most frequently used data type is 8-bit unsigned interger whose
-          range is from 0 to 255, others could be 16-bit interger or 32-bit
-          folating points and so forth.
-          The number of pixle values of a single pixel is called the number of
-          <dfn>channel</dfn>s of the <a>ImageFormat</a>.
-          Multiple pixel valuse of a pixel are used together to describe the
-          captured property which could be color or depth information.
-          For example, if the data is a color image in RGB color space, then it
-          is a three-channel <a>ImageFormat</a> and a pixel is described by R, G
-          and B three pixel values with range from 0 to 255.
-          Another example, if the data is a gray image, then it is a
-          single-channel <a>ImageFormat</a> with 8-bit unsigned interger data
-          type and the pixel value describes the gray scale.
-          For depth data, it is a single channel <a>ImageFormat</a> too, but the
-          data type is 16-bit unsigned interger and the pixel value is the depth
-          level.
-
-          For those <a>ImageFormat</a>s whose pixels contain multiple pixel
-          values, the pixel values might be arranged in a planar way or
-          interleaving way:
-          <ol>
-            <li>
-              <dfn>Planar pixel layout</dfn>: each channel has its pixel values
-              stored consecutively in separated buffers (a.k.a. planes) and then
-              all channel buffers are stored consecutively in memory.
-              (Ex: RRRRRR......GGGGGG......BBBBBB......)
-            </li>
-            <li>
-              <dfn>Interleaving pixel layout</dfn>: each pixel has its pixel
-              values from all channels stored together and interleaves all
-              channels.
-              (Ex: RGBRGBRGBRGBRGB......)
-            </li>
-          </ol>
-          <div class="note">
-            <p>
-              <a>ImageFormat</a>s belong to the same color space might have
-              different pixel layouts.
-            </p>
-          </div>
+          could be arranged in a variety of <a>ImageFormat</a>s. Developers
+          need to know how the pixels are formatted so that they are able to
+          process it. An <a>ImageFormat</a> describes how pixels in an image
+          are arranged and all pixels in one single image are arranged in the
+          same way. A single pixel has at least one, but usually multiple
+          <dfn>pixel value</dfn>s. The range of a pixel value varies, which
+          means different <a>ImageFormat</a>s use different <dfn>data
+          type</dfn>s to store a single pixel value. The most frequently used
+          data type is 8-bit unsigned interger whose range is from 0 to 255,
+          others could be 16-bit interger or 32-bit folating points and so
+          forth. The number of pixle values of a single pixel is called the
+          number of <dfn>channel</dfn>s of the <a>ImageFormat</a>. Multiple
+          pixel valuse of a pixel are used together to describe the captured
+          property which could be color or depth information. For example, if
+          the data is a color image in RGB color space, then it is a
+          three-channel <a>ImageFormat</a> and a pixel is described by R, G and
+          B three pixel values with range from 0 to 255. Another example, if
+          the data is a gray image, then it is a single-channel
+          <a>ImageFormat</a> with 8-bit unsigned interger data type and the
+          pixel value describes the gray scale. For depth data, it is a single
+          channel <a>ImageFormat</a> too, but the data type is 16-bit unsigned
+          interger and the pixel value is the depth level. For those
+          <a>ImageFormat</a>s whose pixels contain multiple pixel values, the
+          pixel values might be arranged in a planar way or interleaving way:
         </p>
+        <ol>
+          <li>
+            <dfn>Planar pixel layout</dfn>: each channel has its pixel values
+            stored consecutively in separated buffers (a.k.a. planes) and then
+            all channel buffers are stored consecutively in memory. (Ex:
+            RRRRRR......GGGGGG......BBBBBB......)
+          </li>
+          <li>
+            <dfn>Interleaving pixel layout</dfn>: each pixel has its pixel
+            values from all channels stored together and interleaves all
+            channels. (Ex: RGBRGBRGBRGBRGB......)
+          </li>
+        </ol>
+        <div class="note">
+          <p>
+            <a>ImageFormat</a>s belong to the same color space might have
+            different pixel layouts.
+          </p>
+        </div>
         <section id='imageformat-enumaration'>
-          <h2><code>ImageFormat</code> enumeration</h2>
+          <h2>
+            <code>ImageFormat</code> enumeration
+          </h2>
           <p>
             An enumeration <a>ImageFormat</a> defines a list of image formats
-            which are supported by the browser and  exposed to users. The extend
+            which are supported by the browser and exposed to users. The extend
             APIs in this specification use this enumeration to negotiate the
-            format while accessing the underlying data of <a>ImageBitmap</a> and
-            creating a new <a>ImageBitmap</a>.
+            format while accessing the underlying data of <a>ImageBitmap</a>
+            and creating a new <a>ImageBitmap</a>.
           </p>
           <div class="note">
             <p>
@@ -516,151 +800,293 @@
             </p>
           </div>
           <dl id="enum-basic" class="idl" title="enum ImageFormat">
-            <dt>RGBA32</dt>
+            <dt>
+              RGBA32
+            </dt>
             <dd>
-              <p>Channel order: R, G, B, A</p>
-              <p>Channel size: full rgba-chennels</p>
-              <p>Pixel layout: interleaving rgba-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: R, G, B, A
+              </p>
+              <p>
+                Channel size: full rgba-chennels
+              </p>
+              <p>
+                Pixel layout: interleaving rgba-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>BGRA32</dt>
+            <dt>
+              BGRA32
+            </dt>
             <dd>
-              <p>Channel order: B, G, R, A</p>
-              <p>Channel size: full bgra-channels</p>
-              <p>Pixel layout: interleaving bgra-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: B, G, R, A
+              </p>
+              <p>
+                Channel size: full bgra-channels
+              </p>
+              <p>
+                Pixel layout: interleaving bgra-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>RGB24</dt>
+            <dt>
+              RGB24
+            </dt>
             <dd>
-              <p>Channel order: R, G, B</p>
-              <p>Channel size: full rgb-channels</p>
-              <p>Pixel layout: interleaving rgb-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: R, G, B
+              </p>
+              <p>
+                Channel size: full rgb-channels
+              </p>
+              <p>
+                Pixel layout: interleaving rgb-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>BGR24</dt>
+            <dt>
+              BGR24
+            </dt>
             <dd>
-              <p>Channel order: B, G, R</p>
-              <p>Channel size: full bgr-channels</p>
-              <p>Pixel layout: interleaving bgr-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: B, G, R
+              </p>
+              <p>
+                Channel size: full bgr-channels
+              </p>
+              <p>
+                Pixel layout: interleaving bgr-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>GRAY8</dt>
+            <dt>
+              GRAY8
+            </dt>
             <dd>
-              <p>Channel order: GRAY</p>
-              <p>Channel size: full gray-channel</p>
-              <p>Pixel layout: planar gray-channel</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: GRAY
+              </p>
+              <p>
+                Channel size: full gray-channel
+              </p>
+              <p>
+                Pixel layout: planar gray-channel
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>YUV444P</dt>
+            <dt>
+              YUV444P
+            </dt>
             <dd>
-              <p>Channel order: Y, U, V</p>
-              <p>Channel size: full yuv-channels</p>
-              <p>Pixel layout: planar yuv-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: Y, U, V
+              </p>
+              <p>
+                Channel size: full yuv-channels
+              </p>
+              <p>
+                Pixel layout: planar yuv-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>YUV422P</dt>
+            <dt>
+              YUV422P
+            </dt>
             <dd>
-              <p>Channel order: Y, U, V</p>
-              <p>Channel size: full y-channel, half uv-channels</p>
-              <p>Pixel layout: planar yuv-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: Y, U, V
+              </p>
+              <p>
+                Channel size: full y-channel, half uv-channels
+              </p>
+              <p>
+                Pixel layout: planar yuv-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>YUV420P</dt>
+            <dt>
+              YUV420P
+            </dt>
             <dd>
-              <p>Channel order: Y, U, V</p>
-              <p>Channel size: full y-channel, quarter uv-channels</p>
-              <p>Pixel layout: planar yuv-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: Y, U, V
+              </p>
+              <p>
+                Channel size: full y-channel, quarter uv-channels
+              </p>
+              <p>
+                Pixel layout: planar yuv-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>YUV420SP_NV12</dt>
+            <dt>
+              YUV420SP_NV12
+            </dt>
             <dd>
-              <p>Channel order: Y, U, V</p>
-              <p>Channel size: full y-channel, quarter uv-channels</p>
-              <p>Pixel layout: planar y-channel, interleaving uv-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: Y, U, V
+              </p>
+              <p>
+                Channel size: full y-channel, quarter uv-channels
+              </p>
+              <p>
+                Pixel layout: planar y-channel, interleaving uv-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>YUV420SP_NV21</dt>
+            <dt>
+              YUV420SP_NV21
+            </dt>
             <dd>
-              <p>Channel order: Y, V, U</p>
-              <p>Channel size: full y-channel, quarter uv-channels</p>
-              <p>Pixel layout: planar y-channel, interleaving vu-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: Y, V, U
+              </p>
+              <p>
+                Channel size: full y-channel, quarter uv-channels
+              </p>
+              <p>
+                Pixel layout: planar y-channel, interleaving vu-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>HSV</dt>
+            <dt>
+              HSV
+            </dt>
             <dd>
-              <p>Channel order: H, S, V</p>
-              <p>Channel size: full hsv-channels</p>
-              <p>Pixel layout: interleaving hsv-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: H, S, V
+              </p>
+              <p>
+                Channel size: full hsv-channels
+              </p>
+              <p>
+                Pixel layout: interleaving hsv-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>Lab</dt>
+            <dt>
+              Lab
+            </dt>
             <dd>
-              <p>Channel order: l, a, b</p>
-              <p>Channel size: full lab-channels</p>
-              <p>Pixel layout: interleaving lab-channels</p>
-              <p>Data type: 8-bit unsigned integer</p>
+              <p>
+                Channel order: l, a, b
+              </p>
+              <p>
+                Channel size: full lab-channels
+              </p>
+              <p>
+                Pixel layout: interleaving lab-channels
+              </p>
+              <p>
+                Data type: 8-bit unsigned integer
+              </p>
             </dd>
-            <dt>DEPTH</dt>
+            <dt>
+              DEPTH
+            </dt>
             <dd>
-              <p>Channel order: DEPTH</p>
-              <p>Channel size: full depth-channel</p>
-              <p>Pixel layout: planar depth-channel</p>
-              <p>Data type: 16-bit unsigned integer</p>
+              <p>
+                Channel order: DEPTH
+              </p>
+              <p>
+                Channel size: full depth-channel
+              </p>
+              <p>
+                Pixel layout: planar depth-channel
+              </p>
+              <p>
+                Data type: 16-bit unsigned integer
+              </p>
             </dd>
           </dl>
         </section>
         <section id='datatype-enumeration'>
-          <h2><code>DataType</code> enumeration</h2>
+          <h2>
+            <code>DataType</code> enumeration
+          </h2>
           <p>
             An enumeration <a>DataType</a> defines a list of data types that is
             used to store a single <a>pixel value</a>.
           </p>
           <dl id="enum-basic" class="idl" title="enum DataType">
-            <dt>uint8</dt>
+            <dt>
+              uint8
+            </dt>
             <dd>
               8-bit unsigned integer.
             </dd>
-
-            <dt>int8</dt>
+            <dt>
+              int8
+            </dt>
             <dd>
               8-bit integer.
             </dd>
-
-            <dt>uint16</dt>
+            <dt>
+              uint16
+            </dt>
             <dd>
               16-bit unsigned integer.
             </dd>
-
-            <dt>int16</dt>
+            <dt>
+              int16
+            </dt>
             <dd>
               16-bit integer.
             </dd>
-
-            <dt>uint32</dt>
+            <dt>
+              uint32
+            </dt>
             <dd>
               32-bit unsigned integer.
             </dd>
-
-            <dt>int32</dt>
+            <dt>
+              int32
+            </dt>
             <dd>
               32-bit integer.
             </dd>
-
-            <dt>float32</dt>
+            <dt>
+              float32
+            </dt>
             <dd>
               32-bit IEEE floating point number.
             </dd>
-
-            <dt>float64</dt>
+            <dt>
+              float64
+            </dt>
             <dd>
               64-bit IEEE floating point number.
             </dd>
-
           </dl>
         </section>
       </section>
       <section id='pixellayout'>
-        <h2>PixelLayout</h2>
+        <h2>
+          PixelLayout
+        </h2>
         <p>
           Two interfaces, <a>ImageFormatPixelLayout</a> and
           <a>ChannelPixelLayout</a>, help together to generalize the variety of
@@ -669,41 +1095,40 @@
         <p>
           The <a>ImageFormatPixelLayout</a> represents the pixel layout of a
           certain image format and since a image format is composed by at least
-          one <a>channel</a> so an <a>ImageFormatPixelLayout</a> object contains
-          at least one <a>ChannelPixelLayout</a> object.
+          one <a>channel</a> so an <a>ImageFormatPixelLayout</a> object
+          contains at least one <a>ChannelPixelLayout</a> object.
         </p>
         <p>
-          Although an image or a video frame is a two-dimensional structure, its
-          data is usually stored in an one-dimensional array in the raw-major
-          way and the <a>ChannelPixelLayout</a> uses the following properties to
-          describe how pixel values are arranged in the one dimentional array
-          buffer.
-          <ol>
-            <li>
-              <strong>offset</strong>: where is each <a>channel</a>'s data
-              starts from.
-              (Relative to the beginning of the video data one-dimension array.)
-            </li>
-            <li>
-              <strong>width</strong> and <strong>height</strong>:
-              how much samples are in each channel.
-            </li>
-            <li>
-              <strong>data type</strong>: the data type used to store one single
-              <a>pixel value</a>.
-            </li>
-            <li>
-              <strong>stride</strong>: the total bytes of each raw plus the
-              padding bytes of each row.
-            </li>
-            <li>
-              <strong>skip</strong>: this is used to describe <a>interleaving
-              pixel layout</a>. (For <a>planar pixel layout</a>, this property
-              will be zero.)
-            </li>
-          </ol>
+          Although an image or a video frame is a two-dimensional structure,
+          its data is usually stored in an one-dimensional array in the
+          raw-major way and the <a>ChannelPixelLayout</a> uses the following
+          properties to describe how pixel values are arranged in the one
+          dimentional array buffer.
         </p>
-
+        <ol>
+          <li>
+            <strong>offset</strong>: where is each <a>channel</a>'s data starts
+            from. (Relative to the beginning of the video data one-dimension
+            array.)
+          </li>
+          <li>
+            <strong>width</strong> and <strong>height</strong>: how much
+            samples are in each channel.
+          </li>
+          <li>
+            <strong>data type</strong>: the data type used to store one single
+            <a>pixel value</a>.
+          </li>
+          <li>
+            <strong>stride</strong>: the total bytes of each raw plus the
+            padding bytes of each row.
+          </li>
+          <li>
+            <strong>skip</strong>: this is used to describe <a>interleaving
+            pixel layout</a>. (For <a>planar pixel layout</a>, this property
+            will be zero.)
+          </li>
+        </ol>
         <pre class='example highlight'>
           Example1: RGBA image, width = 620, height = 480, stride = 2560
 
@@ -712,8 +1137,8 @@
           chanel_b: offset = 2, width = 620, height = 480, data type = uint8, stride = 2560, skip = 3
           chanel_a: offset = 3, width = 620, height = 480, data type = uint8, stride = 2560, skip = 3
 
-                  <---------------------------- stride ---------------------------->
-                  <---------------------- width x 4 ---------------------->
+                  &lt;---------------------------- stride ----------------------------&gt;
+                  &lt;---------------------- width x 4 ----------------------&gt;
           [index] 01234   8   12  16  20  24  28                           2479    2559
                   |||||---|---|---|---|---|---|----------------------------|-------|
           [data]  RGBARGBARGBARGBARGBAR___R___R...                         A%%%%%%%%
@@ -722,7 +1147,6 @@
                        ^^^
                        r-skip
         </pre>
-
         <pre class='example highlight'>
           Example2: YUV420P image, width = 620, height = 480, stride = 640
 
@@ -730,24 +1154,24 @@
           chanel_u: offset = 307200, width = 310, height = 240, data type = uint8, stride = 320, skip = 0
           chanel_v: offset = 384000, width = 310, height = 240, data type = uint8, stride = 320, skip = 0
 
-                  <--------------------------- y-stride --------------------------->
-                  <----------------------- y-width ----------------------->
+                  &lt;--------------------------- y-stride ---------------------------&gt;
+                  &lt;----------------------- y-width -----------------------&gt;
           [index] 012345                                                  619      639
                   ||||||--------------------------------------------------|--------|
           [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                        Y%%%%%%%%%
           [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                        Y%%%%%%%%%
           [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                        Y%%%%%%%%%
           [data]  ......
-                  <-------- u-stride ---------->
-                  <----- u-width ----->
+                  &lt;-------- u-stride ----------&gt;
+                  &lt;----- u-width -----&gt;
           [index] 307200              307509   307519
                   |-------------------|--------|
           [data]  UUUUUUUUUU...       U%%%%%%%%%
           [data]  UUUUUUUUUU...       U%%%%%%%%%
           [data]  UUUUUUUUUU...       U%%%%%%%%%
           [data]  ......
-                  <-------- v-stride ---------->
-                  <- --- v-width ----->
+                  &lt;-------- v-stride ----------&gt;
+                  &lt;- --- v-width -----&gt;
           [index] 384000              384309   384319
                   |-------------------|--------|
           [data]  VVVVVVVVVV...       V%%%%%%%%%
@@ -755,7 +1179,6 @@
           [data]  VVVVVVVVVV...       V%%%%%%%%%
           [data]  ......
         </pre>
-
         <pre class='example highlight'>
           Example3: YUV420SP_NV12 image, width = 620, height = 480, stride = 640
 
@@ -763,16 +1186,16 @@
           chanel_u: offset = 307200, width = 310, height = 240, data type = uint8, stride = 640, skip = 1
           chanel_v: offset = 307201, width = 310, height = 240, data type = uint8, stride = 640, skip = 1
 
-                  <--------------------------- y-stride -------------------------->
-                  <----------------------- y-width ---------------------->
+                  &lt;--------------------------- y-stride --------------------------&gt;
+                  &lt;----------------------- y-width ----------------------&gt;
           [index] 012345                                                 619      639
                   ||||||-------------------------------------------------|--------|
           [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                       Y%%%%%%%%%
           [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                       Y%%%%%%%%%
           [data]  YYYYYYYYYYYYYYYYYYYYYYYYYYYYY...                       Y%%%%%%%%%
           [data]  ......
-                  <--------------------- u-stride / v-stride -------------------->
-                  <------------------ u-width + v-width ----------------->
+                  &lt;--------------------- u-stride / v-stride --------------------&gt;
+                  &lt;------------------ u-width + v-width -----------------&gt;
           [index] 307200(u-offset)                                       307819  307839
                   |------------------------------------------------------|-------|
           [index] |307201(v-offset)                                      |307820 |
@@ -783,14 +1206,13 @@
                    ^            ^
                   u-skip        v-skip
         </pre>
-
         <pre class='example highlight'>
           Example4: DEPTH image, width = 640, height = 480, stride = 1280
 
           chanel_d: offset = 0, width = 640, height = 480, data type = uint16, stride = 1280, skip = 0
 
-                  <----------------------- d-stride ---------------------->
-                  <----------------------- d-width ----------------------->
+                  &lt;----------------------- d-stride ----------------------&gt;
+                  &lt;----------------------- d-width -----------------------&gt;
           [index] 012345                                                  1280
                   ||||||--------------------------------------------------|
           [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
@@ -798,10 +1220,12 @@
           [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
           [data]  ......
         </pre>
-
         <section id='imageformatpixellayout-interface'>
-          <h2><code>ImageFormatPixelLayout</code> interface</h2>
-          <dl class="idl" title="[Exposed=(Window,Worker)] interface ChannelPixelLayout">
+          <h2>
+            <code>ImageFormatPixelLayout</code> interface
+          </h2>
+          <dl class="idl" title=
+          "[Exposed=(Window,Worker)] interface ChannelPixelLayout">
             <dt>
               readonly attribute unsigned long offset
             </dt>
@@ -812,27 +1236,24 @@
                 method.)
               </p>
             </dd>
-
             <dt>
               readonly attribute unsigned long width
             </dt>
             <dd>
               <p>
-                The width of this channel.
-                <a>Channel</a>s in an image format may have different width.
+                The width of this channel. <a>Channel</a>s in an image format
+                may have different width.
               </p>
             </dd>
-
             <dt>
               readonly attribute unsigned long height
             </dt>
             <dd>
               <p>
-                The height of this channel.
-                <a>Channel</a>s in an image format may have different height.
+                The height of this channel. <a>Channel</a>s in an image format
+                may have different height.
               </p>
             </dd>
-
             <dt>
               readonly attribute DataType dataType
             </dt>
@@ -841,23 +1262,18 @@
                 The data type used to store one single <a>pixel value</a>.
               </p>
             </dd>
-
             <dt>
               readonly attribute unsigned long stride
             </dt>
             <dd>
               <p>
                 The stride of this channel.
-              </p>
-              </p>
-                The stride is the number of bytes between the beging two
-                consecutive raws in memory.
-              </p>
+              </p>The stride is the number of bytes between the beging two
+              consecutive raws in memory.
               <p>
                 The total bytes of each raw plus the padding bytes of each raw.
               </p>
             </dd>
-
             <dt>
               readonly attribute unsigned long skip
             </dt>
@@ -868,36 +1284,40 @@
               </p>
               <p>
                 Possible values:
-                <ul>
-                  <li>
-                    zero: for <a>planar pixel layout</a>.
-                  </li>
-                  <li>
-                    a positive integer: for <a>interleaving pixel layout</a>.
-                  </li>
-                </ul>
               </p>
+              <ul>
+                <li>zero: for <a>planar pixel layout</a>.
+                </li>
+                <li>a positive integer: for <a>interleaving pixel layout</a>.
+                </li>
+              </ul>
             </dd>
           </dl>
         </section>
         <section id='channelpixellayout-interface'>
-          <h2><code>ChannelPixelLayout</code> interface</h2>
-          <dl class="idl" title="[Exposed=(Window,Worker)] interface ImageFormatPixelLayout">
+          <h2>
+            <code>ChannelPixelLayout</code> interface
+          </h2>
+          <dl class="idl" title=
+          "[Exposed=(Window,Worker)] interface ImageFormatPixelLayout">
             <dt>
               readonly attribute sequence&lt;ChannelPixelLayout&gt; channels
             </dt>
             <dd>
               <p>
-                Channel information of this image format.
-                Each image format has at least one <a>channel</a>.
-              <p>
+                Channel information of this image format. Each image format has
+                at least one <a>channel</a>.
+              </p>
             </dd>
           </dl>
         </section>
       </section>
       <section id='imagebitmap-interface-extensions'>
-        <h2><code>ImageBitmap</code> interface</h2>
-        <dl class="idl" title="[Exposed=(Window,Worker)] partial interface ImageBitmap">
+        <h2>
+          <code>ImageBitmap</code> interface
+        </h2>
+        <dl class="idl" title=
+        "[Exposed=(Window,Worker)] partial interface ImageBitmap">
           <dt>
             ImageFormat findOptimalFormat()
           </dt>
@@ -913,13 +1333,14 @@
               image formats.
             </p>
             <dl class="parameters">
-              <dt>optional sequence&lt;ImageFormat&gt; possibleFormats</dt>
+              <dt>
+                optional sequence&lt;ImageFormat&gt; possibleFormats
+              </dt>
               <dd>
                 A list of image formats that users can handler.
               </dd>
             </dl>
           </dd>
-
           <dt>
             long mappedDataLength()
           </dt>
@@ -936,13 +1357,14 @@
               the given <code>format</code>.
             </p>
             <dl class="parameters">
-              <dt>ImageFormat format</dt>
+              <dt>
+                ImageFormat format
+              </dt>
               <dd>
                 The format that users want.
               </dd>
             </dl>
           </dd>
-
           <dt>
             Promise&lt;ImageFormatPixelLayout&gt; mapDataInto()
           </dt>
@@ -950,9 +1372,9 @@
             <p>
               Makes a copy of the underlying image data in the given format
               <code>format</code> into the given <code>buffer</code> at offset
-              <code>offset</code>, filling at most <code>length</code> bytes and
-              returns an <a>ImageFormatPixelLayout</a> object which describes
-              the pixel layout.
+              <code>offset</code>, filling at most <code>length</code> bytes
+              and returns an <a>ImageFormatPixelLayout</a> object which
+              describes the pixel layout.
             </p>
             <p>
               Throws if <code>format</code> is not supported.
@@ -962,24 +1384,32 @@
               <a>ImageFormatPixelLayout</a> object.
             </p>
             <p>
-              Return an <a>ImageFormatPixelLayout</a> object which describes the
-              pixel layout.
+              Return an <a>ImageFormatPixelLayout</a> object which describes
+              the pixel layout.
             </p>
             <dl class="parameters">
-              <dt>ImageFormat format</dt>
+              <dt>
+                ImageFormat format
+              </dt>
               <dd>
                 The format that users want.
               </dd>
-              <dt>BufferSource buffer</dt>
+              <dt>
+                BufferSource buffer
+              </dt>
               <dd>
                 A container for receiving the mapped image data.
               </dd>
-              <dt>long offset</dt>
+              <dt>
+                long offset
+              </dt>
               <dd>
-                The beginning position of the <code>buffer</code> to place
-                the mapped data.
+                The beginning position of the <code>buffer</code> to place the
+                mapped data.
               </dd>
-              <dt>long length</dt>
+              <dt>
+                long length
+              </dt>
               <dd>
                 The length of space in the <code>buffer</code> that could be
                 filled.
@@ -989,10 +1419,13 @@
         </dl>
       </section>
       <section id='imagebitmapfactories-interface-extensions'>
-        <h2><code>ImageBitmapFactories</code> interface</h2>
-        <dl class="idl" title="[NoInterfaceObject, Exposed=(Window,Worker)] partial interface ImageBitmapFactories">
-          <dt>
-            Promise&lt;ImageBitmap&gt;  createImageBitmap()
+        <h2>
+          <code>ImageBitmapFactories</code> interface
+        </h2>
+        <dl class="idl" title=
+        "[NoInterfaceObject, Exposed=(Window,Worker)] partial interface ImageBitmapFactories">
+        <dt>
+            Promise&lt;ImageBitmap&gt; createImageBitmap()
           </dt>
           <dd>
             <p>
@@ -1000,35 +1433,44 @@
               <code>BufferSource</code> containg raw image data.
             </p>
             <dl class="parameters">
-              <dt>BufferSource buffer</dt>
+              <dt>
+                BufferSource buffer
+              </dt>
               <dd>
                 A container of the raw image data.
               </dd>
-              <dt>long offset</dt>
+              <dt>
+                long offset
+              </dt>
               <dd>
                 The beginning position of the <code>buffer</code> where the raw
                 image data is placed.
               </dd>
-              <dt>long length</dt>
+              <dt>
+                long length
+              </dt>
               <dd>
                 The length of spaces in the <code>buffer</code> that the raw
                 image data is palced.
               </dd>
-              <dt>ImageFormat format</dt>
+              <dt>
+                ImageFormat format
+              </dt>
               <dd>
                 The format of the raw image data.
               </dd>
-              <dt>ImageFormatPixelLayout layout</dt>
+              <dt>
+                ImageFormatPixelLayout layout
+              </dt>
               <dd>
-                The pixel layout of the raw image data,
-                which describes how the data is arranged in the given
-                <code>buffer</code> as the given <code>format</code>.
+                The pixel layout of the raw image data, which describes how the
+                data is arranged in the given <code>buffer</code> as the given
+                <code>format</code>.
               </dd>
             </dl>
           </dd>
-
           <dt>
-            Promise&lt;ImageBitmap&gt;  createImageBitmap()
+            Promise&lt;ImageBitmap&gt; createImageBitmap()
           </dt>
           <dd>
             <p>
@@ -1037,92 +1479,109 @@
               cropping area.
             </p>
             <dl class="parameters">
-              <dt>BufferSource buffer</dt>
+              <dt>
+                BufferSource buffer
+              </dt>
               <dd>
                 A container of the raw image data.
               </dd>
-              <dt>long offset</dt>
+              <dt>
+                long offset
+              </dt>
               <dd>
                 The beginning position of the <code>buffer</code> where the raw
                 image data is placed.
               </dd>
-              <dt>long length</dt>
+              <dt>
+                long length
+              </dt>
               <dd>
                 The length of spaces in the <code>buffer</code> that the raw
                 image data is palced.
               </dd>
-              <dt>ImageFormat format</dt>
+              <dt>
+                ImageFormat format
+              </dt>
               <dd>
                 The format of the raw image data.
               </dd>
-              <dt>ImageFormatPixelLayout layout</dt>
+              <dt>
+                ImageFormatPixelLayout layout
+              </dt>
               <dd>
-                The pixel layout of the raw image data,
-                which describes how the data is arranged in the given
-                <code>buffer</code> as the given <code>format</code>.
+                The pixel layout of the raw image data, which describes how the
+                data is arranged in the given <code>buffer</code> as the given
+                <code>format</code>.
               </dd>
-              <dt>long sx</dt>
+              <dt>
+                long sx
+              </dt>
               <dd>
                 The x-coordinate of the starting point of the cropping
                 rectangle.
               </dd>
-              <dt>long sy</dt>
+              <dt>
+                long sy
+              </dt>
               <dd>
                 The y-coordinate of the starting point of the cropping
                 rectangle.
               </dd>
-              <dt>long sw</dt>
+              <dt>
+                long sw
+              </dt>
               <dd>
                 The width of the cropping rectangle.
               </dd>
-              <dt>long sh</dt>
+              <dt>
+                long sh
+              </dt>
               <dd>
                 The height of the cropping rectangle.
               </dd>
             </dl>
           </dd>
         </dl>
-
         <p>
           When the <code>createImageBitmap()</code> is invocked, the User Agent
           MUST run the following steps:
-          <ol>
-            <li>
-              If either the <em>sw</em> or <em>sh</em> arguments are specified
-              but zero,
-              Return a promise rejected with an IndexSizeError exception and
-              abort these steps.
-            </li>
-            <li>
-              If the <em>buffer</em> has been
-              <code><a href="http://www.w3.org/TR/html51/infrastructure.html#concept-transferable-neutered">neutered</a></code>,
-              Return a promise rejected with an InvalidStateError exception and
-              abort these steps.
-            </li>
-            <li>
-              Create a new <code>ImageBitmap</code> object.
-            </li>
-            <li>
-              Let the <code>ImageBitmap</code> object's bitmap data be the image
-              data given by the <code>BufferSource</code> object,
-              <code><a href="http://www.w3.org/TR/html51/webappapis.html#cropped-to-the-source-rectangle">cropped to the source rectangle</a></code>.
-            </li>
-            <li>
-              Return a new <code>Promise</code>, but continue running these steps
-              <code><a href="http://www.w3.org/TR/html51/infrastructure.html#in-parallel">in parallel</a></code>.
-            </li>
-            <li>
-              <code><a href="http://www.w3.org/TR/html51/infrastructure.html#concept-resolver-fulfill">Resolve</a></code>
-              the <code>Promise</code> with the new <code>ImageBitmap</code>
-              object as the value.
-            </li>
-          <ol>
-
         </p>
+        <ol>
+          <li>If either the <em>sw</em> or <em>sh</em> arguments are specified
+          but zero, Return a promise rejected with an IndexSizeError exception
+          and abort these steps.
+          </li>
+          <li>If the <em>buffer</em> has been <code><a href=
+          "http://www.w3.org/TR/html51/infrastructure.html#concept-transferable-neutered">
+            neutered</a></code>, Return a promise rejected with an
+            InvalidStateError exception and abort these steps.
+          </li>
+          <li>Create a new <code>ImageBitmap</code> object.
+          </li>
+          <li>Let the <code>ImageBitmap</code> object's bitmap data be the
+          image data given by the <code>BufferSource</code> object,
+          <code><a href=
+          "http://www.w3.org/TR/html51/webappapis.html#cropped-to-the-source-rectangle">
+            cropped to the source rectangle</a></code>.
+          </li>
+          <li>Return a new <code>Promise</code>, but continue running these
+          steps <code><a href=
+          "http://www.w3.org/TR/html51/infrastructure.html#in-parallel">in
+          parallel</a></code>.
+          </li>
+          <li>
+            <code><a href=
+            "http://www.w3.org/TR/html51/infrastructure.html#concept-resolver-fulfill">
+            Resolve</a></code> the <code>Promise</code> with the new
+            <code>ImageBitmap</code> object as the value.
+          </li>
+        </ol>
       </section>
     </section>
     <section>
-      <h2>Examples</h2>
+      <h2>
+        Examples
+      </h2>
       <h3>
         WorkerMonitor example:
       </h3>
@@ -1130,10 +1589,10 @@
         This example demonstrates how to hook a <code>Worker</code> with a
         <code>MediaStreamTrack</code> and also shows how to use
         <code>postMessage</code> to communicate between main thread and worker
-        thread. In this example, the role of control_worker.js is doing flow control.
-        This script decide whether drop frame or not. If the system is not busy,
-        the script will dispatch current frame to process_worker.js or it just
-        drop the frame.
+        thread. In this example, the role of control_worker.js is doing flow
+        control. This script decide whether drop frame or not. If the system is
+        not busy, the script will dispatch current frame to process_worker.js
+        or it just drop the frame.
       </p>
       <h4>
         Main file javascript
@@ -1244,8 +1703,8 @@
         WorkerMonitor example in multiple workers:
       </h3>
       <p>
-        This example is extended from previous "WorkerMonitor example". The main
-        difference is this example create a WorkerPool object in
+        This example is extended from previous "WorkerMonitor example". The
+        main difference is this example create a WorkerPool object in
         control_worker.js. The script will reuse the workers in the pool. This
         mechanism full utilized the power of multi-core machine to reduce the
         frame drop rate.
@@ -1306,7 +1765,7 @@
         }
 
         WorkerPool.prototype.Init = function(script, numOfWorkers) {
-          for (var i = 0; i < numOfWorkers; ++i) {
+          for (var i = 0; i &lt; numOfWorkers; ++i) {
             this.avaialableQueue.push(new ProcessWorker(i, script, this));
           }
         }
@@ -1318,7 +1777,7 @@
 
         WorkerPool.prototype.Dispatch = function(task) {
           if (task.taskType == ProcessTask.TASK_TYPE) {
-            if (this.avaialableQueue.length > 0) {
+            if (this.avaialableQueue.length &gt; 0) {
               var processWorker = this.avaialableQueue.shift();
               processWorker.worker.postMessage(task);
               this.workingQueue.push(processWorker);
@@ -1335,7 +1794,7 @@
         }
 
         WorkerPool.prototype.Display = function() {
-          while(this.workingQueue.length > 0) {
+          while(this.workingQueue.length &gt; 0) {
             if (!!(this.workingQueue[0].displayTask)) {
               var processWorker = this.workingQueue.shift();
               postMessage(processWorker.displayTask);
@@ -1348,7 +1807,7 @@
         }
 
         WorkerPool.prototype.FindProcessWorker = function(worker) {
-          for (var i = 0; i < this.workingQueue.length; ++i) {
+          for (var i = 0; i &lt; this.workingQueue.length; ++i) {
             if (this.workingQueue[i].worker == worker) {
               return this.workingQueue[i];
             }
@@ -1448,8 +1907,8 @@
       </h3>
       <p>
         This example shows how to process and display the processed
-        <a>MediaStreamTrack</a>. Be careful, the <code>Worker</code> is appended
-        into the new <a>MediaStreamTrack</a>, not original one.
+        <a>MediaStreamTrack</a>. Be careful, the <code>Worker</code> is
+        appended into the new <a>MediaStreamTrack</a>, not original one.
       </p>
       <h4>
         Main file javascript
@@ -1522,8 +1981,8 @@
           }
 
           // convert YUV to Gray or RGBA
-          for (var i = 0; i < bitmap.height; ++i) {
-            for (var j = 0; j < bitmap.width; ++j) {
+          for (var i = 0; i &lt; bitmap.height; ++i) {
+            for (var j = 0; j &lt; bitmap.width; ++j) {
 
               /*
                *  do invert effect
@@ -1546,7 +2005,9 @@
       </pre>
     </section>
     <section class='appendix'>
-      <h2>Acknowledgements</h2>
+      <h2>
+        Acknowledgements
+      </h2>
       <p>
         Thanks to Robert O'Callahan for his idea of this design.
       </p>
