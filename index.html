@@ -799,229 +799,263 @@
               We need to elaborate this list for standardization.
             </p>
           </div>
-          <dl id="enum-basic" class="idl" title="enum ImageFormat">
-            <dt>
-              RGBA32
-            </dt>
-            <dd>
-              <p>
-                Channel order: R, G, B, A
-              </p>
-              <p>
-                Channel size: full rgba-chennels
-              </p>
-              <p>
-                Pixel layout: interleaving rgba-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              BGRA32
-            </dt>
-            <dd>
-              <p>
-                Channel order: B, G, R, A
-              </p>
-              <p>
-                Channel size: full bgra-channels
-              </p>
-              <p>
-                Pixel layout: interleaving bgra-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              RGB24
-            </dt>
-            <dd>
-              <p>
-                Channel order: R, G, B
-              </p>
-              <p>
-                Channel size: full rgb-channels
-              </p>
-              <p>
-                Pixel layout: interleaving rgb-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              BGR24
-            </dt>
-            <dd>
-              <p>
-                Channel order: B, G, R
-              </p>
-              <p>
-                Channel size: full bgr-channels
-              </p>
-              <p>
-                Pixel layout: interleaving bgr-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              GRAY8
-            </dt>
-            <dd>
-              <p>
-                Channel order: GRAY
-              </p>
-              <p>
-                Channel size: full gray-channel
-              </p>
-              <p>
-                Pixel layout: planar gray-channel
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              YUV444P
-            </dt>
-            <dd>
-              <p>
-                Channel order: Y, U, V
-              </p>
-              <p>
-                Channel size: full yuv-channels
-              </p>
-              <p>
-                Pixel layout: planar yuv-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              YUV422P
-            </dt>
-            <dd>
-              <p>
-                Channel order: Y, U, V
-              </p>
-              <p>
-                Channel size: full y-channel, half uv-channels
-              </p>
-              <p>
-                Pixel layout: planar yuv-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              YUV420P
-            </dt>
-            <dd>
-              <p>
-                Channel order: Y, U, V
-              </p>
-              <p>
-                Channel size: full y-channel, quarter uv-channels
-              </p>
-              <p>
-                Pixel layout: planar yuv-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              YUV420SP_NV12
-            </dt>
-            <dd>
-              <p>
-                Channel order: Y, U, V
-              </p>
-              <p>
-                Channel size: full y-channel, quarter uv-channels
-              </p>
-              <p>
-                Pixel layout: planar y-channel, interleaving uv-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              YUV420SP_NV21
-            </dt>
-            <dd>
-              <p>
-                Channel order: Y, V, U
-              </p>
-              <p>
-                Channel size: full y-channel, quarter uv-channels
-              </p>
-              <p>
-                Pixel layout: planar y-channel, interleaving vu-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              HSV
-            </dt>
-            <dd>
-              <p>
-                Channel order: H, S, V
-              </p>
-              <p>
-                Channel size: full hsv-channels
-              </p>
-              <p>
-                Pixel layout: interleaving hsv-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              Lab
-            </dt>
-            <dd>
-              <p>
-                Channel order: l, a, b
-              </p>
-              <p>
-                Channel size: full lab-channels
-              </p>
-              <p>
-                Pixel layout: interleaving lab-channels
-              </p>
-              <p>
-                Data type: 8-bit unsigned integer
-              </p>
-            </dd>
-            <dt>
-              DEPTH
-            </dt>
-            <dd>
-              <p>
-                Channel order: DEPTH
-              </p>
-              <p>
-                Channel size: full depth-channel
-              </p>
-              <p>
-                Pixel layout: planar depth-channel
-              </p>
-              <p>
-                Data type: 16-bit unsigned integer
-              </p>
-            </dd>
-          </dl>
+          <pre class="idl">
+            enum ImageFormat {
+                "RGBA32",
+                "BGRA32",
+                "RGB24",
+                "BGR24",
+                "GRAY8",
+                "YUV444P",
+                "YUV422P",
+                "YUV420P",
+                "YUV420SP_NV12",
+                "YUV420SP_NV21",
+                "HSV",
+                "Lab",
+                "DEPTH"
+            };
+          </pre>
+          <table class="simple">
+            <tr>
+              <th>
+                ImageFormat
+              </th>
+              <th>
+                Channel order
+              </th>
+              <th>
+                Channel size
+              </th>
+              <th>
+                Pixel layout
+              </th>
+              <th>
+                Data type
+              </th>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>RGBA32</dfn></code>
+              </td>
+              <td>
+                R, G, B, A
+              </td>
+              <td>
+                full rgba-channels
+              </td>
+              <td>
+                interleaving rgba-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>BGRA32</dfn></code>
+              </td>
+              <td>
+                B, G, R, A
+              </td>
+              <td>
+                full bgra-channels
+              </td>
+              <td>
+                interleaving bgra-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>RGB24</dfn></code>
+              </td>
+              <td>
+                R, G, B
+              </td>
+              <td>
+                full rgb-channels
+              </td>
+              <td>
+                interleaving rgb-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>BGR24</dfn></code>
+              </td>
+              <td>
+                B, G, R
+              </td>
+              <td>
+                full bgr-channels
+              </td>
+              <td>
+                interleaving bgr-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>GRAY8</dfn></code>
+              </td>
+              <td>
+                GRAY
+              </td>
+              <td>
+                full gray-channel
+              </td>
+              <td>
+                planar gray-channel
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>YUV444P</dfn></code>
+              </td>
+              <td>
+                Y, U, V
+              </td>
+              <td>
+                full yuv-channels
+              </td>
+              <td>
+                planar yuv-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>YUV422P</dfn></code>
+              </td>
+              <td>
+                Y, U, V
+              </td>
+              <td>
+                full y-channel, half uv-channels
+              </td>
+              <td>
+                planar yuv-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>YUV420P</dfn></code>
+              </td>
+              <td>
+                Y, U, V
+              </td>
+              <td>
+                full y-channel, quarter uv-channels
+              </td>
+              <td>
+                planar yuv-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>YUV420SP_NV12</dfn></code>
+              </td>
+              <td>
+                Y, U, V
+              </td>
+              <td>
+                full y-channel, quarter uv-channels
+              </td>
+              <td>
+                planar y-channel, interleaving uv-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>YUV420SP_NV21</dfn></code>
+              </td>
+              <td>
+                Y, V, U
+              </td>
+              <td>
+                full y-channel, quarter uv-channels
+              </td>
+              <td>
+                planar y-channel, interleaving vu-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>HSV</dfn></code>
+              </td>
+              <td>
+                H, S, V
+              </td>
+              <td>
+                full hsv-channels
+              </td>
+              <td>
+                interleaving hsv-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>Lab</dfn></code>
+              </td>
+              <td>
+                l, a, b
+              </td>
+              <td>
+                full lab-channels
+              </td>
+              <td>
+                interleaving lab-channels
+              </td>
+              <td>
+                8-bit unsigned integer
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>DEPTH</dfn></code>
+              </td>
+              <td>
+                DEPTH
+              </td>
+              <td>
+                full depth-channel
+              </td>
+              <td>
+                planar depth-channel
+              </td>
+              <td>
+                16-bit unsigned integer
+              </td>
+            </tr>
+          </table>
         </section>
         <section id='datatype-enumeration'>
           <h2>
@@ -1031,56 +1065,92 @@
             An enumeration <a>DataType</a> defines a list of data types that is
             used to store a single <a>pixel value</a>.
           </p>
-          <dl id="enum-basic" class="idl" title="enum DataType">
-            <dt>
-              uint8
-            </dt>
-            <dd>
-              8-bit unsigned integer.
-            </dd>
-            <dt>
-              int8
-            </dt>
-            <dd>
-              8-bit integer.
-            </dd>
-            <dt>
-              uint16
-            </dt>
-            <dd>
-              16-bit unsigned integer.
-            </dd>
-            <dt>
-              int16
-            </dt>
-            <dd>
-              16-bit integer.
-            </dd>
-            <dt>
-              uint32
-            </dt>
-            <dd>
-              32-bit unsigned integer.
-            </dd>
-            <dt>
-              int32
-            </dt>
-            <dd>
-              32-bit integer.
-            </dd>
-            <dt>
-              float32
-            </dt>
-            <dd>
-              32-bit IEEE floating point number.
-            </dd>
-            <dt>
-              float64
-            </dt>
-            <dd>
-              64-bit IEEE floating point number.
-            </dd>
-          </dl>
+          <pre class="idl">
+            enum DataType {
+                "uint8",
+                "int8",
+                "uint16",
+                "int16",
+                "uint32",
+                "int32",
+                "float32",
+                "float64"
+            };
+          </pre>
+          <table class="simple">
+            <tr>
+              <th>
+                DataType
+              </th>
+              <th>
+                description
+              </th>
+            </tr>
+            <tr>
+              <td>
+                <code><a>uint8</a></code>
+              </td>
+              <td>
+                8-bit unsigned integer.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><a>int8</a></code>
+              </td>
+              <td>
+                8-bit integer.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><a>uint16</a></code>
+              </td>
+              <td>
+                16-bit unsigned integer.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><a>int16</a></code>
+              </td>
+              <td>
+                16-bit integer.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><a>uint32</a></code>
+              </td>
+              <td>
+                32-bit unsigned integer.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><a>int32</a></code>
+              </td>
+              <td>
+                32-bit integer.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><a>float32</a></code>
+              </td>
+              <td>
+                32-bit IEEE floating point number.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><a>float64</a></code>
+              </td>
+              <td>
+                64-bit IEEE floating point number.
+              </td>
+            </tr>
+          </table>
         </section>
       </section>
       <section id='pixellayout'>
