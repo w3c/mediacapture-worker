@@ -716,7 +716,7 @@
         <li>If developers use WebGL, then WebGL needs to be extended so that
         developers can pass an <a>ImageBitmap</a> into the WebGL context and
         the browser will handle how to upload the raw image data into the GPU
-        memory. Possiblely, the data is already in the GPU memory so that the
+        memory. Possibly, the data is already in the GPU memory so that the
         operation could be very efficient.
         </li>
       </ol>
@@ -733,54 +733,70 @@
       </p>
       <section id='imageformat'>
         <h2>
-          ImageFormat
+          Image format
         </h2>
         <p>
           An image or a video frame is conceptually a two-dimentional array of
-          data and each element in the array is called a <dfn>pixel</dfn>.
-          However, the pixels are usually stored in a one-dimentional array and
-          could be arranged in a variety of <a>ImageFormat</a>s. Developers
-          need to know how the pixels are formatted so that they are able to
-          process it. An <a>ImageFormat</a> describes how pixels in an image
-          are arranged and all pixels in one single image are arranged in the
-          same way. A single pixel has at least one, but usually multiple
-          <dfn>pixel value</dfn>s. The range of a pixel value varies, which
-          means different <a>ImageFormat</a>s use different <dfn>data
-          type</dfn>s to store a single pixel value. The most frequently used
-          data type is 8-bit unsigned interger whose range is from 0 to 255,
-          others could be 16-bit interger or 32-bit folating points and so
-          forth. The number of pixle values of a single pixel is called the
-          number of <dfn>channel</dfn>s of the <a>ImageFormat</a>. Multiple
-          pixel valuse of a pixel are used together to describe the captured
-          property which could be color or depth information. For example, if
-          the data is a color image in RGB color space, then it is a
-          three-channel <a>ImageFormat</a> and a pixel is described by R, G and
-          B three pixel values with range from 0 to 255. Another example, if
-          the data is a gray image, then it is a single-channel
-          <a>ImageFormat</a> with 8-bit unsigned interger data type and the
-          pixel value describes the gray scale. For depth data, it is a single
-          channel <a>ImageFormat</a> too, but the data type is 16-bit unsigned
-          interger and the pixel value is the depth level. For those
-          <a>ImageFormat</a>s whose pixels contain multiple pixel values, the
-          pixel values might be arranged in a planar way or interleaving way:
+          data and each element in the array is called a <dfn>pixel</dfn>. The
+          <a data-lt="pixel">pixels</a> are usually stored in a one-dimensional
+          array and could be arranged in a variety of <a data-lt=
+          "image format">image formats</a>. Developers need to know how the
+          <a data-lt="pixel">pixels</a> are formatted so that they are able to
+          process them.
+        </p>
+        <p>
+          The <a>image format</a> describes how pixels in an image are
+          arranged. A single pixel has at least one, but usually multiple
+          <dfn data-lt="pixel value">pixel values</dfn>. The range of a
+          <a>pixel value</a> varies, which means different <a data-lt=
+          "image format">image formats</a> use different <a data-lt=
+          "data type">data types</a> to store a single <a>pixel value</a>.
+        </p>
+        <p>
+          The most frequently used <a>data type</a> is 8-bit unsigned integer
+          whose range is from 0 to 255, others could be 16-bit integer or
+          32-bit floating points and so forth. The number of <a data-lt=
+          "pixel value">pixel values</a> of a single <a>pixel</a> is called the
+          <dfn data-lt="number of channel">number of channels</dfn> of the
+          <a>image format</a>. Multiple <a data-lt="pixel value">pixel
+          values</a> of a <a>pixel</a> are used together to describe the
+          captured property which could be color or depth information. For
+          example, if the data is a color image in RGB color space, then it is
+          a three-channel <a>image format</a> and a <a>pixel</a> is described
+          by R, G and B three pixel values with range from 0 to 255. As another
+          example, if the data is a gray image, then it is a single-channel
+          <a>image format</a> with 8-bit unsigned integer <a>data type</a> and
+          the <a>pixel value</a> describes the gray scale. For depth data, it
+          is a single channel <a>image format</a> too, but the <a>data type</a>
+          is 16-bit unsigned integer and the <a>pixel value</a> is the depth
+          level.
+        </p>
+        <p>
+          For those <a data-lt="image format">image formats</a> whose
+          <a data-lt="pixel">pixels</a> contain multiple <a data-lt=
+          "pixel value">pixel values</a>, the <a data-lt="pixel value">pixel
+          values</a> might be arranged in one of the following ways:
         </p>
         <ol>
           <li>
-            <dfn>Planar pixel layout</dfn>: each channel has its pixel values
-            stored consecutively in separated buffers (a.k.a. planes) and then
-            all channel buffers are stored consecutively in memory. (Ex:
+            <dfn>Planar pixel layout</dfn>: each <a>channel</a> has its
+            <a data-lt="pixel value">pixel values</a> stored consecutively in
+            separated buffers (a.k.a. planes) and then all channel buffers are
+            stored consecutively in memory. (Ex:
             RRRRRR......GGGGGG......BBBBBB......)
           </li>
           <li>
-            <dfn>Interleaving pixel layout</dfn>: each pixel has its pixel
-            values from all channels stored together and interleaves all
-            channels. (Ex: RGBRGBRGBRGBRGB......)
+            <dfn>Interleaving pixel layout</dfn>: each <a>pixel</a> has its
+            <a data-lt="pixel value">pixel values</a> from all <a data-lt=
+            "channel">channels</a> stored together and interleaves all
+            <a data-lt="channel">channels</a>. (Ex: RGBRGBRGBRGBRGB......)
           </li>
         </ol>
         <div class="note">
           <p>
-            <a>ImageFormat</a>s belong to the same color space might have
-            different pixel layouts.
+            <a data-lt="image format">Image formats</a> that belong to the same
+            color space might have different <a data-lt="pixel layout">pixel
+            layouts</a>.
           </p>
         </div>
         <section id='imageformat-enumaration'>
@@ -788,11 +804,12 @@
             <code>ImageFormat</code> enumeration
           </h2>
           <p>
-            An enumeration <a>ImageFormat</a> defines a list of image formats
-            which are supported by the browser and exposed to users. The extend
-            APIs in this specification use this enumeration to negotiate the
-            format while accessing the underlying data of <a>ImageBitmap</a>
-            and creating a new <a>ImageBitmap</a>.
+            The <a>ImageFormat</a> enumeration is used to select the <dfn>image
+            format</dfn> for the <a>ImageFormatPixelLayout</a>. The
+            <a>ImageBitmap</a> extensions defined in this specification use
+            this enumeration to negotiate the <a>image format</a> while
+            accessing the underlying data of <a>ImageBitmap</a> and creating a
+            new <a>ImageBitmap</a>.
           </p>
           <div class="note">
             <p>
@@ -1062,8 +1079,8 @@
             <code>DataType</code> enumeration
           </h2>
           <p>
-            An enumeration <a>DataType</a> defines a list of data types that is
-            used to store a single <a>pixel value</a>.
+            The <a>DataType</a> enumeration is used to select the <dfn>channel
+            data type</dfn> that is used to store a single <a>pixel value</a>.
           </p>
           <pre class="idl">
             enum DataType {
@@ -1155,50 +1172,56 @@
       </section>
       <section id='pixellayout'>
         <h2>
-          PixelLayout
+          Pixel layout
         </h2>
         <p>
           Two interfaces, <a>ImageFormatPixelLayout</a> and
-          <a>ChannelPixelLayout</a>, help together to generalize the variety of
-          pixel layouts among image formats.
+          <a>ChannelPixelLayout</a>, together generalize the variety of
+          <a data-lt="pixel layout">pixel layouts</a> among <a data-lt=
+          "image format">image formats</a>.
         </p>
         <p>
-          The <a>ImageFormatPixelLayout</a> represents the pixel layout of a
-          certain image format and since a image format is composed by at least
-          one <a>channel</a> so an <a>ImageFormatPixelLayout</a> object
-          contains at least one <a>ChannelPixelLayout</a> object.
+          The <a>ImageFormatPixelLayout</a> represents the <dfn>pixel
+          layout</dfn> of a certain <a data-lt="image format">image format</a>.
+          Since an <a>image format</a> is composed of at least one
+          <dfn>channel</dfn>, an <a>ImageFormatPixelLayout</a> object contains
+          at least one <a>ChannelPixelLayout</a> object. 
+          <!-- TODO: more elaborate description of a channel needed -->
         </p>
         <p>
           Although an image or a video frame is a two-dimensional structure,
-          its data is usually stored in an one-dimensional array in the
-          raw-major way and the <a>ChannelPixelLayout</a> uses the following
-          properties to describe how pixel values are arranged in the one
-          dimentional array buffer.
+          its data is usually stored in a one-dimensional array in the
+          row-major way and each <a>channel</a> describes how <a data-lt=
+          "pixel value">pixel values</a> are arranged in the one dimensional
+          array buffer.
         </p>
-        <ol>
-          <li>
-            <strong>offset</strong>: where is each <a>channel</a>'s data starts
-            from. (Relative to the beginning of the video data one-dimension
-            array.)
-          </li>
-          <li>
-            <strong>width</strong> and <strong>height</strong>: how much
-            samples are in each channel.
-          </li>
-          <li>
-            <strong>data type</strong>: the data type used to store one single
-            <a>pixel value</a>.
-          </li>
-          <li>
-            <strong>stride</strong>: the total bytes of each raw plus the
-            padding bytes of each row.
-          </li>
-          <li>
-            <strong>skip</strong>: this is used to describe <a>interleaving
-            pixel layout</a>. (For <a>planar pixel layout</a>, this property
-            will be zero.)
-          </li>
-        </ol>
+        <p>
+          A <a>channel</a> has an associated <dfn>offset</dfn> that denotes the
+          beginning position of the <a>channel</a>'s data relative to the given
+          <a>BufferSource</a> parameter of the
+          <code><a>mapDataInto</a>()</code> method.
+        </p>
+        <p>
+          A <a>channel</a> has an associated <dfn>width</dfn> and
+          <dfn>height</dfn> that denote the width and height of the
+          <a>channel</a> respectively. Each <a>channel</a> in an <a>image
+          format</a> may have different height and width.
+        </p>
+        <p>
+          A <a>channel</a> has an associated <dfn>data type</dfn> used to store
+          one single <a>pixel value</a>.
+        </p>
+        <p>
+          A <a>channel</a> has an associated <dfn>stride</dfn> that is the
+          number of bytes between the beginning two consecutive rows in memory.
+          (The total bytes of each row plus the padding bytes of each raw.)
+        </p>
+        <p>
+          A <a>channel</a> has an associated <dfn>skip</dfn> value. The value
+          is zero for the <a>planar pixel layout</a>, and a positive integer
+          for the <a>interleaving pixel layout</a>. (Describes how many bytes
+          there are between two adjacent pixel values in this channel.)
+        </p>
         <pre class='example highlight'>
           Example1: RGBA image, width = 620, height = 480, stride = 2560
 
@@ -1294,92 +1317,67 @@
           <h2>
             <code>ImageFormatPixelLayout</code> interface
           </h2>
-          <dl class="idl" title=
-          "[Exposed=(Window,Worker)] interface ChannelPixelLayout">
-            <dt>
-              readonly attribute unsigned long offset
-            </dt>
-            <dd>
-              <p>
-                The beginning position of this <a>channel</a>'s data (relative
-                to the given <a>BufferSource</a> parameter of the mapDataInto()
-                method.)
-              </p>
-            </dd>
-            <dt>
-              readonly attribute unsigned long width
-            </dt>
-            <dd>
-              <p>
-                The width of this channel. <a>Channel</a>s in an image format
-                may have different width.
-              </p>
-            </dd>
-            <dt>
-              readonly attribute unsigned long height
-            </dt>
-            <dd>
-              <p>
-                The height of this channel. <a>Channel</a>s in an image format
-                may have different height.
-              </p>
-            </dd>
-            <dt>
-              readonly attribute DataType dataType
-            </dt>
-            <dd>
-              <p>
-                The data type used to store one single <a>pixel value</a>.
-              </p>
-            </dd>
-            <dt>
-              readonly attribute unsigned long stride
-            </dt>
-            <dd>
-              <p>
-                The stride of this channel.
-              </p>The stride is the number of bytes between the beging two
-              consecutive raws in memory.
-              <p>
-                The total bytes of each raw plus the padding bytes of each raw.
-              </p>
-            </dd>
-            <dt>
-              readonly attribute unsigned long skip
-            </dt>
-            <dd>
-              <p>
-                This is used to describe how much bytes between two adjacent
-                <a>pixel value</a>s in this channel.
-              </p>
-              <p>
-                Possible values:
-              </p>
-              <ul>
-                <li>zero: for <a>planar pixel layout</a>.
-                </li>
-                <li>a positive integer: for <a>interleaving pixel layout</a>.
-                </li>
-              </ul>
-            </dd>
-          </dl>
+          <p>
+            Each <a>channel</a> is represented by an <a>ChannelPixelLayout</a>
+            object.
+          </p>
+          <pre class="idl">
+            [Exposed=(Window,Worker)]
+            interface ChannelPixelLayout {
+                readonly    attribute unsigned long offset;
+                readonly    attribute unsigned long width;
+                readonly    attribute unsigned long height;
+                readonly    attribute DataType      dataType;
+                readonly    attribute unsigned long stride;
+                readonly    attribute unsigned long skip;
+            };
+          </pre>
+          <div dfn-for="ChannelPixelLayout">
+            <p>
+              The <dfn>offset</dfn> attribute represents the <a>channel</a>'s
+              <a>offset</a>.
+            </p>
+            <p>
+              The <dfn>width</dfn> attribute represents the <a>width</a> of the
+              <a>channel</a>. (Channels in an image format may have different
+              width.)
+            </p>
+            <p>
+              The <dfn>height</dfn> attribute represents the <a>height</a> of
+              the <a>channel</a>. (Channels in an image format may have
+              different height.)
+            </p>
+            <p>
+              The <dfn>dataType</dfn> attribute must return the <a>data
+              type</a> of the <a>channel</a>, one of the <a data-lt=
+              "channel data type">channel data types</a>.
+            </p>
+            <p>
+              The <dfn>stride</dfn> attribute represents the <a>stride</a> of
+              the <a>channel</a>.
+            </p>
+            <p>
+              The <dfn>skip</dfn> attribute represents the <a>skip</a> value
+              for the <a>channel</a>.
+            </p>
+          </div>
         </section>
         <section id='channelpixellayout-interface'>
           <h2>
             <code>ChannelPixelLayout</code> interface
           </h2>
-          <dl class="idl" title=
-          "[Exposed=(Window,Worker)] interface ImageFormatPixelLayout">
-            <dt>
-              readonly attribute sequence&lt;ChannelPixelLayout&gt; channels
-            </dt>
-            <dd>
-              <p>
-                Channel information of this image format. Each image format has
-                at least one <a>channel</a>.
-              </p>
-            </dd>
-          </dl>
+          <pre class="idl">
+            [Exposed=(Window,Worker)]
+            interface ImageFormatPixelLayout {
+                readonly    attribute ChannelPixelLayout[] channels;
+            };
+          </pre>
+          <p dfn-for="ImageFormatPixelLayout">
+            The <dfn>channels</dfn> attribute must return a read only array of
+            <a>ChannelPixelLayout</a> objects. The returned array represents
+            <a data-lt="channel">channels</a> of the <a>image format</a>. Each
+            <a>image format</a> has at least one <a>channel</a>.
+          </p>
         </section>
       </section>
       <section id='imagebitmap-interface-extensions'>
