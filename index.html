@@ -242,6 +242,15 @@
           "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">
           in parallel</a></dfn>
         </li>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/#cropped-to-the-source-rectangle">cropped
+          to the source rectangle</a></dfn>
+        </li>
+        <li>
+          <dfn><a href=
+          "https://html.spec.whatwg.org/#concept-transferable-neutered">neutered</a></dfn>
+        </li>
       </ul>
     </section>
     <section>
@@ -1506,160 +1515,61 @@
         <h2>
           <code>ImageBitmapFactories</code> interface
         </h2>
-        <dl class="idl" title=
-        "[NoInterfaceObject, Exposed=(Window,Worker)] partial interface ImageBitmapFactories">
-        <dt>
-            Promise&lt;ImageBitmap&gt; createImageBitmap()
-          </dt>
-          <dd>
-            <p>
-              Create an <code>ImageBitmap</code> from a
-              <code>BufferSource</code> containg raw image data.
-            </p>
-            <dl class="parameters">
-              <dt>
-                BufferSource buffer
-              </dt>
-              <dd>
-                A container of the raw image data.
-              </dd>
-              <dt>
-                long offset
-              </dt>
-              <dd>
-                The beginning position of the <code>buffer</code> where the raw
-                image data is placed.
-              </dd>
-              <dt>
-                long length
-              </dt>
-              <dd>
-                The length of spaces in the <code>buffer</code> that the raw
-                image data is palced.
-              </dd>
-              <dt>
-                ImageFormat format
-              </dt>
-              <dd>
-                The format of the raw image data.
-              </dd>
-              <dt>
-                ImageFormatPixelLayout layout
-              </dt>
-              <dd>
-                The pixel layout of the raw image data, which describes how the
-                data is arranged in the given <code>buffer</code> as the given
-                <code>format</code>.
-              </dd>
-            </dl>
-          </dd>
-          <dt>
-            Promise&lt;ImageBitmap&gt; createImageBitmap()
-          </dt>
-          <dd>
-            <p>
-              Create an <code>ImageBitmap</code> from a
-              <code>BufferSource</code> containg raw image data with a given
-              cropping area.
-            </p>
-            <dl class="parameters">
-              <dt>
-                BufferSource buffer
-              </dt>
-              <dd>
-                A container of the raw image data.
-              </dd>
-              <dt>
-                long offset
-              </dt>
-              <dd>
-                The beginning position of the <code>buffer</code> where the raw
-                image data is placed.
-              </dd>
-              <dt>
-                long length
-              </dt>
-              <dd>
-                The length of spaces in the <code>buffer</code> that the raw
-                image data is palced.
-              </dd>
-              <dt>
-                ImageFormat format
-              </dt>
-              <dd>
-                The format of the raw image data.
-              </dd>
-              <dt>
-                ImageFormatPixelLayout layout
-              </dt>
-              <dd>
-                The pixel layout of the raw image data, which describes how the
-                data is arranged in the given <code>buffer</code> as the given
-                <code>format</code>.
-              </dd>
-              <dt>
-                long sx
-              </dt>
-              <dd>
-                The x-coordinate of the starting point of the cropping
-                rectangle.
-              </dd>
-              <dt>
-                long sy
-              </dt>
-              <dd>
-                The y-coordinate of the starting point of the cropping
-                rectangle.
-              </dd>
-              <dt>
-                long sw
-              </dt>
-              <dd>
-                The width of the cropping rectangle.
-              </dd>
-              <dt>
-                long sh
-              </dt>
-              <dd>
-                The height of the cropping rectangle.
-              </dd>
-            </dl>
-          </dd>
-        </dl>
-        <p>
-          When the <code>createImageBitmap()</code> is invocked, the User Agent
-          MUST run the following steps:
-        </p>
-        <ol>
-          <li>If either the <em>sw</em> or <em>sh</em> arguments are specified
-          but zero, Return a promise rejected with an IndexSizeError exception
-          and abort these steps.
-          </li>
-          <li>If the <em>buffer</em> has been <code><a href=
-          "http://www.w3.org/TR/html51/infrastructure.html#concept-transferable-neutered">
-            neutered</a></code>, Return a promise rejected with an
-            InvalidStateError exception and abort these steps.
-          </li>
-          <li>Create a new <code>ImageBitmap</code> object.
-          </li>
-          <li>Let the <code>ImageBitmap</code> object's bitmap data be the
-          image data given by the <code>BufferSource</code> object,
-          <code><a href=
-          "http://www.w3.org/TR/html51/webappapis.html#cropped-to-the-source-rectangle">
-            cropped to the source rectangle</a></code>.
-          </li>
-          <li>Return a new <code>Promise</code>, but continue running these
-          steps <code><a href=
-          "http://www.w3.org/TR/html51/infrastructure.html#in-parallel">in
-          parallel</a></code>.
-          </li>
-          <li>
-            <code><a href=
-            "http://www.w3.org/TR/html51/infrastructure.html#concept-resolver-fulfill">
-            Resolve</a></code> the <code>Promise</code> with the new
-            <code>ImageBitmap</code> object as the value.
-          </li>
-        </ol>
+        <pre class="idl">
+          [NoInterfaceObject, Exposed=(Window,Worker)]
+          partial interface ImageBitmapFactories {
+              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImageFormatPixelLayout layout);
+              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImageFormatPixelLayout layout, long sx, long sy, long sw, long sh);
+          };
+        </pre>
+        <div dfn-for="ImageBitmapFactories">
+          <p>
+            The <code><dfn>createImageBitmap</dfn>(buffer, offset, length,
+            format, layout, sx, sy, sw, sh)</code> method must run the
+            following steps:
+          </p>
+          <ol>
+            <li>Let <var>buffer</var> be the container for the raw image data.
+            </li>
+            <li>Let <var>offset</var> be the <a>offset</a> (beginning position)
+            of <var>buffer</var>.
+            </li>
+            <li>Let <var>length</var> be the length of spaces in
+            <var>buffer</var> in which the raw image data is placed into.
+            </li>
+            <li>Let <var>format</var> be the the <a>image format</a> of the raw
+            image data placed in <var>buffer</var>.
+            </li>
+            <li>Let <var>layout</var> be the <a>pixel layout</a> for the raw
+            image data, which describes how the data is arranged in
+            <var>buffer</var> using <var>format</var>.
+            </li>
+            <!-- TODO: do we want to special-case sx, sy handling if undefined? -->
+            <!-- sx - The x-coordinate of the starting point of the cropping rectangle. -->
+            <!-- sy - The y-coordinate of the starting point of the cropping rectangle. -->
+            <li>If either the <em>sw</em> or <em>sh</em> arguments are
+            specified but zero, return <var>promise</var> rejected with an
+            <code>IndexSizeError</code> and terminate these steps.
+            </li>
+            <li>If <var>buffer</var> has been <a>neutered</a>, reject
+            <var>promise</var> with <code>InvalidStateError</code> and
+            terminate these steps.
+            </li>
+            <li>Let <var>image bitmap</var> be a newly created
+            <code>ImageBitmap</code> object.
+            </li>
+            <li>Set <var>image bitmap</var>'s bitmap data to the image data
+            given by the <code>BufferSource</code> <var>buffer</var>,
+            <a>cropped to the source rectangle</a>.
+            </li>
+            <li>Return a new <var>promise</var>, but continue running these
+            steps <a>in parallel</a>.
+            </li>
+            <li>Resolve <var>promise</var> with the new <a>ImageBitmap</a>
+            object as the value.
+            </li>
+          </ol>
+        </div>
       </section>
     </section>
     <section>
