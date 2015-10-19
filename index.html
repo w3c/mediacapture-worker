@@ -835,9 +835,10 @@
                 "YUV420SP_NV21",
                 "HSV",
                 "Lab",
-                "DEPTH"
+                "DEPTH",
+                /* empty string */ ""
             };
-          </pre>
+          </pre>N/A N/A
           <table class="simple" dfn-for="ImageFormat">
             <tr>
               <th>
@@ -1077,6 +1078,23 @@
                 16-bit unsigned integer
               </td>
             </tr>
+            <tr>
+              <td>
+                <code>""</code> (<dfn>the empty string</dfn>)
+              </td>
+              <td>
+                N/A
+              </td>
+              <td>
+                N/A
+              </td>
+              <td>
+                N/A
+              </td>
+              <td>
+                N/A
+              </td>
+            </tr>
           </table>
         </section>
         <section id='datatype-enumeration'>
@@ -1200,7 +1218,7 @@
           "pixel value">pixel values</a> are arranged in the one dimensional
           array buffer.
         </p>
-        <p>
+        <p link-for="ImageBitmap">
           A <a>channel</a> has an associated <dfn>offset</dfn> that denotes the
           beginning position of the <a>channel</a>'s data relative to the given
           <a>BufferSource</a> parameter of the
@@ -1389,107 +1407,100 @@
         <h2>
           <code>ImageBitmap</code> interface
         </h2>
-        <dl class="idl" title=
-        "[Exposed=(Window,Worker)] partial interface ImageBitmap">
-          <dt>
-            ImageFormat findOptimalFormat()
-          </dt>
-          <dd>
-            <p>
-              Find the best image format for receiving data.
-            </p>
-            <p>
-              Return one of the <code>possibleFormats</code> or the empty
-              string if no any format in the list is supported. If the
-              <code>possibleFormats</code> is not given, then returns the most
-              suitable image format for this ImageBitmap from all supported
-              image formats.
-            </p>
-            <dl class="parameters">
-              <dt>
-                optional sequence&lt;ImageFormat&gt; possibleFormats
-              </dt>
-              <dd>
-                A list of image formats that users can handler.
-              </dd>
-            </dl>
-          </dd>
-          <dt>
-            long mappedDataLength()
-          </dt>
-          <dd>
-            <p>
-              Calculate the length of mapped data wile the image is represented
-              in the given <code>format</code>.
-            </p>
-            <p>
-              Throws if <code>format</code> is not supported.
-            </p>
-            <p>
-              Return the length (in bytes) of image data that is represented in
-              the given <code>format</code>.
-            </p>
-            <dl class="parameters">
-              <dt>
-                ImageFormat format
-              </dt>
-              <dd>
-                The format that users want.
-              </dd>
-            </dl>
-          </dd>
-          <dt>
-            Promise&lt;ImageFormatPixelLayout&gt; mapDataInto()
-          </dt>
-          <dd>
-            <p>
-              Makes a copy of the underlying image data in the given format
-              <code>format</code> into the given <code>buffer</code> at offset
-              <code>offset</code>, filling at most <code>length</code> bytes
-              and returns an <a>ImageFormatPixelLayout</a> object which
-              describes the pixel layout.
-            </p>
-            <p>
-              Throws if <code>format</code> is not supported.
-            </p>
-            <p>
-              Each time this method is invoked returns a new
-              <a>ImageFormatPixelLayout</a> object.
-            </p>
-            <p>
-              Return an <a>ImageFormatPixelLayout</a> object which describes
-              the pixel layout.
-            </p>
-            <dl class="parameters">
-              <dt>
-                ImageFormat format
-              </dt>
-              <dd>
-                The format that users want.
-              </dd>
-              <dt>
-                BufferSource buffer
-              </dt>
-              <dd>
-                A container for receiving the mapped image data.
-              </dd>
-              <dt>
-                long offset
-              </dt>
-              <dd>
-                The beginning position of the <code>buffer</code> to place the
-                mapped data.
-              </dd>
-              <dt>
-                long length
-              </dt>
-              <dd>
-                The length of space in the <code>buffer</code> that could be
-                filled.
-              </dd>
-            </dl>
-          </dd>
-        </dl>
+        <pre class="idl">
+          [Exposed=(Window,Worker)]
+          partial interface ImageBitmap {
+              ImageFormat                     findOptimalFormat (optional sequence&lt;ImageFormat&gt; possibleFormats);
+              long                            mappedDataLength (ImageFormat format);
+              Promise&lt;ImageFormatPixelLayout&gt; mapDataInto (ImageFormat format, BufferSource buffer, long offset, long length);
+          };
+        </pre>
+        <div dfn-for="ImageBitmap">
+          <p>
+            The <code><dfn>findOptimalFormat</dfn>(possibleFormats)</code>
+            method must run the following steps:
+          </p>
+          <ol>
+            <li>Let <var>image bitmap</var> be the object on which the method
+            was invoked.
+            </li>
+            <li>Let <var>possible formats</var> be the first argument.
+            </li>
+            <li>If <var>possible formats</var> is empty, return
+            <a>ImageFormat</a> that is <dfn>the most suitable image
+            format</dfn> for <var>image bitmap</var>, and terminate these
+            steps.
+              <div class="note">
+                It is up to the implementation to decide how to choose <a>the
+                most suitable image format</a> from a list of image formats.
+              </div>
+            </li>
+            <li>If none of the <a data-lt="image format">image formats</a> in
+            <var>possible formats</var> is an <a>image format</a> that the user
+            agent knows it can render, return <a>the empty string</a> and
+            terminate these steps.
+            </li>
+            <li>Otherwise, return <a>ImageFormat</a> that is <a>the most
+            suitable image format</a> out of <var>possible formats</var> for
+            <var>image bitmap</var>, and terminate these steps.
+            </li>
+          </ol>
+          <p>
+            The <code><dfn>mappedDataLength</dfn>(format)</code> method must
+            run the following steps:
+          </p>
+          <ol>
+            <li>Let <var>image bitmap</var> be the object on which the method
+            was invoked.
+            </li>
+            <li>Let <var>format</var> be the first argument.
+            </li>
+            <li>If the user agent cannot render <var>image bitmap</var>
+            represented in <var>format</var>, throw
+            <code>NotSupportedError</code>.
+            </li>
+            <li>Otherwise, return the length of the <a>pixel layout</a> for
+            <var>image bitmap</var> represented in <var>format</var> <a>image
+            format</a>.
+            </li>
+          </ol>
+          <p>
+            The <code><dfn>mapDataInto</dfn>(format, buffer, offset,
+            length)</code> method must run the following steps:
+          </p>
+          <ol>
+            <li>Let <var>promise</var> be a new promise.
+            </li>
+            <li>Run these substeps <a>in parallel</a>:
+              <ol>
+                <li>Let <var>image bitmap</var> be the object on which the
+                method was invoked.
+                </li>
+                <li>Let <var>format</var>, <var>buffer</var>,
+                <var>offset</var>, and <var>length</var> be the similarly named
+                method arguments.
+                </li>
+                <li>If the user agent cannot render <var>image bitmap</var>
+                represented in <var>format</var>, reject <var>promise</var>
+                with <code>NotSupportedError</code> and terminate these steps.
+                </li>
+                <li>Make a copy of the underlying image data of <var>image
+                bitmap</var> in the given format <var>format</var> into
+                <a>BufferSource</a> <var>buffer</var> at offset
+                <var>offset</var>, filling at most <var>length</var> bytes.
+                </li>
+                <li>Let <var>pixel layout</var> be a new
+                <a>ImageFormatPixelLayout</a> object that represents the image
+                data in the previous step.
+                </li>
+                <li>Resolve <var>promise</var> with <a>pixel layout</a>.
+                </li>
+              </ol>
+            </li>
+            <li>Return <var>promise</var>.
+            </li>
+          </ol>
+        </div>
       </section>
       <section id='imagebitmapfactories-interface-extensions'>
         <h2>
