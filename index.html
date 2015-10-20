@@ -1345,9 +1345,9 @@
           [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
           [data]  ......
         </pre>
-        <section id='imageformatpixellayout-interface'>
+        <section id='channelpixellayout-interface'>
           <h2>
-            <code>ImageFormatPixelLayout</code> interface
+            <code>ChannelPixelLayout</code> interface
           </h2>
           <p>
             Each <a>channel</a> is represented by an <a>ChannelPixelLayout</a>
@@ -1394,9 +1394,9 @@
             </p>
           </div>
         </section>
-        <section id='channelpixellayout-interface'>
+        <section id='imageformatpixellayout-interface'>
           <h2>
-            <code>ChannelPixelLayout</code> interface
+            <code>ImageFormatPixelLayout</code> interface
           </h2>
           <pre class="idl">
             [Exposed=(Window,Worker)]
@@ -1544,9 +1544,6 @@
             image data, which describes how the data is arranged in
             <var>buffer</var> using <var>format</var>.
             </li>
-            <!-- TODO: do we want to special-case sx, sy handling if undefined? -->
-            <!-- sx - The x-coordinate of the starting point of the cropping rectangle. -->
-            <!-- sy - The y-coordinate of the starting point of the cropping rectangle. -->
             <li>If either the <em>sw</em> or <em>sh</em> arguments are
             specified but zero, return <var>promise</var> rejected with an
             <code>IndexSizeError</code> and terminate these steps.
