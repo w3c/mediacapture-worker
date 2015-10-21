@@ -1217,7 +1217,7 @@
           layout</dfn> of a certain <a data-lt="image format">image format</a>.
           Since an <a>image format</a> is composed of at least one
           <dfn>channel</dfn>, an <a>ImageFormatPixelLayout</a> object contains
-          at least one <a>ChannelPixelLayout</a> object. 
+          at least one <a>ChannelPixelLayout</a> object.
           <!-- TODO: more elaborate description of a channel needed -->
         </p>
         <p>
@@ -1354,7 +1354,8 @@
             object.
           </p>
           <pre class="idl">
-            [Exposed=(Window,Worker)]
+            [Exposed=(Window,Worker),
+             Constructor(unsigned long offset, unsigned long width, unsigned long height, DataType dataType, unsigned long stride, unsigned long skip)]
             interface ChannelPixelLayout {
                 readonly    attribute unsigned long offset;
                 readonly    attribute unsigned long width;
@@ -1365,6 +1366,18 @@
             };
           </pre>
           <div dfn-for="ChannelPixelLayout">
+            <p>
+              The <code><dfn>Constructor(unsigned long offset, unsigned long
+              width, unsigned long height, DataType dataType, unsigned long
+              stride, unsigned long skip)</dfn></code>, when invoked, MUST
+              return a newly created <a>ChannelPixelLayout</a> object
+              whose <a>offset</a> attribute is set to the constructor's first argument,
+              whose <a>width</a> attribute is set to the constructor's sencod argument,
+              whose <a>height</a> attribute is set to the constructor's third argument,
+              whose <a>dataType</a> attribute is set to the constructor's fourth argument,
+              whose <a>stride</a> attribute is set to the constructor's fifth argument and
+              whose <a>skip</a> attribute is set to the constructor's sixth argument.
+            </p>
             <p>
               The <dfn>offset</dfn> attribute represents the <a>channel</a>'s
               <a>offset</a>.
@@ -1399,17 +1412,26 @@
             <code>ImageFormatPixelLayout</code> interface
           </h2>
           <pre class="idl">
-            [Exposed=(Window,Worker)]
+            [Exposed=(Window,Worker),
+             Constructor(ChannelPixelLayout[] channels)]
             interface ImageFormatPixelLayout {
                 readonly    attribute ChannelPixelLayout[] channels;
             };
           </pre>
-          <p dfn-for="ImageFormatPixelLayout">
-            The <dfn>channels</dfn> attribute must return a read only array of
-            <a>ChannelPixelLayout</a> objects. The returned array represents
-            <a data-lt="channel">channels</a> of the <a>image format</a>. Each
-            <a>image format</a> has at least one <a>channel</a>.
-          </p>
+          <div dfn-for="ImageFormatPixelLayout">
+            <p>
+              The <code><dfn>Constructor(ChannelPixelLayout[] channels)</dfn></code>,
+              when invoked, MUST return a newly created
+              <a>ImageFormatPixelLayout</a> object whose <a>channels</a>
+              attribute is set to the constructor's first argument.
+            </p>
+            <p>
+              The <dfn>channels</dfn> attribute must return a read only array of
+              <a>ChannelPixelLayout</a> objects. The returned array represents
+              <a data-lt="channel">channels</a> of the <a>image format</a>. Each
+              <a>image format</a> has at least one <a>channel</a>.
+            </p>
+          </div>
         </section>
       </section>
       <section id='imagebitmap-interface-extensions'>
