@@ -1595,6 +1595,135 @@
       <h2>
         Examples
       </h2>
+      <section>
+        <h3>
+          Simple example
+        </h3>
+        <p>
+          This example demostrates how to hook a video worker to a
+          <a>MediaStreamTrack</a> as a <a>processing video worker</a> and the
+          script code of the video worker shows how to use the extended methods
+          of <a>ImageBitmap extensions</a>
+        </p>
+        <p>
+          The scenario is that captures real-time <a>MediaStream</a> from a
+          web camera, converts the captured color video frames into gray
+          scales and then shows both color and gray videos on the screen. Since
+          the captured color video is likes to be stored as YUV format natively,
+          this example asks the browser to map the video data into JavaScript
+          <a>ArrayBuffer</a> in any kind of YUV formats which might save the
+          color conversion cost.
+        </p>
+        </p>
+        <h4>
+          HTML
+        </h4>
+        <pre class='example highlight'>
+&lt;video id="color"&gt;&lt;/video&gt;  // For camera view.
+&lt;video id="gray"&gt;&lt;/video&gt;   // For processed result.
+
+&lt;script type="text/javascript">
+  var colorVideo = document.getElementById("color");
+  var grayVideo = document.getElementById("gray");
+
+  navigator.getUserMedia({video: true, audio: false} , onSuccess, onFail);
+
+  function onSuccess(stream) {
+    // Initialize the vidoe for showing camera view.
+    colorVideo.srcObject = stream;
+    colorVideo.play();
+
+    // Create a video worker.
+    var processor = new Worker("processor.js");
+
+    // Get the video MediaStreamTrack.
+    var track = stream.getTracks()[0];
+
+    // Associate the video worker to the video MediaStreamTrack.
+    var promise = track.addVideoProcessor(processor);
+    promise.then(function(resultTrack) {
+      // Initialize the video for showing the processed result.
+      grayVideo.srcObject = new MediaStream([resultTrack]);
+      grayVideo.play();
+    },
+    function(ex) {
+      console.log("Call addVideoProcessor() failed. Error: " + ex);
+    });
+  }
+
+  function onFail(ex) {
+    console.log("Cannot access WebCAM. Error: " + ex);
+  }
+&lt;/script&gt;
+        </pre>
+        <h4>
+          JavaScript
+        </h4>
+        <pre class='example highlight'>
+onvideoprocess = function(event) {
+  // Check if the browser supports YUV format.
+  var bitmap = event.inputImageBitmap;
+  var yuvFormats = ["YUV444P", "YUV422P", "YUV420P", "YUV420SP_NV12", "YUV420SP_NV21"];
+  var bitmapFormat = bitmap.findOptimalFormat(yuvFormats);
+  if (bitmapFormat == "") {
+    console.log("The browser does not support YUV formats.");
+    return;
+  }
+
+  // Get the need buffer size to read the image data in YUV format.
+  var bitmapBufferLength = bitmap.mappedDataLength(bitmapFormat);
+
+  // Create the buffer for mapping data out.
+  var bitmapBuffer = new ArrayBuffer(bitmapBufferLength);
+  var bitmapBufferView = new Uint8ClampedArray(bitmapBuffer, 0, bitmapBufferLength);
+
+  // Map the bitmap's data into the buffer created in the previous step.
+  var promise = bitmap.mapDataInto(bitmapFormat, bitmapBuffer, 0, bitmapBufferLength);
+  promise.then(function(bitmapPixelLayout) {
+    // Read out the y-channel properties.
+    var ywidth  = bitmapPixelLayout.channels[0].width;
+    var yheight = bitmapPixelLayout.channels[0].height;
+    var yoffset = bitmapPixelLayout.channels[0].offset;
+    var ystride = bitmapPixelLayout.channels[0].stride;
+    var yskip   = bitmapPixelLayout.channels[0].skip;   // This should be 0.
+
+    // Initialize the buffer for the result gray image.
+    var rgbaBufferLength = ywidth * yheight * 4;
+    var rgbaBuffer = new ArrayBuffer(rgbaBufferLength);
+    var rgbaBufferView = new Uint8ClampedArray(rgbaBuffer, 0, rgbaBufferLength);
+
+    // Convert YUV to Gray.
+    for (var i = 0; i < yheight; ++i) {
+      for (var j = 0; j < ywidth; ++j) {
+        var index = ystride * i + j;
+        var y = parseFloat(bitmapBufferView[yoffset + index]);
+        rgbaBufferView[index * 4 + 0] = y;
+        rgbaBufferView[index * 4 + 1] = y;
+        rgbaBufferView[index * 4 + 2] = y;
+        rgbaBufferView[index * 4 + 3] = 255;
+      }
+    }
+
+    // Create a new ImageBitmap from the processed rgbaBuffer and assign to the
+    // event.outputImageBitmap.
+    var channelR = new ChannelPixelLayout(0, ywidth, yheight, "uint8", ywith * 4, 3);
+    var channelG = new ChannelPixelLayout(1, ywidth, yheight, "uint8", ywith * 4, 3);
+    var channelB = new ChannelPixelLayout(2, ywidth, yheight, "uint8", ywith * 4, 3);
+    var channelA = new ChannelPixelLayout(3, ywidth, yheight, "uint8", ywith * 4, 3);
+    var layout = new ImageFormatPixelLayout([channelR, channelG, channelB, channelA]);
+    var p = createImageBitmap(rgbaBuffer, 0, rgbaBufferLength, "RGBA32", layout);
+    p.then(function(bitmap) {
+      event.outputImageBitmap = bitmap;
+    }).catch(function(ex) {
+      console.log("Call createImageBitmap() failed. Error: " + ex);
+    });
+  },
+  function(ex) {
+    console.log("Call mapDataInto() failed. Error: " + ex);
+  });
+}
+        </pre>
+      </section>
     </section>
     <section class='appendix'>
       <h2>
