@@ -1367,10 +1367,10 @@
           </pre>
           <div dfn-for="ChannelPixelLayout">
             <p>
-              The <code><dfn>ChannelPixelLayout(unsigned long offset, unsigned long
-              width, unsigned long height, DataType dataType, unsigned long
-              stride, unsigned long skip)</dfn></code>, when invoked, MUST
-              return a newly created <a>ChannelPixelLayout</a> object
+              The <code><dfn>ChannelPixelLayout</dfn>(unsigned long offset,
+              unsigned long width, unsigned long height, DataType dataType,
+              unsigned long stride, unsigned long skip)</code>, when invoked,
+              MUST return a newly created <a>ChannelPixelLayout</a> object
               whose <a>offset</a> attribute is set to the constructor's first argument,
               whose <a>width</a> attribute is set to the constructor's sencod argument,
               whose <a>height</a> attribute is set to the constructor's third argument,
@@ -1420,8 +1420,8 @@
           </pre>
           <div dfn-for="ImageFormatPixelLayout">
             <p>
-              The <code><dfn>ImageFormatPixelLayout(ChannelPixelLayout[] channels)</dfn></code>,
-              when invoked, MUST return a newly created
+              The <code><dfn>ImageFormatPixelLayout</dfn>(ChannelPixelLayout[]
+              channels)</code>, when invoked, MUST return a newly created
               <a>ImageFormatPixelLayout</a> object whose <a>channels</a>
               attribute is set to the constructor's first argument.
             </p>
