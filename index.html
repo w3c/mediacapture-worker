@@ -93,9 +93,10 @@
   <body>
     <section id='abstract'>
       <p>
-        This specification extends the <em>Media Capture and Streams</em>
-        specification [[!GETUSERMEDIA]] to allow JavaScript developers to
-        process video frame data in workers on the web applications.
+        This specification defines <a href="#worker-extensions">Worker</a>,
+        <a href="#mediastreamtrack-interface">MediaStreamTrack</a>, and
+        <a href="#imagebitmap-extensions">ImageBitmap</a> extensions to enable
+        processing of video frames using script in a worker.
       </p>
     </section>
     <section id='sotd'>
@@ -127,29 +128,37 @@
         Introduction
       </h2>
       <p>
-        The <em>Media Capture and Streams</em> specification provides a way to
-        access to the video camera. But how to process the video frame data in
-        JavaScript is not covered. By associating a worker with
-        <a><code>MediaStreamTrack</code></a>s
-        (<code>MediaStreamTrack.kind</code> must be "video"), the framework can
-        dispatch a
-        <a><code>VideoMonitorEvent</code></a>/<a><code>VideoProcessorEvent</code></a>
-        to the worker frame by frame. Then JavaScript developer can write a
-        video processing script which enables processing, analyzing of video
-        data directly using JavaScript in a Worker thread.
+        The HTML specification [[!HTML]] defines a <code>Worker</code> API for
+        running scripts in the background and the <a>ImageBitmap</a> interface
+        that represents a bitmap image. The Media Capture and Streams
+        specification [[!GETUSERMEDIA]] allows a web page to access video
+        streams sourced from cameras that are exposed to the underlying
+        platform and defines the <a>MediaStreamTrack</a> interface that
+        represents a media source. This specification extends these interfaces
+        to define a model for processing video frames sourced from media stream
+        tracks by a script in a worker. This enables use cases such as video
+        editing, digital image processing, and object recognition among other
+        advanced media usages on the Web Platform in a performant manner.
+      </p>
+      <p>
+        In this model, a <a>video worker</a> is associated with an <a>input
+        media stream track</a>. Events containing <a data-lt=
+        "input frame">input frame</a> data from the <a>input media stream
+        track</a> are dispatched at the <a>video worker</a>. A Web developer is
+        able to monitor and process the <a>input frame</a> and produce an
+        <a>output frame</a> using script in the <a>video worker</a>. Finally,
+        the provided <a>output frame</a> is fed into the <a>output media stream
+        track</a> on the main thread. The <a>output media stream track</a> can
+        then be used to construct a media stream and, for example, provided to
+        media sinks such as <code>&lt;video&gt;</code> for rendering.
+      </p>
+      <p>
+        The design principle of this push-like mechanism for video processing
+        is depicted in the following figure:
       </p>
       <p>
         <img alt="The relationship between Worker and MediaStreamTrack" src=
-        "images/Worker%20-%20FLOW.png" style="width:60%">
-      </p>
-      <p>
-        The design principle of this specification is to provide a push-like
-        mechanism for video processing. This design gives the Web developers no
-        worry about any platform capability to full utilize the CPU usage. The
-        Web developer no longer need to decide the FPS rate to grab the input
-        video frame. The User Agent only dispatch the
-        <a><code>VideoMonitorEvent</code></a>/<a><code>VideoProcessorEvent</code></a>
-        when a new video frame arriving.
+        "images/overview.png" style="width:60%">
       </p>
     </section>
     <section>
@@ -159,8 +168,8 @@
       <p>
         This specification attempts to address the <a href=
         "https://wiki.mozilla.org/Project_FoxEye#Use_Cases">Use Cases and
-        Requirements</a> for expanding the Web potentials to image processing
-        and computer vision area.
+        Requirements</a> for expanding the Web Platform to support image
+        processing and computer vision usages.
       </p>
     </section>
     <section>
