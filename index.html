@@ -1219,7 +1219,7 @@
           layout</dfn> of a certain <a data-lt="image format">image format</a>.
           Since an <a>image format</a> is composed of at least one
           <dfn>channel</dfn>, an <a>ImageFormatPixelLayout</a> object contains
-          at least one <a>ChannelPixelLayout</a> object.
+          at least one <a>ChannelPixelLayout</a> object. 
           <!-- TODO: more elaborate description of a channel needed -->
         </p>
         <p>
@@ -1371,14 +1371,16 @@
             <p>
               The <code><dfn>ChannelPixelLayout</dfn>(unsigned long offset,
               unsigned long width, unsigned long height, DataType dataType,
-              unsigned long stride, unsigned long skip)</code> constructor, when invoked,
-              MUST return a newly created <a>ChannelPixelLayout</a> object
-              whose <a>offset</a> attribute is set to the constructor's first argument,
-              whose <a>width</a> attribute is set to the constructor's sencod argument,
-              whose <a>height</a> attribute is set to the constructor's third argument,
-              whose <a>dataType</a> attribute is set to the constructor's fourth argument,
-              whose <a>stride</a> attribute is set to the constructor's fifth argument and
-              whose <a>skip</a> attribute is set to the constructor's sixth argument.
+              unsigned long stride, unsigned long skip)</code> constructor,
+              when invoked, MUST return a newly created
+              <a>ChannelPixelLayout</a> object whose <a>offset</a> attribute is
+              set to the constructor's first argument, whose <a>width</a>
+              attribute is set to the constructor's sencod argument, whose
+              <a>height</a> attribute is set to the constructor's third
+              argument, whose <a>dataType</a> attribute is set to the
+              constructor's fourth argument, whose <a>stride</a> attribute is
+              set to the constructor's fifth argument and whose <a>skip</a>
+              attribute is set to the constructor's sixth argument.
             </p>
             <p>
               The <dfn>offset</dfn> attribute represents the <a>channel</a>'s
@@ -1423,15 +1425,17 @@
           <div dfn-for="ImageFormatPixelLayout">
             <p>
               The <code><dfn>ImageFormatPixelLayout</dfn>(ChannelPixelLayout[]
-              channels)</code> constructor, when invoked, MUST return a newly created
-              <a>ImageFormatPixelLayout</a> object whose <a data-lt="ImageFormatPixelLayout">channels</a>
-              attribute is set to the constructor's first argument.
+              channels)</code> constructor, when invoked, MUST return a newly
+              created <a>ImageFormatPixelLayout</a> object whose <a data-lt=
+              "ImageFormatPixelLayout">channels</a> attribute is set to the
+              constructor's first argument.
             </p>
             <p>
-              The <dfn>channels</dfn> attribute must return a read only array of
-              <a>ChannelPixelLayout</a> objects. The returned array represents
-              <a data-lt="channel">channels</a> of the <a>image format</a>. Each
-              <a>image format</a> has at least one <a>channel</a>.
+              The <dfn>channels</dfn> attribute must return a read only array
+              of <a>ChannelPixelLayout</a> objects. The returned array
+              represents <a data-lt="channel">channels</a> of the <a>image
+              format</a>. Each <a>image format</a> has at least one
+              <a>channel</a>.
             </p>
           </div>
         </section>
@@ -1608,14 +1612,13 @@
           of <a href="#imagebitmap-extensions">ImageBitmap extensions</a>
         </p>
         <p>
-          The scenario is that captures real-time <a>MediaStream</a> from a
-          web camera, converts the captured color video frames into gray
-          scales and then shows both color and gray videos on the screen. Since
-          the captured color video is likely to be stored as YUV format natively,
+          The scenario is that captures real-time <a>MediaStream</a> from a web
+          camera, converts the captured color video frames into gray scales and
+          then shows both color and gray videos on the screen. Since the
+          captured color video is likely to be stored as YUV format natively,
           this example asks the browser to map the video data into JavaScript
           <a>ArrayBuffer</a> in any kind of YUV formats which might save the
           color conversion cost.
-        </p>
         </p>
         <h4>
           HTML
@@ -1695,8 +1698,8 @@ onvideoprocess = function(event) {
     var rgbaBufferView = new Uint8ClampedArray(rgbaBuffer, 0, rgbaBufferLength);
 
     // Convert YUV to Gray.
-    for (var i = 0; i < yheight; ++i) {
-      for (var j = 0; j < ywidth; ++j) {
+    for (var i = 0; i &lt; yheight; ++i) {
+      for (var j = 0; j &lt; ywidth; ++j) {
         var index = ystride * i + j;
         var y = parseFloat(bitmapBufferView[yoffset + index]);
         rgbaBufferView[index * 4 + 0] = y;
