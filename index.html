@@ -1608,13 +1608,13 @@
           This example demostrates how to hook a video worker to a
           <a>MediaStreamTrack</a> as a <a>processing video worker</a> and the
           script code of the video worker shows how to use the extended methods
-          of <a>ImageBitmap extensions</a>
+          of <a href="#imagebitmap-extensions">ImageBitmap extensions</a>
         </p>
         <p>
           The scenario is that captures real-time <a>MediaStream</a> from a
           web camera, converts the captured color video frames into gray
           scales and then shows both color and gray videos on the screen. Since
-          the captured color video is likes to be stored as YUV format natively,
+          the captured color video is likely to be stored as YUV format natively,
           this example asks the browser to map the video data into JavaScript
           <a>ArrayBuffer</a> in any kind of YUV formats which might save the
           color conversion cost.
@@ -1627,7 +1627,7 @@
 &lt;video id="color"&gt;&lt;/video&gt;  // For camera view.
 &lt;video id="gray"&gt;&lt;/video&gt;   // For processed result.
 
-&lt;script type="text/javascript">
+&lt;script&gt;
   var colorVideo = document.getElementById("color");
   var grayVideo = document.getElementById("gray");
 
