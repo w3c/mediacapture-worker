@@ -1523,6 +1523,12 @@
                 <li>Let <var>image bitmap</var> be the object on which the
                 method was invoked.
                 </li>
+                <li>If <var>image bitmap</var> was <a>cropped to the source
+                rectangle</a> so that it contains any transparent black pixels
+                (cropping area is outside of the source image), then reject
+                <var>promise</var> with <code>IndexSizeError</code> and abort
+                these steps.
+                </li>
                 <li>Let <var>format</var>, <var>buffer</var>,
                 <var>offset</var>, and <var>length</var> be the similarly named
                 method arguments.
