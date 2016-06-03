@@ -430,29 +430,24 @@
             user agent must run the following steps:
           </p>
           <ol>
-            <li>If <var>e</var> is
-            <a>videomonitor</a>, create a <a>VideoMonitorEvent</a>, initialize
-            it to have a given name <var>e</var>, to not bubble, to not be
-            cancelable.
+            <li>If <var>e</var> is <a>videomonitor</a>, create a
+            <a>VideoMonitorEvent</a>, initialize it to have a given name <var>
+              e</var>, to not bubble, to not be cancelable.
             </li>
-            <li>If <var>e</var> is
-            <a>videoprocess</a>, create a <a>VideoProcessorEvent</a>,
-            initialize it to have a given name <var>e</var>, to not bubble, to
-            not be cancelable.
+            <li>If <var>e</var> is <a>videoprocess</a>, create a
+            <a>VideoProcessorEvent</a>, initialize it to have a given name
+            <var>e</var>, to not bubble, to not be cancelable.
             </li>
-            <li>Initialize the <a>trackId</a>
-            attribute to the value of the <code>id</code> attribute of the <a>
-              input media stream track</a>.
+            <li>Initialize the <a>trackId</a> attribute to the value of the
+            <code>id</code> attribute of the <a>input media stream track</a>.
             </li><!-- TODO -->
-            <li>Initialize the <a>playbackTime</a>
-            attribute to the value of the <code>currentTime</code> attribute of
-            the <a>MediaStream</a> that contains the <a>input media stream
-            track</a>.
+            <li>Initialize the <a>playbackTime</a> attribute to the value of
+            the <code>currentTime</code> attribute of the <a>MediaStream</a>
+            that contains the <a>input media stream track</a>.
             </li>
-            <li>Initialize the
-            <a>inputImageBitmap</a> attribute to the bitmap data of the
-            <a>input media stream track</a>'s video frame at the current stream
-            position at <a>playbackTime</a>.
+            <li>Initialize the <a>inputImageBitmap</a> attribute to the bitmap
+            data of the <a>input media stream track</a>'s video frame at the
+            current stream position at <a>playbackTime</a>.
             </li>
             <li>
               <!-- TODO: clarify the definition of targets -->
@@ -463,10 +458,10 @@
             <li>If <var>e</var> is <a>videomonitor</a>, dispatch the newly
             created <a>VideoMonitorEvent</a> object at each <var>target</var>.
             </li>
-            <li>If <var>e</var> is
-            <a>videoprocess</a>, initialize the <a>outputImageBitmap</a>
-            attribute to null, and dispatch the newly created
-            <a>VideoProcessorEvent</a> object at each <var>target</var>.
+            <li>If <var>e</var> is <a>videoprocess</a>, initialize the
+            <a>outputImageBitmap</a> attribute to null, and dispatch the newly
+            created <a>VideoProcessorEvent</a> object at each
+            <var>target</var>.
             </li>
           </ol>
         </section>
@@ -558,9 +553,9 @@
           <li>Let <var>output bitmap</var> be the <a>ImageBitmap</a> object
           assigned to the <a>outputImageBitmap</a> attribute.
           </li>
-          <li>Let <var>output media stream
-          track</var> be the <a>MediaStreamTrack</a> returned by the <code><a>
-            addVideoProcessor</a>()</code> method.
+          <li>Let <var>output media stream track</var> be the
+          <a>MediaStreamTrack</a> returned by the
+          <code><a>addVideoProcessor</a>()</code> method.
           </li>
           <li>
             <!-- TODO: this should be defined better. -->
@@ -1255,25 +1250,25 @@
           <code><a>mapDataInto</a>()</code> method.
         </p>
         <p>
-          A <a>channel</a> has an associated <a>width</a> and
-          <a>height</a> that denote the width and height of the
-          <a>channel</a> respectively. Each <a>channel</a> in an <a>image
-          format</a> may have different height and width.
+          A <a>channel</a> has an associated <a>width</a> and <a>height</a>
+          that denote the width and height of the <a>channel</a> respectively.
+          Each <a>channel</a> in an <a>image format</a> may have different
+          height and width.
         </p>
         <p>
           A <a>channel</a> has an associated <dfn>data type</dfn> used to store
           one single <a>pixel value</a>.
         </p>
         <p>
-          A <a>channel</a> has an associated <a>stride</a> that is the
-          number of bytes between the beginning two consecutive rows in memory.
-          (The total bytes of each row plus the padding bytes of each raw.)
+          A <a>channel</a> has an associated <a>stride</a> that is the number
+          of bytes between the beginning two consecutive rows in memory. (The
+          total bytes of each row plus the padding bytes of each raw.)
         </p>
         <p>
-          A <a>channel</a> has an associated <a>skip</a> value. The value
-          is zero for the <a>planar pixel layout</a>, and a positive integer
-          for the <a>interleaving pixel layout</a>. (Describes how many bytes
-          there are between two adjacent pixel values in this channel.)
+          A <a>channel</a> has an associated <a>skip</a> value. The value is
+          zero for the <a>planar pixel layout</a>, and a positive integer for
+          the <a>interleaving pixel layout</a>. (Describes how many bytes there
+          are between two adjacent pixel values in this channel.)
         </p>
         <pre class='example highlight'>
           Example1: RGBA image, width = 620, height = 480, stride = 2560
