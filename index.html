@@ -118,10 +118,12 @@
   <body>
     <section id='abstract'>
       <p>
-        This specification defines <a href="#worker-extensions">Worker</a>,
-        <a href="#mediastreamtrack-interface">MediaStreamTrack</a>, and
-        <a href="#imagebitmap-extensions">ImageBitmap</a> extensions to enable
-        processing of video frames using script in a worker.
+        This specification defines new <a>VideoMonitor</a> and
+        <a>VideoProcessor</a> interfaces, and extends <a href=
+        "#mediastreamtrack-interface"><code>MediaStreamTrack</code></a> and
+        <a href="#imagebitmap-extensions"><code>ImageBitmap</code></a>
+        interfaces to enable processing of video frames using script in a
+        performant manner.
       </p>
     </section>
     <section id='sotd'>
@@ -139,29 +141,30 @@
         Introduction
       </h2>
       <p>
-        The HTML specification [[!HTML]] defines a <code>Worker</code> API for
-        running scripts in the background and the <a>ImageBitmap</a> interface
-        that represents a bitmap image. The Media Capture and Streams
+        The HTML specification [[!HTML]] defines the <a>ImageBitmap</a>
+        interface that represents a bitmap image. The Media Capture and Streams
         specification [[!GETUSERMEDIA]] allows a web page to access video
         streams sourced from cameras that are exposed to the underlying
         platform and defines the <a>MediaStreamTrack</a> interface that
         represents a media source. This specification extends these interfaces
         to define a model for processing video frames sourced from media stream
-        tracks by a script in a worker. This enables use cases such as video
-        editing, digital image processing, and object recognition among other
-        advanced media usages on the Web Platform in a performant manner.
+        tracks by a script in a performant manner. This enables use cases such
+        as video editing, digital image processing, and object recognition
+        among other advanced media usages on the Web Platform in a performant
+        manner.
       </p>
       <p>
-        In this model, a <a>video worker</a> is associated with an <a>input
-        media stream track</a>. Events containing <a data-lt=
-        "input frame">input frame</a> data from the <a>input media stream
-        track</a> are dispatched at the <a>video worker</a>. A Web developer is
-        able to monitor and process the <a>input frame</a> and produce an
-        <a>output frame</a> using script in the <a>video worker</a>. Finally,
-        the provided <a>output frame</a> is fed into the <a>output media stream
-        track</a> on the main thread. The <a>output media stream track</a> can
-        then be used to construct a media stream and, for example, provided to
-        media sinks such as <code>&lt;video&gt;</code> for rendering.
+        In this model, a <a>video monitor</a> or <a>video processor</a> is
+        associated with an <a>input media stream track</a>. Events containing
+        <a data-lt="input frame">input frame</a> data from the <a>input media
+        stream track</a> are dispatched at the <a>video monitor</a> or <a>video
+        processor</a>. A Web developer is able to monitor and process the
+        <a>input frame</a> and produce an <a>output frame</a> using script.
+        Finally, the provided <a>output frame</a> is fed into the <a>output
+        media stream track</a> on the main thread. The <a>output media stream
+        track</a> can then be used to construct a media stream and, for
+        example, provided to media sinks such as <code>&lt;video&gt;</code> for
+        rendering.
       </p>
       <p>
         The design principle of this push-like mechanism for video processing
@@ -279,62 +282,55 @@
       <h2>
         Terminology
       </h2>
-      <p>
-        There are two kinds of <dfn data-lt="video worker">video workers</dfn>;
-        <a data-lt="monitoring video worker">monitoring video workers</a>, and
-        <a data-lt="processing video worker">processing video workers</a>:
-      </p>
       <dl>
         <dt>
-          <a>Monitoring video worker</a>
+          <a><dfn>Video monitor</dfn></a>
         </dt>
         <dd>
           Captures an <a>input frame</a> from an <a>input media stream
-          track</a>. A <a>video worker</a> is said to be a <dfn>monitoring
-          video worker</dfn>, if the <a>video worker</a> is associated with an
-          <a>input media stream track</a>. <a data-lt=
+          track</a>. A <a>video monitor</a> is said to be
+          <dfn>monitoring</dfn>, if the <a>video monitor</a> is associated with
+          an <a>input media stream track</a>. <a data-lt=
           "video monitor event">Video monitor events</a> are dispatched at a
-          <a>monitoring video worker</a>.
+          <a>video monitor</a>.
         </dd>
         <dt>
-          <a>Processing video worker</a>
+          <a><dfn>Video processor</dfn></a>
         </dt>
         <dd>
           Similarly captures an <a>input frame</a> from an <a>input media
           stream track</a>, and in addition, processes the provided <a>output
           frame</a> for use as the <a>source</a> for the <a>output media stream
-          track</a>. A <a>video worker</a> is said to be a <dfn>processing
-          video worker</dfn>, if the <a>video worker</a> is associated with
-          both an <a>input media stream track</a> and an <a>output media stream
-          track</a>. <a data-lt="video processor event">Video processor
-          events</a> are dispatched at a <a>processing video worker</a>.
+          track</a>. A <a>video processor</a> is said to be
+          <dfn>processing</dfn>, if the <a>video processor</a> is associated
+          with both an <a>input media stream track</a> and an <a>output media
+          stream track</a>. <a data-lt="video processor event">Video processor
+          events</a> are dispatched at a <a>video processor</a>.
         </dd>
       </dl>
       <p>
-        An <dfn>input frame</dfn> for a <a>video worker</a> <var>w</var> is an
-        <a>ImageBitmap</a> object representing a frame sourced from the
-        <a>input media stream track</a> associated with <var>w</var>.
+        An <dfn>input frame</dfn> is an <a>ImageBitmap</a> object representing
+        a frame sourced from the <a>input media stream track</a> associated
+        with <a>video monitor</a> or <a>video processor</a>.
       </p>
       <p>
-        An <dfn>output frame</dfn> for a <a>video worker</a> <var>w</var> is an
-        <a>ImageBitmap</a> object assigned to the <a>outputImageBitmap</a>
-        attribute of the <a>VideoProcessorEvent</a> dispatched at <var>w</var>.
+        An <dfn>output frame</dfn> is an <a>ImageBitmap</a> object assigned to
+        the <a>outputImageBitmap</a> attribute of the
+        <a>VideoProcessorEvent</a> dispatched at <a>video processor</a>.
       </p>
       <p>
-        The <dfn>input media stream track</dfn> for a <a>video worker</a>
-        <var>w</var> is a <a>MediaStreamTrack</a> object passed as the first
-        argument to the <code><a>addVideoMonitor</a>()</code> or
-        <code><a>addVideoProcessor</a>()</code> method on <var>w</var>.
+        The <dfn>input media stream track</dfn> is a <a>MediaStreamTrack</a>
+        object passed as the first argument to the
+        <code><a>addVideoMonitor</a>()</code> or
+        <code><a>addVideoProcessor</a>()</code> method.
       </p>
       <p>
-        The <dfn>output media stream track</dfn> for a <a>video worker</a>
-        <var>w</var> is a <a>MediaStreamTrack</a> object returned by the
-        invocation of the <code><a>addVideoProcessor</a>()</code> method on
-        <var>w</var>.
+        The <dfn>output media stream track</dfn> is a <a>MediaStreamTrack</a>
+        object returned by the invocation of the
+        <code><a>addVideoProcessor</a>()</code> method.
       </p>
       <p>
-        There are two kinds of <dfn data-lt="video worker event">video worker
-        events</dfn>:
+        There are two kinds of <dfn data-lt="video event">video events</dfn>:
       </p>
       <dl>
         <dt>
@@ -342,8 +338,8 @@
         </dt>
         <dd>
           These events are represented by <a>VideoMonitorEvent</a> objects that
-          are dispatched at a <a>monitoring video worker</a> and provide read
-          access to <a>input frame</a> data.
+          are dispatched at a <a>VideoMonitor</a> and provide read access to
+          <a>input frame</a> data.
         </dd>
       </dl>
       <dl>
@@ -352,132 +348,145 @@
         </dt>
         <dd>
           These events are represented by <a>VideoProcessorEvent</a> objects
-          that are dispatched at a <a>processing video worker</a> and provide
-          read access to <a>input frame</a> data and write access to <a>output
+          that are dispatched at a <a>VideoProcessor</a> and provide read
+          access to <a>input frame</a> data and write access to <a>output
           frame</a> data.
         </dd>
       </dl>
     </section>
     <section>
       <h2>
-        Worker extensions
+        <a>VideoMonitor</a> and <a>VideoProcessor</a> interfaces
       </h2>
-      <section>
-        <h2>
-          <code>DedicatedWorkerGlobalScope</code> interface
-        </h2>
-        <p>
-          To enable generating, processing, and analyzing of video data
-          directly using JavaScript in a worker, the
-          <a>DedicatedWorkerGlobalScope</a> interface is extended with an
-          <a>onvideomonitor</a> and <a>onvideoprocess</a> <a>event handler IDL
-          attribute</a>. <a data-lt="video monitor event">Video monitor
-          events</a> and <a data-lt="video processor event">video processor
-          events</a> are dispatched at the <a>DedicatedWorkerGlobalScope</a>
-          object.
-        </p>
-        <pre class="idl">
-          partial interface DedicatedWorkerGlobalScope {
-                          attribute EventHandler onvideomonitor;
-                          attribute EventHandler onvideoprocess;
+      <p>
+        The <a>VideoMonitor</a> interface is used to analyze and
+        <a>VideoProcessor</a> interface in addition to generate and process
+        video data directly using JavaScript. The <a data-lt=
+        "video monitor event">video monitor events</a> are dispatched at
+        <a>VideoMonitor</a> objects, and <a data-lt=
+        "video processor event">video processor events</a> are dispatched at
+        <a>VideoProcessor</a> objects.
+      </p>
+      <pre class="idl">
+          [Constructor]
+          interface VideoMonitor : EventTarget {
+              attribute EventHandler onvideomonitorchange;
           };
         </pre>
-        <div>
-          <p>
-            The following are the <a data-lt="event handler">event handlers</a>
-            (and their corresponding <a data-lt=
-            "event handler event type">event handler event types</a>) that must
-            be supported, as event handler IDL attributes, by objects
-            implementing the <a>DedicatedWorkerGlobalScope</a> interface:
-          </p>
-          <table class="simple">
-            <thead>
-              <tr>
-                <th>
-                  Event handlers
-                </th>
-                <th>
-                  <a>Event handler event type</a>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <dfn><code>onvideomonitor</code></dfn>
-                </td>
-                <td>
-                  <dfn><code>videomonitor</code></dfn>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <dfn><code>onvideoprocess</code></dfn>
-                </td>
-                <td>
-                  <dfn><code>videoprocess</code></dfn>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <section>
-          <h2>
-            Video worker event firing
-          </h2>
-          <p>
-            To <dfn>fire a video worker event</dfn> named <var>e</var>, the
-            user agent must run the following steps:
-          </p>
-          <ol>
-            <li>If <var>e</var> is <a>videomonitor</a>, create a
-            <a>VideoMonitorEvent</a>, initialize it to have a given name <var>
-              e</var>, to not bubble, to not be cancelable.
-            </li>
-            <li>If <var>e</var> is <a>videoprocess</a>, create a
-            <a>VideoProcessorEvent</a>, initialize it to have a given name
-            <var>e</var>, to not bubble, to not be cancelable.
-            </li>
-            <li>Initialize the <a>trackId</a> attribute to the value of the
-            <code>id</code> attribute of the <a>input media stream track</a>.
-            </li><!-- TODO -->
-            <li>Initialize the <a>playbackTime</a> attribute to the value of
-            the <code>currentTime</code> attribute of the <a>MediaStream</a>
-            that contains the <a>input media stream track</a>.
-            </li>
-            <li>Initialize the <a>inputImageBitmap</a> attribute to the bitmap
-            data of the <a>input media stream track</a>'s video frame at the
-            current stream position at <a>playbackTime</a>.
-            </li>
-            <li>
-              <!-- TODO: clarify the definition of targets -->
-              Let <var>associated video workers</var> be the list of
-              <a data-lt="video worker">video workers</a> that share the same
-              <a>input media stream track</a>.
-            </li>
-            <li>If <var>e</var> is <a>videomonitor</a>, dispatch the newly
-            created <a>VideoMonitorEvent</a> object at each <var>target</var>.
-            </li>
-            <li>If <var>e</var> is <a>videoprocess</a>, initialize the
-            <a>outputImageBitmap</a> attribute to null, and dispatch the newly
-            created <a>VideoProcessorEvent</a> object at each
-            <var>target</var>.
-            </li>
-          </ol>
-        </section>
-      </section>
+      <pre class="idl">
+          [Constructor]
+          interface VideoProcessor : VideoMonitor {
+              attribute EventHandler onvideoprocessorchange;
+          };
+        </pre>
+      <p>
+        The following are the <a data-lt="event handler">event handlers</a>
+        (and their corresponding <a data-lt="event handler event type">event
+        handler event types</a>) that must be supported, as event handler IDL
+        attributes, by objects implementing the <a>VideoMonitor</a> interface:
+      </p>
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>
+              Event handlers
+            </th>
+            <th>
+              Event handler event type
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <dfn><code>onvideomonitorchange</code></dfn>
+            </td>
+            <td>
+              <dfn><code>videomonitorchange</code></dfn>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        The following are the <a data-lt="event handler">event handlers</a>
+        (and their corresponding <a data-lt="event handler event type">event
+        handler event types</a>) that must be supported, as event handler IDL
+        attributes, by objects implementing the <a>VideoProcessor</a>
+        interface:
+      </p>
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>
+              Event handlers
+            </th>
+            <th>
+              Event handler event type
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <dfn><code>onvideoprocessorchange</code></dfn>
+            </td>
+            <td>
+              <dfn><code>videoprocessorchange</code></dfn>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <section>
         <h2>
-          <code>VideoMonitorEvent</code> interface
+          Video event firing
         </h2>
         <p>
-          The <a>video monitor event</a> contains an <a>input frame</a> and its
-          metadata originating from the <a>input media stream track</a>. It
-          uses the <a>VideoMonitorEvent</a> interface for its
-          <a>videomonitor</a> events:
+          To <dfn>fire a video event</dfn> named <var>e</var>, the user agent
+          must run the following steps:
         </p>
-        <pre class="idl">
-          [Constructor(DOMString type, optional VideoMonitorEventInit videoMonitorEventInitDict), Exposed=Worker]
+        <ol>
+          <li>If <var>e</var> is <a>videomonitorchange</a>, create a
+          <a>VideoMonitorEvent</a>, initialize it to have a given name
+          <var>e</var>, to not bubble, to not be cancelable.
+          </li>
+          <li>If <var>e</var> is <a>videoprocessorchange</a>, create a
+          <a>VideoProcessorEvent</a>, initialize it to have a given name <var>
+            e</var>, to not bubble, to not be cancelable.
+          </li>
+          <li>Initialize the <a>trackId</a> attribute to the value of the
+          <code>id</code> attribute of the <a>input media stream track</a>.
+          </li><!-- TODO -->
+          <li>Initialize the <a>playbackTime</a> attribute to the value of the
+          <code>currentTime</code> attribute of the <a>MediaStream</a> that
+          contains the <a>input media stream track</a>.
+          </li>
+          <li>Initialize the <a>inputImageBitmap</a> attribute to the bitmap
+          data of the <a>input media stream track</a>'s video frame at the
+          current stream position at <a>playbackTime</a>.
+          </li>
+          <li>If <var>e</var> is <a>videomonitorchange</a>, dispatch the newly
+          created <a>VideoMonitorEvent</a> object at each <a>video monitor</a>
+          that is <a>monitoring</a>.
+          </li>
+          <li>If <var>e</var> is <a>videoprocessorchange</a>, initialize the
+          <a>outputImageBitmap</a> attribute to null, and dispatch the newly
+          created <a>VideoProcessorEvent</a> object at each <var>target</var>.
+          </li>
+        </ol>
+      </section>
+    </section>
+    <section>
+      <h2>
+        <code>VideoMonitorEvent</code> interface
+      </h2>
+      <p>
+        The <a>video monitor event</a> contains an <a>input frame</a> and its
+        metadata originating from the <a>input media stream track</a>. It uses
+        the <a>VideoMonitorEvent</a> interface for its <a>videomonitor</a>
+        events:
+      </p>
+      <pre class="idl">
+          [Constructor(DOMString type, optional VideoMonitorEventInit videoMonitorEventInitDict)]
           interface VideoMonitorEvent : Event {
               readonly    attribute DOMString   trackId;
               readonly    attribute double      playbackTime;
@@ -489,49 +498,47 @@
               required ImageBitmap? inputImageBitmap;
           };
         </pre>
-        <div>
-          <p>
-            The <dfn>trackId</dfn> attribute must return the value it was
-            initialized to. When the object is created, this attribute must be
-            initialized to the empty string. It represents the identifier that
-            is shared with the <a>video worker</a> and its <a>input media
-            stream track</a>.
-          </p>
-          <p>
-            <!-- TODO: is this current stream position? -->
-             The <dfn>playbackTime</dfn> attribute must return the value it was
-            initialized to. When the object is created, this attribute must be
-            initialized to zero. It represents the current stream position, in
-            seconds.
-          </p>
-          <p>
-            The <dfn>inputImageBitmap</dfn> attribute must return the value it
-            was initialized to. When the object is created, this attribute must
-            be initialized to null. It represents the <a>ImageBitmap</a> object
-            whose bitmap data is provided by the <a>input media stream
-            track</a>.
-          </p>
-        </div>
+      <div>
         <p>
-          When a user agent is required to <dfn>fire a video monitor
-          event</dfn>, it must <a>fire a video worker event</a> named
-          <a>videomonitor</a>.
+          The <dfn><code>trackId</code></dfn> attribute must return the value
+          it was initialized to. When the object is created, this attribute
+          must be initialized to the empty string. It represents the identifier
+          that is shared with the <a>video monitor</a> and its <a>input media
+          stream track</a>.
         </p>
-      </section>
-      <section>
-        <h2>
-          <code>VideoProcessorEvent</code> interface
-        </h2>
         <p>
-          The <a>video processor event</a> inherits from the <a>video monitor
-          event</a>, and in addition provides means to programmatically
-          construct an <a>output frame</a> for the <a>output media stream
-          track</a>. It uses the <a>VideoProcessorEvent</a> interface for its
-          <a>videoprocess</a> events:
+          <!-- TODO: is this current stream position? -->
+           The <dfn><code>playbackTime</code></dfn> attribute must return the
+          value it was initialized to. When the object is created, this
+          attribute must be initialized to zero. It represents the current
+          stream position, in seconds.
         </p>
-        <pre class="idl">
-          [Constructor(DOMString type, optional VideoProcessorEventInit videoProcessorEventInitDict),
-           Exposed=Worker]
+        <p>
+          The <dfn><code>inputImageBitmap</code></dfn> attribute must return
+          the value it was initialized to. When the object is created, this
+          attribute must be initialized to null. It represents the
+          <a>ImageBitmap</a> object whose bitmap data is provided by the
+          <a>input media stream track</a>.
+        </p>
+      </div>
+      <p>
+        When a user agent is required to <dfn>fire a video monitor event</dfn>,
+        it must <a>fire a video event</a> named <a>videomonitor</a>.
+      </p>
+    </section>
+    <section>
+      <h2>
+        <code>VideoProcessorEvent</code> interface
+      </h2>
+      <p>
+        The <a>video processor event</a> inherits from the <a>video monitor
+        event</a>, and in addition provides means to programmatically construct
+        an <a>output frame</a> for the <a>output media stream track</a>. It
+        uses the <a>VideoProcessorEvent</a> interface for its
+        <a>videoprocessorchange</a> events:
+      </p>
+      <pre class="idl">
+          [Constructor(DOMString type, optional VideoProcessorEventInit videoProcessorEventInitDict)]
           interface VideoProcessorEvent : VideoMonitorEvent {
                           attribute ImageBitmap? outputImageBitmap;
           };
@@ -540,45 +547,44 @@
               required ImageBitmap? outputImageBitmap;
           };
         </pre>
-        <div>
-          <p>
-            The <dfn>outputImageBitmap</dfn> attribute must return the value it
-            was initialized to. When the object is created, this attribute must
-            be initialized to null. It represents the <a>ImageBitmap</a> object
-            which on setting, must cause the user agent to run the following
-            steps:
-          </p>
-        </div>
-        <ol>
-          <li>Let <var>output bitmap</var> be the <a>ImageBitmap</a> object
-          assigned to the <a>outputImageBitmap</a> attribute.
-          </li>
-          <li>Let <var>output media stream track</var> be the
-          <a>MediaStreamTrack</a> returned by the
-          <code><a>addVideoProcessor</a>()</code> method.
-          </li>
-          <li>
-            <!-- TODO: this should be defined better. -->
-            Set <var>output bitmap</var> as the <a>source</a> of the
-            <var>output media stream track</var>.
-          </li>
-        </ol>
+      <div>
         <p>
-          When a user agent is required to <dfn>fire a video processor
-          event</dfn>, it must <a>fire a video worker event</a> named
-          <a>videoprocess</a>.
+          The <dfn>outputImageBitmap</dfn> attribute must return the value it
+          was initialized to. When the object is created, this attribute must
+          be initialized to null. It represents the <a>ImageBitmap</a> object
+          which on setting, must cause the user agent to run the following
+          steps:
         </p>
-        <div class="note">
-          <p>
-            Ideally the <code>MediaStreamTrack</code> should dispatch each
-            video frame through <a>VideoProcessorEvent</a>. But sometimes the
-            worker thread could not process the frame in time. So the
-            implementation could skip the frame to avoid high memory footprint.
-            In such case, we might not be able to process every frame in a real
-            time <code>MediaStream</code>.
-          </p>
-        </div>
-      </section>
+      </div>
+      <ol>
+        <li>Let <var>output bitmap</var> be the <a>ImageBitmap</a> object
+        assigned to the <a>outputImageBitmap</a> attribute.
+        </li>
+        <li>Let <var>output media stream track</var> be the
+        <a>MediaStreamTrack</a> returned by the
+        <code><a>addVideoProcessor</a>()</code> method.
+        </li>
+        <li>
+          <!-- TODO: this should be defined better. -->
+          Set <var>output bitmap</var> as the <a>source</a> of the <var>output
+          media stream track</var>.
+        </li>
+      </ol>
+      <p>
+        When a user agent is required to <dfn>fire a video processor
+        event</dfn>, it must <a>fire a video event</a> named
+        <a>videoprocessorchange</a>.
+      </p>
+      <div class="note">
+        <p>
+          Ideally the <code>MediaStreamTrack</code> should dispatch each video
+          frame through <a>VideoProcessorEvent</a>. But sometimes the worker
+          thread could not process the frame in time. So the implementation
+          could skip the frame to avoid high memory footprint. In such case, we
+          might not be able to process every frame in a real time
+          <code>MediaStream</code>.
+        </p>
+      </div>
     </section>
     <section>
       <h2>
@@ -590,10 +596,10 @@
         </h2>
         <pre class="idl">
           partial interface MediaStreamTrack {
-              Promise&lt;void&gt;             addVideoMonitor(Worker worker);
-              Promise&lt;void&gt;             removeVideoMonitor(Worker worker);
-              Promise&lt;MediaStreamTrack&gt; addVideoProcessor(Worker worker);
-              Promise&lt;void&gt;             removeVideoProcessor();
+              void              addVideoMonitor(VideoMonitor monitor);
+              void              removeVideoMonitor(VideoMonitor monitor);
+              MediaStreamTrack  addVideoProcessor(VideoProcessor processor);
+              void              removeVideoProcessor();
           };
         </pre>
         <div>
@@ -602,50 +608,28 @@
             must run these steps:
           </p>
           <ol>
-            <li>Let <var>promise</var> be a new promise.
+            <li>Let <var>monitor</var> be the first method argument.
             </li>
-            <li>Run these substeps <a>in parallel</a>:
-              <ol>
-                <li>Let <var>worker</var> be the first method argument.
-                </li>
-                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
-                on which the method was invoked. (This is the <a>input media
-                stream track</a>.)
-                </li>
-                <li>Associate <var>worker</var> with <a>input media stream
-                track</a> <var>track</var>.
-                </li>
-                <li>Resolve <var>promise</var> with undefined.
-                </li>
-              </ol>
+            <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object on
+            which the method was invoked. (This is the <a>input media stream
+            track</a>.)
             </li>
-            <li>Return <var>promise</var>.
-            </li><!-- TODO: when do we want to reject the promise? -->
+            <li>Associate <var>monitor</var> with <a>input media stream
+            track</a> <var>track</var>.
+            </li>
           </ol>
           <p>
             The <code><dfn>removeVideoMonitor</dfn>()</code> method, when
             invoked, must run these steps:
           </p>
           <ol>
-            <li>Let <var>promise</var> be a new promise.
+            <li>Let <var>monitor</var> be the first method argument.
             </li>
-            <li>Run these substeps <a>in parallel</a>:
-              <ol>
-                <li>Let <var>worker</var> be the first method argument.
-                </li>
-                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
-                on which the method was invoked.
-                </li>
-                <li>If there exists an association between <var>worker</var>
-                and <var>track</var>, break that association and resolve <var>
-                  promise</var> with undefined.
-                </li>
-                <li>Otherwise, reject <var>promise</var> with
-                <code>NotFoundError</code>.
-                </li>
-              </ol>
+            <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object on
+            which the method was invoked.
             </li>
-            <li>Return <var>promise</var>.
+            <li>If there exists an association between <var>monitor</var> and
+            <var>track</var>, break that association.
             </li>
           </ol>
           <p>
@@ -653,39 +637,23 @@
             invoked, must run these steps:
           </p>
           <ol>
-            <li>Let <var>promise</var> be a new promise.
+            <li>Let <var>processor</var> be the first method argument.
             </li>
-            <li>Run these substeps <a>in parallel</a>:
-              <ol>
-                <li>Let <var>worker</var> be the first method argument.
-                </li>
-                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
-                on which the method was invoked. (This is the <a>input media
-                stream track</a>.)
-                </li>
-                <li>If there exists an association between <var>worker</var>
-                and <var>track</var>, reject promise with
-                <code>QuotaExceededError</code>.
-                  <div class="note">
-                    A single <a>input media stream track</a> is associated with
-                    at most one <a>processing video worker</a> at a time.
-                  </div>
-                </li>
-                <li>Associate <var>worker</var> with <a>input media stream
-                track</a> <var>track</var>.
-                </li>
-                <li>Let <var>new track</var> be a newly created
-                <a>MediaStreamTrack</a> object. (This is the <a>output media
-                stream track</a>.)
-                </li>
-                <li>Associate <var>new track</var> as the <a>output media
-                stream track</a> for <var>worker</var>.
-                </li>
-                <li>Resolve <var>promise</var> with <var>new track</var>.
-                </li>
-              </ol>
+            <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object on
+            which the method was invoked. (This is the <a>input media stream
+            track</a>.)
             </li>
-            <li>Return <var>promise</var>.
+            <li>Associate <var>processor</var> with <a>input media stream
+            track</a> <var>track</var>.
+            </li>
+            <li>Let <var>new track</var> be a newly created
+            <a>MediaStreamTrack</a> object. (This is the <a>output media stream
+            track</a>.)
+            </li>
+            <li>Associate <var>new track</var> as the <a>output media stream
+            track</a> for <var>processor</var>.
+            </li>
+            <li>Return <var>new track</var>.
             </li>
           </ol>
           <p>
@@ -693,25 +661,13 @@
             invoked, must run these steps:
           </p>
           <ol>
-            <li>Let <var>promise</var> be a new promise.
+            <li>Let <var>processor</var> be the first method argument.
             </li>
-            <li>Run these substeps <a>in parallel</a>:
-              <ol>
-                <li>Let <var>worker</var> be the first method argument.
-                </li>
-                <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object
-                on which the method was invoked.
-                </li>
-                <li>If there exists an association between <var>worker</var>
-                and <var>track</var>, break that association and resolve <var>
-                  promise</var> with undefined.
-                </li>
-                <li>Otherwise, reject <var>promise</var> with
-                <code>NotFoundError</code>.
-                </li>
-              </ol>
+            <li>Let <var>track</var> be the <a>MediaStreamTrack</a> object on
+            which the method was invoked.
             </li>
-            <li>Return <var>promise</var>.
+            <li>If there exists an association between <var>processor</var> and
+            <var>track</var>, break that association.
             </li>
           </ol>
         </div>
@@ -1622,132 +1578,100 @@
       <h2>
         Examples
       </h2>
+      <p>
+        This example demonstrates how to hook a worker to a
+        <a>MediaStreamTrack</a> as a <a>video processor</a> and use the
+        <a href="#imagebitmap-extensions">ImageBitmap extensions</a> from
+        within a worker script.
+      </p>
       <section>
-        <h3>
-          Simple example
-        </h3>
-        <p>
-          This example demostrates how to hook a video worker to a
-          <a>MediaStreamTrack</a> as a <a>processing video worker</a> and the
-          script code of the video worker shows how to use the extended methods
-          of <a href="#imagebitmap-extensions">ImageBitmap extensions</a>
-        </p>
-        <p>
-          The scenario is that captures real-time <a>MediaStream</a> from a web
-          camera, converts the captured color video frames into gray scales and
-          then shows both color and gray videos on the screen. Since the
-          captured color video is likely to be stored as YUV format natively,
-          this example asks the browser to map the video data into JavaScript
-          <a>ArrayBuffer</a> in any kind of YUV formats which might save the
-          color conversion cost.
-        </p>
-        <h4>
-          HTML
-        </h4>
-        <pre class='example highlight'>
-&lt;video id="color"&gt;&lt;/video&gt;  // For camera view.
-&lt;video id="gray"&gt;&lt;/video&gt;   // For processed result.
-
-&lt;script&gt;
-  var colorVideo = document.getElementById("color");
-  var grayVideo = document.getElementById("gray");
-
-  navigator.getUserMedia({video: true, audio: false} , onSuccess, onFail);
-
-  function onSuccess(stream) {
-    // Initialize the vidoe for showing camera view.
-    colorVideo.srcObject = stream;
-    colorVideo.play();
-
-    // Create a video worker.
-    var processor = new Worker("processor.js");
-
-    // Get the video MediaStreamTrack.
-    var track = stream.getTracks()[0];
-
-    // Associate the video worker to the video MediaStreamTrack.
-    var promise = track.addVideoProcessor(processor);
-    promise.then(function(resultTrack) {
-      // Initialize the video for showing the processed result.
-      grayVideo.srcObject = new MediaStream([resultTrack]);
-      grayVideo.play();
-    },
-    function(ex) {
-      console.log("Call addVideoProcessor() failed. Error: " + ex);
-    });
-  }
-
-  function onFail(ex) {
-    console.log("Cannot access WebCAM. Error: " + ex);
-  }
-&lt;/script&gt;
+        <pre class="example">
+          &lt;script&gt;
+          var processor = new VideoProcessor();
+          var inputTrack = mediaStream.getVideoTracks()[0];
+          var outputTrack = inputTrack.addVideoProcessor(processor);
+          newMediaStream.addTrack(outputTrack); 
+          var worker = new Worker("processing.js");
+          worker.postMessage({aCommand : 'pass_processor', aProcessor: processor}, [processor]);
+          &lt;/script&gt;
         </pre>
-        <h4>
-          JavaScript
-        </h4>
-        <pre class='example highlight'>
-onvideoprocess = function(event) {
-  // Check if the browser supports YUV format.
-  var bitmap = event.inputImageBitmap;
-  var yuvFormats = ["YUV444P", "YUV422P", "YUV420P", "YUV420SP_NV12", "YUV420SP_NV21"];
-  var bitmapFormat = bitmap.findOptimalFormat(yuvFormats);
-  if (bitmapFormat == "") {
-    console.log("The browser does not support YUV formats.");
-    return;
-  }
+        <p>
+          The worker executes the following <code>processing.js</code> script:
+        </p>
+        <pre class="example">
+          self.onmessage = function(msg) {
+            switch (msg.data.aCommand) {
+                  case 'pass_processor':
+                          bindProcessor(msg.data.aProcessor);
+                      break;
+                  default:
+                      throw 'no aTopic on incoming message to Worker';
+              }
+          };
 
-  // Get the need buffer size to read the image data in YUV format.
-  var bitmapBufferLength = bitmap.mappedDataLength(bitmapFormat);
+          function bindProcessor(processor) {
+            processor.onvideoprocessorchange = function(event) {
+              // Check if the browser supports YUV format.
+              var bitmap = event.inputImageBitmap;
+              var yuvFormats = ["YUV444P", "YUV422P", "YUV420P", "YUV420SP_NV12", "YUV420SP_NV21"];
+              var bitmapFormat = bitmap.findOptimalFormat(yuvFormats);
+              if (bitmapFormat == "") {
+                console.log("The browser does not support YUV formats.");
+                return;
+              }
+              // Get the need buffer size to read the image data in YUV format.
+              var bitmapBufferLength = bitmap.mappedDataLength(bitmapFormat);
 
-  // Create the buffer for mapping data out.
-  var bitmapBuffer = new ArrayBuffer(bitmapBufferLength);
-  var bitmapBufferView = new Uint8ClampedArray(bitmapBuffer, 0, bitmapBufferLength);
+              // Create the buffer for mapping data out.
+              var bitmapBuffer = new ArrayBuffer(bitmapBufferLength);
+              var bitmapBufferView = new Uint8ClampedArray(bitmapBuffer, 0, bitmapBufferLength);
 
-  // Map the bitmap's data into the buffer created in the previous step.
-  var promise = bitmap.mapDataInto(bitmapFormat, bitmapBuffer, 0, bitmapBufferLength);
-  promise.then(function(bitmapPixelLayout) {
-    // Read out the y-channel properties.
-    var ywidth  = bitmapPixelLayout.channels[0].width;
-    var yheight = bitmapPixelLayout.channels[0].height;
-    var yoffset = bitmapPixelLayout.channels[0].offset;
-    var ystride = bitmapPixelLayout.channels[0].stride;
-    var yskip   = bitmapPixelLayout.channels[0].skip;   // This should be 0.
+              // Map the bitmap's data into the buffer created in the previous step.
+              var promise = bitmap.mapDataInto(bitmapFormat, bitmapBuffer, 0, bitmapBufferLength);
+              promise.then(function(bitmapPixelLayout) {
+                // Read out the y-channel properties.
+                var ywidth  = bitmapPixelLayout.channels[0].width;
+                var yheight = bitmapPixelLayout.channels[0].height;
+                var yoffset = bitmapPixelLayout.channels[0].offset;
+                var ystride = bitmapPixelLayout.channels[0].stride;
+                var yskip   = bitmapPixelLayout.channels[0].skip;   // This should be 0.
 
-    // Initialize the buffer for the result gray image.
-    var rgbaBufferLength = ywidth * yheight * 4;
-    var rgbaBuffer = new ArrayBuffer(rgbaBufferLength);
-    var rgbaBufferView = new Uint8ClampedArray(rgbaBuffer, 0, rgbaBufferLength);
+                // Initialize the buffer for the result gray image.
+                var rgbaBufferLength = ywidth * yheight * 4;
+                var rgbaBuffer = new ArrayBuffer(rgbaBufferLength);
+                var rgbaBufferView = new Uint8ClampedArray(rgbaBuffer, 0, rgbaBufferLength);
 
-    // Convert YUV to Gray.
-    for (var i = 0; i &lt; yheight; ++i) {
-      for (var j = 0; j &lt; ywidth; ++j) {
-        var index = ystride * i + j;
-        var y = parseFloat(bitmapBufferView[yoffset + index]);
-        rgbaBufferView[index * 4 + 0] = y;
-        rgbaBufferView[index * 4 + 1] = y;
-        rgbaBufferView[index * 4 + 2] = y;
-        rgbaBufferView[index * 4 + 3] = 255;
-      }
-    }
+                // Convert YUV to Gray.
+                for (var i = 0; i &lt; yheight; ++i) {
+                  for (var j = 0; j &lt; ywidth; ++j) {
+                    var index = ystride * i + j;
+                    var y = parseFloat(bitmapBufferView[yoffset + index]);
+                    rgbaBufferView[index * 4 + 0] = y;
+                    rgbaBufferView[index * 4 + 1] = y;
+                    rgbaBufferView[index * 4 + 2] = y;
+                    rgbaBufferView[index * 4 + 3] = 255;
+                  }
+                }
 
-    // Create a new ImageBitmap from the processed rgbaBuffer and assign to the
-    // event.outputImageBitmap.
-    var channelR = new ChannelPixelLayout(0, ywidth, yheight, "uint8", ywith * 4, 3);
-    var channelG = new ChannelPixelLayout(1, ywidth, yheight, "uint8", ywith * 4, 3);
-    var channelB = new ChannelPixelLayout(2, ywidth, yheight, "uint8", ywith * 4, 3);
-    var channelA = new ChannelPixelLayout(3, ywidth, yheight, "uint8", ywith * 4, 3);
-    var layout = new ImageFormatPixelLayout([channelR, channelG, channelB, channelA]);
-    var p = createImageBitmap(rgbaBuffer, 0, rgbaBufferLength, "RGBA32", layout);
-    p.then(function(bitmap) {
-      event.outputImageBitmap = bitmap;
-    }).catch(function(ex) {
-      console.log("Call createImageBitmap() failed. Error: " + ex);
-    });
-  },
-  function(ex) {
-    console.log("Call mapDataInto() failed. Error: " + ex);
-  });
-}
+                // Create a new ImageBitmap from the processed rgbaBuffer and assign to the
+                // event.outputImageBitmap.
+                var channelR = new ChannelPixelLayout(0, ywidth, yheight, "uint8", ywith * 4, 3);
+                var channelG = new ChannelPixelLayout(1, ywidth, yheight, "uint8", ywith * 4, 3);
+                var channelB = new ChannelPixelLayout(2, ywidth, yheight, "uint8", ywith * 4, 3);
+                var channelA = new ChannelPixelLayout(3, ywidth, yheight, "uint8", ywith * 4, 3);
+                var layout = new ImageFormatPixelLayout([channelR, channelG, channelB, channelA]);
+                var p = createImageBitmap(rgbaBuffer, 0, rgbaBufferLength, "RGBA32", layout);
+                p.then(function(bitmap) {
+                  event.outputImageBitmap = bitmap;
+                }).catch(function(ex) {
+                  console.log("Call createImageBitmap() failed. Error: " + ex);
+                });
+              },
+              function(ex) {
+                console.log("Call mapDataInto() failed. Error: " + ex);
+              });
+            };
+          }
         </pre>
       </section>
     </section>
