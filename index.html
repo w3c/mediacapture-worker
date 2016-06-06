@@ -1365,33 +1365,13 @@
             </p>
           </div>
         </section>
-        <section id='imageformatpixellayout-interface'>
+        <section id='imagepixellayout-definition'>
           <h2>
-            <code>ImageFormatPixelLayout</code> interface
+            <code>ImagePixelLayout</code> definition
           </h2>
           <pre class="idl">
-            [Exposed=(Window,Worker),
-             Constructor(ChannelPixelLayout[] channels)]
-            interface ImageFormatPixelLayout {
-                readonly    attribute ChannelPixelLayout[] channels;
-            };
+            typedef sequence&lt;ChannelPixelLayout&gt; ImagePixelLayout;
           </pre>
-          <div>
-            <p>
-              The <code><dfn>ImageFormatPixelLayout</dfn>(ChannelPixelLayout[]
-              channels)</code> constructor, when invoked, MUST return a newly
-              created <a>ImageFormatPixelLayout</a> object whose <a data-lt=
-              "ImageFormatPixelLayout">channels</a> attribute is set to the
-              constructor's first argument.
-            </p>
-            <p>
-              The <dfn>channels</dfn> attribute must return a read only array
-              of <a>ChannelPixelLayout</a> objects. The returned array
-              represents <a data-lt="channel">channels</a> of the <a>image
-              format</a>. Each <a>image format</a> has at least one
-              <a>channel</a>.
-            </p>
-          </div>
         </section>
       </section>
       <section id='imagebitmap-interface-extensions'>
@@ -1403,7 +1383,7 @@
           partial interface ImageBitmap {
               ImageFormat                     findOptimalFormat (optional sequence&lt;ImageFormat&gt; possibleFormats);
               long                            mappedDataLength (ImageFormat format);
-              Promise&lt;ImageFormatPixelLayout&gt; mapDataInto (ImageFormat format, BufferSource buffer, long offset, long length);
+              Promise&lt;ImagePixelLayout&gt; mapDataInto (ImageFormat format, BufferSource buffer, long offset, long length);
           };
         </pre>
         <div>
@@ -1487,7 +1467,7 @@
                 <var>offset</var>, filling at most <var>length</var> bytes.
                 </li>
                 <li>Let <var>pixel layout</var> be a new
-                <a>ImageFormatPixelLayout</a> object that represents the image
+                <a>ImagePixelLayout</a> object that represents the image
                 data in the previous step.
                 </li>
                 <li>Resolve <var>promise</var> with <a>pixel layout</a>.
@@ -1506,8 +1486,8 @@
         <pre class="idl">
           [NoInterfaceObject, Exposed=(Window,Worker)]
           partial interface ImageBitmapFactories {
-              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImageFormatPixelLayout layout);
-              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImageFormatPixelLayout layout, long sx, long sy, long sw, long sh);
+              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImagePixelLayout layout);
+              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImagePixelLayout layout, long sx, long sy, long sw, long sh);
           };
         </pre>
         <div>
