@@ -1317,41 +1317,25 @@
           [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
           [data]  ......
         </pre>
-        <section id='channelpixellayout-interface'>
+        <section id='channelpixellayout-dictionary'>
           <h2>
-            <code>ChannelPixelLayout</code> interface
+            <code><dfn>ChannelPixelLayout</dfn></code> dictionary
           </h2>
           <p>
             Each <a>channel</a> is represented by an <a>ChannelPixelLayout</a>
             object.
           </p>
           <pre class="idl">
-            [Exposed=(Window,Worker),
-             Constructor(unsigned long offset, unsigned long width, unsigned long height, DataType dataType, unsigned long stride, unsigned long skip)]
-            interface ChannelPixelLayout {
-                readonly    attribute unsigned long offset;
-                readonly    attribute unsigned long width;
-                readonly    attribute unsigned long height;
-                readonly    attribute ChannelPixelLayoutDataType dataType;
-                readonly    attribute unsigned long stride;
-                readonly    attribute unsigned long skip;
+            dictionary ChannelPixelLayout {
+                required unsigned long offset;
+                required unsigned long width;
+                required unsigned long height;
+                required ChannelPixelLayoutDataType dataType;
+                required unsigned long stride;
+                required unsigned long skip;
             };
           </pre>
           <div>
-            <p>
-              The <code><dfn>ChannelPixelLayout</dfn>(unsigned long offset,
-              unsigned long width, unsigned long height, DataType dataType,
-              unsigned long stride, unsigned long skip)</code> constructor,
-              when invoked, MUST return a newly created
-              <a>ChannelPixelLayout</a> object whose <a>offset</a> attribute is
-              set to the constructor's first argument, whose <a>width</a>
-              attribute is set to the constructor's sencod argument, whose
-              <a>height</a> attribute is set to the constructor's third
-              argument, whose <a>dataType</a> attribute is set to the
-              constructor's fourth argument, whose <a>stride</a> attribute is
-              set to the constructor's fifth argument and whose <a>skip</a>
-              attribute is set to the constructor's sixth argument.
-            </p>
             <p>
               The <dfn>offset</dfn> attribute represents the <a>channel</a>'s
               <a>offset</a>.
