@@ -1621,11 +1621,11 @@
 
                 // Create a new ImageBitmap from the processed rgbaBuffer and assign to the
                 // event.outputImageBitmap.
-                var channelR = new ChannelPixelLayout(0, ywidth, yheight, "uint8", ywith * 4, 3);
-                var channelG = new ChannelPixelLayout(1, ywidth, yheight, "uint8", ywith * 4, 3);
-                var channelB = new ChannelPixelLayout(2, ywidth, yheight, "uint8", ywith * 4, 3);
-                var channelA = new ChannelPixelLayout(3, ywidth, yheight, "uint8", ywith * 4, 3);
-                var layout = new ImageFormatPixelLayout([channelR, channelG, channelB, channelA]);
+                var channelR = {offset:0, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var channelG = {offset:1, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var channelB = {offset:2, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var channelA = {offset:3, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var layout = [channelR, channelG, channelB, channelA];
                 var p = createImageBitmap(rgbaBuffer, 0, rgbaBufferLength, "RGBA32", layout);
                 p.then(function(bitmap) {
                   event.outputImageBitmap = bitmap;
