@@ -1122,16 +1122,17 @@
             </tr>
           </table>
         </section>
-        <section id='datatype-enumeration'>
+        <section id='channelpixellayoutdatatype-enumeration'>
           <h2>
-            <code>DataType</code> enumeration
+            <code>ChannelPixelLayoutDataType</code> enumeration
           </h2>
           <p>
-            The <a>DataType</a> enumeration is used to select the <dfn>channel
-            data type</dfn> that is used to store a single <a>pixel value</a>.
+            The <a>ChannelPixelLayoutDataType</a> enumeration is used to select
+            the <dfn>channel data type</dfn> that is used to store a single
+            <a>pixel value</a>.
           </p>
           <pre class="idl">
-            enum DataType {
+            enum ChannelPixelLayoutDataType {
                 "uint8",
                 "int8",
                 "uint16",
@@ -1233,7 +1234,7 @@
           layout</dfn> of a certain <a data-lt="image format">image format</a>.
           Since an <a>image format</a> is composed of at least one
           <dfn>channel</dfn>, an <a>ImageFormatPixelLayout</a> object contains
-          at least one <a>ChannelPixelLayout</a> object. 
+          at least one <a>ChannelPixelLayout</a> object.
           <!-- TODO: more elaborate description of a channel needed -->
         </p>
         <p>
@@ -1376,7 +1377,7 @@
                 readonly    attribute unsigned long offset;
                 readonly    attribute unsigned long width;
                 readonly    attribute unsigned long height;
-                readonly    attribute DataType      dataType;
+                readonly    attribute ChannelPixelLayoutDataType dataType;
                 readonly    attribute unsigned long stride;
                 readonly    attribute unsigned long skip;
             };
