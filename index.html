@@ -709,10 +709,9 @@
         In this specification, the original <a>ImageBitmap</a> interface is
         extended with three methods to let developers read data from an
         <a>ImageBitmap</a> object into a given <a>BufferSource</a> in a set of
-        supported <a>ImageFormat</a>s and two interfaces,
-        <a>ImageFormatPixelLayout</a> and <a>ChannelPixelLayout</a>, are
-        proposed to work with the extend <a>ImageBitmap</a> methods to describe
-        how the accessed image data is arranged in memory. Also, the
+        supported <a>ImageFormat</a>s. How the accessed image data is arranged
+        in memory is described by the proposed <a>ImagePixelLayout</a> and
+        dictionary <a>ChannelPixelLayout</a>. Also, the
         <a>ImageBitmapFactories</a> interface is extended to let developers
         create an <a>ImageBitmap</a> object from a given <a>BufferSource</a>.
       </p>
@@ -790,7 +789,7 @@
           </h2>
           <p>
             The <a>ImageFormat</a> enumeration is used to select the <dfn>image
-            format</dfn> for the <a>ImageFormatPixelLayout</a>. The
+            format</dfn> for the <a>ImagePixelLayout</a>. The
             <a>ImageBitmap</a> extensions defined in this specification use
             this enumeration to negotiate the <a>image format</a> while
             accessing the underlying data of <a>ImageBitmap</a> and creating a
@@ -1179,16 +1178,17 @@
           Pixel layout
         </h2>
         <p>
-          Two interfaces, <a>ImageFormatPixelLayout</a> and
-          <a>ChannelPixelLayout</a>, together generalize the variety of
-          <a data-lt="pixel layout">pixel layouts</a> among <a data-lt=
-          "image format">image formats</a>.
+          For generalizing the variety of <a data-lt="pixel layout">pixel
+          layouts</a> among <a data-lt="image format">image formats</a>, here we
+          propose the dictionary <a>ChannelPixelLayout</a> and the
+          <a>ImagePixelLayout</a> which is a sequence of
+          ChannelPixelLayout.
         </p>
         <p>
-          The <a>ImageFormatPixelLayout</a> represents the <dfn>pixel
+          The <a>ImagePixelLayout</a> represents the <dfn>pixel
           layout</dfn> of a certain <a data-lt="image format">image format</a>.
           Since an <a>image format</a> is composed of at least one
-          <dfn>channel</dfn>, an <a>ImageFormatPixelLayout</a> object contains
+          <dfn>channel</dfn>, an <a>ImagePixelLayout</a> object contains
           at least one <a>ChannelPixelLayout</a> object.
           <!-- TODO: more elaborate description of a channel needed -->
         </p>
@@ -1317,41 +1317,25 @@
           [data]  DDDDDDDDDDDDDDDDDDDDDDDDDDDDD...                        D
           [data]  ......
         </pre>
-        <section id='channelpixellayout-interface'>
+        <section id='channelpixellayout-dictionary'>
           <h2>
-            <code>ChannelPixelLayout</code> interface
+            <code><dfn>ChannelPixelLayout</dfn></code> dictionary
           </h2>
           <p>
             Each <a>channel</a> is represented by an <a>ChannelPixelLayout</a>
             object.
           </p>
           <pre class="idl">
-            [Exposed=(Window,Worker),
-             Constructor(unsigned long offset, unsigned long width, unsigned long height, DataType dataType, unsigned long stride, unsigned long skip)]
-            interface ChannelPixelLayout {
-                readonly    attribute unsigned long offset;
-                readonly    attribute unsigned long width;
-                readonly    attribute unsigned long height;
-                readonly    attribute ChannelPixelLayoutDataType dataType;
-                readonly    attribute unsigned long stride;
-                readonly    attribute unsigned long skip;
+            dictionary ChannelPixelLayout {
+                required unsigned long offset;
+                required unsigned long width;
+                required unsigned long height;
+                required ChannelPixelLayoutDataType dataType;
+                required unsigned long stride;
+                required unsigned long skip;
             };
           </pre>
           <div>
-            <p>
-              The <code><dfn>ChannelPixelLayout</dfn>(unsigned long offset,
-              unsigned long width, unsigned long height, DataType dataType,
-              unsigned long stride, unsigned long skip)</code> constructor,
-              when invoked, MUST return a newly created
-              <a>ChannelPixelLayout</a> object whose <a>offset</a> attribute is
-              set to the constructor's first argument, whose <a>width</a>
-              attribute is set to the constructor's sencod argument, whose
-              <a>height</a> attribute is set to the constructor's third
-              argument, whose <a>dataType</a> attribute is set to the
-              constructor's fourth argument, whose <a>stride</a> attribute is
-              set to the constructor's fifth argument and whose <a>skip</a>
-              attribute is set to the constructor's sixth argument.
-            </p>
             <p>
               The <dfn>offset</dfn> attribute represents the <a>channel</a>'s
               <a>offset</a>.
@@ -1381,33 +1365,13 @@
             </p>
           </div>
         </section>
-        <section id='imageformatpixellayout-interface'>
+        <section id='imagepixellayout-definition'>
           <h2>
-            <code>ImageFormatPixelLayout</code> interface
+            <code>ImagePixelLayout</code> definition
           </h2>
           <pre class="idl">
-            [Exposed=(Window,Worker),
-             Constructor(ChannelPixelLayout[] channels)]
-            interface ImageFormatPixelLayout {
-                readonly    attribute ChannelPixelLayout[] channels;
-            };
+            typedef sequence&lt;ChannelPixelLayout&gt; ImagePixelLayout;
           </pre>
-          <div>
-            <p>
-              The <code><dfn>ImageFormatPixelLayout</dfn>(ChannelPixelLayout[]
-              channels)</code> constructor, when invoked, MUST return a newly
-              created <a>ImageFormatPixelLayout</a> object whose <a data-lt=
-              "ImageFormatPixelLayout">channels</a> attribute is set to the
-              constructor's first argument.
-            </p>
-            <p>
-              The <dfn>channels</dfn> attribute must return a read only array
-              of <a>ChannelPixelLayout</a> objects. The returned array
-              represents <a data-lt="channel">channels</a> of the <a>image
-              format</a>. Each <a>image format</a> has at least one
-              <a>channel</a>.
-            </p>
-          </div>
         </section>
       </section>
       <section id='imagebitmap-interface-extensions'>
@@ -1419,7 +1383,7 @@
           partial interface ImageBitmap {
               ImageFormat                     findOptimalFormat (optional sequence&lt;ImageFormat&gt; possibleFormats);
               long                            mappedDataLength (ImageFormat format);
-              Promise&lt;ImageFormatPixelLayout&gt; mapDataInto (ImageFormat format, BufferSource buffer, long offset, long length);
+              Promise&lt;ImagePixelLayout&gt; mapDataInto (ImageFormat format, BufferSource buffer, long offset, long length);
           };
         </pre>
         <div>
@@ -1503,7 +1467,7 @@
                 <var>offset</var>, filling at most <var>length</var> bytes.
                 </li>
                 <li>Let <var>pixel layout</var> be a new
-                <a>ImageFormatPixelLayout</a> object that represents the image
+                <a>ImagePixelLayout</a> object that represents the image
                 data in the previous step.
                 </li>
                 <li>Resolve <var>promise</var> with <a>pixel layout</a>.
@@ -1522,8 +1486,8 @@
         <pre class="idl">
           [NoInterfaceObject, Exposed=(Window,Worker)]
           partial interface ImageBitmapFactories {
-              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImageFormatPixelLayout layout);
-              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImageFormatPixelLayout layout, long sx, long sy, long sw, long sh);
+              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImagePixelLayout layout);
+              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImagePixelLayout layout, long sx, long sy, long sw, long sh);
           };
         </pre>
         <div>
@@ -1592,7 +1556,7 @@
           var processor = new VideoProcessor();
           var inputTrack = mediaStream.getVideoTracks()[0];
           var outputTrack = inputTrack.addVideoProcessor(processor);
-          newMediaStream.addTrack(outputTrack); 
+          newMediaStream.addTrack(outputTrack);
           var worker = new Worker("processing.js");
           worker.postMessage({aCommand : 'pass_processor', aProcessor: processor}, [processor]);
           &lt;/script&gt;
@@ -1657,11 +1621,11 @@
 
                 // Create a new ImageBitmap from the processed rgbaBuffer and assign to the
                 // event.outputImageBitmap.
-                var channelR = new ChannelPixelLayout(0, ywidth, yheight, "uint8", ywith * 4, 3);
-                var channelG = new ChannelPixelLayout(1, ywidth, yheight, "uint8", ywith * 4, 3);
-                var channelB = new ChannelPixelLayout(2, ywidth, yheight, "uint8", ywith * 4, 3);
-                var channelA = new ChannelPixelLayout(3, ywidth, yheight, "uint8", ywith * 4, 3);
-                var layout = new ImageFormatPixelLayout([channelR, channelG, channelB, channelA]);
+                var channelR = {offset:0, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var channelG = {offset:1, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var channelB = {offset:2, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var channelA = {offset:3, width:ywidth, height:yheight, dataType:"uint8", stride:ywith * 4, skip:3);
+                var layout = [channelR, channelG, channelB, channelA];
                 var p = createImageBitmap(rgbaBuffer, 0, rgbaBufferLength, "RGBA32", layout);
                 p.then(function(bitmap) {
                   event.outputImageBitmap = bitmap;
