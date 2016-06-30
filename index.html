@@ -319,10 +319,9 @@
         <a>VideoProcessorEvent</a> dispatched at <a>video processor</a>.
       </p>
       <p>
-        The <dfn>input media stream track</dfn> is a <a>MediaStreamTrack</a>
-        object passed as the first argument to the
-        <code><a>addVideoMonitor</a>()</code> or
-        <code><a>addVideoProcessor</a>()</code> method.
+        The <dfn>input media stream track</dfn> is the <a>MediaStreamTrack</a>
+        object on which the <code><a>addVideoMonitor</a>()</code> or
+        <code><a>addVideoProcessor</a>()</code> method is invoked.
       </p>
       <p>
         The <dfn>output media stream track</dfn> is a <a>MediaStreamTrack</a>
@@ -482,8 +481,8 @@
       <p>
         The <a>video monitor event</a> contains an <a>input frame</a> and its
         metadata originating from the <a>input media stream track</a>. It uses
-        the <a>VideoMonitorEvent</a> interface for its <a>videomonitor</a>
-        events:
+        the <a>VideoMonitorEvent</a> interface for its
+        <a>videomonitorchange</a> events:
       </p>
       <pre class="idl">
           [Constructor(DOMString type, optional VideoMonitorEventInit videoMonitorEventInitDict)]
@@ -549,11 +548,11 @@
         </pre>
       <div>
         <p>
-          The <dfn>outputImageBitmap</dfn> attribute must return the value it
-          was initialized to. When the object is created, this attribute must
-          be initialized to null. It represents the <a>ImageBitmap</a> object
-          which on setting, must cause the user agent to run the following
-          steps:
+          The <dfn><code>outputImageBitmap</code></dfn> attribute must return
+          the value it was initialized to. When the object is created, this
+          attribute must be initialized to null. It represents the
+          <a>ImageBitmap</a> object which on setting, must cause the user agent
+          to run the following steps:
         </p>
       </div>
       <ol>
@@ -1584,6 +1583,9 @@
         <a href="#imagebitmap-extensions">ImageBitmap extensions</a> from
         within a worker script.
       </p>
+      <div class="note">
+        A non-worker example should be added too for completeness.
+      </div>
       <section>
         <pre class="example">
           &lt;script&gt;
