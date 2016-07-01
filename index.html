@@ -1487,14 +1487,12 @@
           [NoInterfaceObject, Exposed=(Window,Worker)]
           partial interface ImageBitmapFactories {
               Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImagePixelLayout layout);
-              Promise&lt;ImageBitmap&gt; createImageBitmap (BufferSource buffer, long offset, long length, ImageFormat format, ImagePixelLayout layout, long sx, long sy, long sw, long sh);
           };
         </pre>
         <div>
           <p>
             The <code><dfn>createImageBitmap</dfn>(buffer, offset, length,
-            format, layout, sx, sy, sw, sh)</code> method must run the
-            following steps:
+            format, layout)</code> method must run the following steps:
           </p>
           <ol>
             <li>Let <var>buffer</var> be the container for the raw image data.
@@ -1512,10 +1510,6 @@
             image data, which describes how the data is arranged in
             <var>buffer</var> using <var>format</var>.
             </li>
-            <li>If either the <em>sw</em> or <em>sh</em> arguments are
-            specified but zero, return <var>promise</var> rejected with an
-            <code>IndexSizeError</code> and terminate these steps.
-            </li>
             <li>If <var>buffer</var> has been <a>neutered</a>, reject
             <var>promise</var> with <code>InvalidStateError</code> and
             terminate these steps.
@@ -1524,8 +1518,7 @@
             <code>ImageBitmap</code> object.
             </li>
             <li>Set <var>image bitmap</var>'s bitmap data to the image data
-            given by the <code>BufferSource</code> <var>buffer</var>,
-            <a>cropped to the source rectangle</a>.
+            given by the <code>BufferSource</code> <var>buffer</var>.
             </li>
             <li>Return a new <var>promise</var>, but continue running these
             steps <a>in parallel</a>.
